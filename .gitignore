@@ -1,3 +1,4 @@
 .vs/
 build/
 CMakeSettings.json
+out/
