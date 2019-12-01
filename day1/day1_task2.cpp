@@ -9,12 +9,12 @@ uint32_t getFuelReq(uint32_t mass){
 int main() {
 
 	std::ifstream input_fd;
-	input_fd.open("input/day1-1_input.txt");
+	input_fd.open("input\\day1_input.txt");
 
-	uint32_t sum{}, input_val{};
+	int32_t sum{}, input_val{};
 
 	while (input_fd >> input_val) {
-		while (input_val / 3 > 0 ) {
+		while (input_val  > 0 ) {
 			uint32_t tmp_val = getFuelReq(input_val);
 			sum += tmp_val;
 			input_val = tmp_val;
