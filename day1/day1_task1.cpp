@@ -3,18 +3,12 @@
 #include <string>
 
 int main() {
-
-
 	std::ifstream input_fd;
 	input_fd.open("input\\day1_input.txt");
 
 	uint32_t sum{}, tmp_val{};
 
-	while (input_fd >> tmp_val) {
-
-		sum += ((tmp_val / 3) - 2);
-		std::cout << tmp_val << std::endl;
-	}
+	while (input_fd >> tmp_val) sum += ((tmp_val / 3) - 2);
 
 	input_fd.close();
 
