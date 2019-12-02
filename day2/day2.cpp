@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
+#include <stdexecpt>
 
 std::vector<uint32_t> string2vector(std::string& input_txt) {
 	std::vector<uint32_t> ret;
@@ -42,7 +43,24 @@ void task_1(std::vector<uint32_t>& input) {
 		}
 	}
 
- }
+}
+
+uint32_t task_2(std::vector<uint32_t>& input){
+    uint32_t target_val{19690720};
+
+    for(uint8_t noun{}; noun<=99 ; ++noun){
+        for(uint8_t verb{}; verb<=99 ; ++verb){
+            input[1]=noun;
+            input[2]=verb;
+
+            task_1(input);
+            if(input[0] == target_val){
+                return 100 * noun + verb;
+            }
+        }
+    }
+    throw std::runtime_error("target value not reachable within search space");
+}
 
 int main() {
 	std::ifstream input_fd{"input\\day2_input.txt"};
