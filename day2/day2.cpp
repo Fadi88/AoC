@@ -40,6 +40,10 @@ void task_1(std::vector<uint32_t>& input) {
 }
 
 uint32_t task_2(std::string& input){
+	
+    // to refactor according to formula 
+    // 1'690'717  + 900'000 * verb + noun
+
     uint32_t target_val{19690720};
 
 
