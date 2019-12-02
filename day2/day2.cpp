@@ -45,19 +45,18 @@ uint32_t task_2(std::string& input){
     // 1'690'717  + 900'000 * verb + noun
 
     uint32_t target_val{19690720};
-
+	auto cmds = string2vector(input);
 
     for(uint8_t noun{}; noun<=99 ; ++noun){
         for(uint8_t verb{}; verb<=99 ; ++verb){
             
-			auto cmds = string2vector(input);
+			auto tmp = cmds;
 
-			cmds[1]=noun;
-            cmds[2]=verb;
+			tmp[1]=noun;
+			tmp[2]=verb;
 			
-			
-            task_1(cmds);
-            if(cmds[0] == target_val){
+            task_1(tmp);
+            if(tmp[0] == target_val){
 
                 return 100 * noun + verb;
             }
@@ -68,8 +67,10 @@ uint32_t task_2(std::string& input){
 
 }
 
+
+
 int main() {
-	std::ifstream input_fd{"./day2_input.txt"};
+	std::ifstream input_fd{"input\\day2_input.txt"};
 
 	std::string tmp;
 	input_fd >> tmp;
