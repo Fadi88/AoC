@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <cassert>
 
 
 
@@ -10,7 +11,7 @@ class circuit {
 
 	struct point {
 		int32_t x;
-		int1616_t y;
+		int32_t y;
 	};
 
 	struct line {
@@ -40,42 +41,47 @@ private:
 	bool get_line_intersections(line l0, line l1, point& out_param) {
 		bool ret{ false };
 
-		auto l1_minx = std::min(l1.start_point.x, l1.end_point.x);
-		auto l1_maxx = std::max(l1.start_point.x, l1.end_point.x);
-		auto l1_miny = std::min(l1.start_point.y, l1.end_point.y);
-		auto l1_maxy = std::min(l1.start_point.y, l1.end_point.y);
-
-
 		if (l0.start_point.x == l0.end_point.x) {
+			out_param.x = l0.start_point.x;
 
-			auto l0_miny = std::min(l0.start_point.y, l0.end_point.y);
-			auto l0_maxy = std::max(l0.start_point.y, l0.end_point.y);
+			auto l1_xmin = std::min(l1.start_point.x, l1.end_point.x);
+			auto l1_xmax = std::max(l1.start_point.x, l1.end_point.x);
 
-			if (l1_miny > l0_miny && l1_miny < l0_maxy
-				&&
-				l0.start_point.x > l1_minx && l0.start_point.x < l1_maxx
-				) {
-				out_param.x = l0.start_point.x;
-				out_param.y = l1_miny;
-				ret = true;
+			if (l1_xmin < l0.start_point.x && l1_xmax >l0.start_point.x) {
+				auto l1_y= l1.end_point.y;
+
+				auto l0_ymin = std::min(l0.start_point.y, l0.end_point.y);
+				auto l0_ymax = std::max(l0.start_point.y, l0.end_point.y);
+
+				if (l1_y > l0_ymin && l1_y < l0_ymax) {
+					ret = true;
+					out_param.y = l1_y;
+				}
+
+				
 			}
-			
 		}
 		else {
+			out_param.y = l0.start_point.y;
 
-			auto l0_minx = std::min(l0.start_point.x, l0.end_point.x);
-			auto l0_maxx = std::max(l0.start_point.x, l0.end_point.x);
+			auto l1_ymin = std::min(l1.start_point.y, l1.end_point.y);
+			auto l1_ymax = std::max(l1.start_point.y, l1.end_point.y);
 
-			if (l1_minx > l0_minx && l1_minx < l0_maxx
-				&&
-				l0.start_point.y > l1_miny && l0.start_point.y < l1_maxy
-				) {
-				out_param.x = l1_minx;
-				out_param.y = l0.start_point.y;
-				ret = true;
+			if (l1_ymin < l0.start_point.y && l1_ymax >l0.start_point.y) {
+				auto l1_x = l1.end_point.x;
+
+				auto l0_xmin = std::min(l0.start_point.x, l0.end_point.x);
+				auto l0_xmax = std::max(l0.start_point.x, l0.end_point.x);
+				
+				if (l1_x > l0_xmin&& l1_x < l0_xmax) {
+					ret = true;
+					out_param.x = l1_x;
+				}
+			
 			}
 
 		}
+			
 
 		return ret;
 	}
