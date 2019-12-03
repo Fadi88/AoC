@@ -25,15 +25,10 @@ public:
 	void fill_wire1(std::vector<std::string>& p_seq1){
 		m_wire1 = sequence2linevector(p_seq1);
 	}
+        
+        void solve_circuit(){
 
-	void calc_intresction_points(){
-		for(auto& wire0_line : m_wire0){
-			for(auto& wire1_line : m_wire1){
-
-			}
-
-		}
-	}
+        }
 
 private:
 
@@ -83,6 +78,16 @@ private:
 		return ret;
 	}
 
+        void calc_intresction_points(){
+		for(auto& wire0_line : m_wire0){
+			for(auto& wire1_line : m_wire1){
+
+			}
+
+		}
+	}
+
+
 };
 
 std::vector<std::string> string2vector(std::string input_txt) {
@@ -103,7 +108,7 @@ void task_1(std::vector<std::string>& p_seq0,std::vector<std::string>& p_seq1 ){
 	circuit_obj.fill_wire0(p_seq0);
 	circuit_obj.fill_wire1(p_seq1);
 
-	circuit_obj.calc_intresction_points();
+	circuit_obj.solve_circuit();
 }
 
 int main() {
