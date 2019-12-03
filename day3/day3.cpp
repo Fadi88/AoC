@@ -26,8 +26,9 @@ public:
 		m_wire1 = sequence2linevector(p_seq1);
 	}
         
-        void solve_circuit(){
-
+        uint32_t solve_circuit(){
+            fill_intresction_points();
+            return get_closest_intersection();
         }
 
 private:
@@ -37,8 +38,8 @@ private:
 	std::vector<line> m_wire1;
 	std::vector<point> intrestion_points;
 
-	point get_line_intersections(line l0 , line l1){
-
+	bool get_line_intersections(line l0 , line l1,point& out_param){
+            return false;
 	}
 	std::vector<line> sequence2linevector(std::vector<std::string>& p_wirestrg){
 
@@ -78,14 +79,22 @@ private:
 		return ret;
 	}
 
-        void calc_intresction_points(){
+        void fill_intresction_points(){
 		for(auto& wire0_line : m_wire0){
 			for(auto& wire1_line : m_wire1){
-
+                            point tmp;
+                            auto ret = get_line_intersections(wire0_line , wire1_line , tmp);
+                            if(ret) intrestion_points.push_back(tmp);
 			}
 
 		}
 	}
+        uint32_t get_closest_intersection(){
+             uint32_t distance{};
+
+             return distance;
+
+        }
 
 
 };
