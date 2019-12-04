@@ -15,6 +15,8 @@ bool is_password_valid_1(const uint32_t p_input) {
 		}
 	}
 
+        if(!is_repeated) return false;
+
 	for (uint8_t idx{}; idx < 5; ++idx) {
 		if (arr[idx] > arr[idx + 1]) {
 			is_decreasing = false;
@@ -37,6 +39,8 @@ bool is_password_valid_2(const uint32_t p_input) {
 			break;
 		}
 	}
+
+        if(!is_decreasing) return false;
 
 	for (auto tmp_chr : arr) {
 		
