@@ -1,40 +1,51 @@
 #include <iostream>
-#include <fstream>
+#include <string>
 #include <sstream>
-#include <vector>
 
 
-std::vector<std::string> string2vector(std::string input_txt) {
-	std::vector<std::string> ret;
-	size_t pos{};
-	uint16_t cmd_instance{};
-	while ((pos = input_txt.find(',')) != std::string::npos) {
-		std::stringstream{ input_txt.substr(0, pos) } >> cmd_instance;
-		input_txt.erase(0, pos + 1);
+bool is_password_valid(const uint32_t p_input) {
+	bool is_repeated{}, is_decreasing{ true };
+
+	auto arr = std::to_string(p_input);
+
+	for (uint8_t idx{}; idx < 5; ++idx) {
+		if (arr[idx] == arr[idx + 1]) {
+			is_repeated = true;
+			break;
+		}
 	}
-	std::stringstream{ input_txt.substr(0, pos) } >> cmd_instance;
 
-	return ret;
+	for (uint8_t idx{}; idx < 5; ++idx) {
+		if (arr[idx] > arr[idx + 1]) {
+			is_decreasing = false;
+			break;
+		}
+	}
+	
+	return is_repeated && is_decreasing;
 }
 
+void task_1(uint32_t p_lower_bound, uint32_t p_upper_bound) {
 
+	uint16_t count{};
 
-void task_1() {
+	for (uint32_t idx{ p_lower_bound }; idx < p_upper_bound; ++idx) {
 
+		if (is_password_valid(idx))
+			++count;
+	}
+
+	std::cout << "number of valid passwords wthing range is : " << count << std::endl;
 }
+
 
 void task_2() {
 
 }
 
 int main() {
-	std::ifstream input_fd{ "input\\day3_input.txt" };
 
-	std::string tmp;
-	input_fd >> tmp;
-	auto seq_0 = string2vector(tmp);
-
-	task_1();
+	task_1(271973, 785961);
 	task_2();
 
 
