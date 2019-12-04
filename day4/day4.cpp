@@ -38,32 +38,12 @@ bool is_password_valid_2(const uint32_t p_input) {
 		}
 	}
 
-	for (uint8_t idx{}; idx < 5; ++idx) {
-		bool is_match_found{};
-		if (arr[idx] == arr[idx + 1]) {
-			if (idx > 0) {
-				if (idx == 4) {
-					if (arr[4] != arr[3]) {
-						is_repeated = true;
-						break;
-					}
-				}
-				else {
-					if (arr[idx - 1] != arr[idx] && arr[idx + 1] != arr[idx + 2]) {
-						is_repeated = true;
-						break;
-					}
-				}
-			}
-			else {
-				if (arr[idx + 1] != arr[idx + 2]) {
-					is_repeated = true;
-					break;
-				}
-			}
-	
+	for (auto tmp_chr : arr) {
+		
+		if (std::count(arr.cbegin(), arr.cend(), tmp_chr) == 2) {
+			is_repeated = true;
+			break;
 		}
-
 	}
 
 
