@@ -3,6 +3,8 @@
 #include <vector>
 #include <sstream>
 #include <chrono>
+#include <string>
+#include <cassert>
 
 class timer {
 public:
@@ -28,19 +30,89 @@ private:
 	std::chrono::time_point<std::chrono::high_resolution_clock> m_start_point;
 };
 
-std::vector<std::string> string2vector(std::string input_txt) {
-	std::vector<std::string> ret;
+enum class param_mode : uint8_t {
+	POSITION_MODE=0,
+	IMMEDIATE_MODE=1
+};
+
+std::vector<int32_t> string2vector(std::string input_txt) {
+	std::vector<int32_t> ret;
 	size_t pos{};
-	uint16_t cmd_instance{};
+	int16_t cmd_instance{};
 	while ((pos = input_txt.find(',')) != std::string::npos) {
-		ret.push_back(input_txt.substr(0, pos));
+		std::stringstream{ input_txt.substr(0, pos) } >> cmd_instance;
+		ret.push_back(cmd_instance);
 		input_txt.erase(0, pos + 1);
 	}
-	ret.push_back(input_txt.substr(0, pos));
+	std::stringstream{ input_txt.substr(0, pos) } >> cmd_instance;
+	ret.push_back(cmd_instance);
 	return ret;
 }
 
-void task_1() {
+void task_1(std::vector<int32_t> p_cmds) {
+
+	for (std::size_t idx{}; idx < p_cmds.size();)
+	{
+
+		auto opcode = p_cmds[idx];
+
+		auto instruction = opcode - (opcode / 100) * 100;
+		int32_t param1;
+		int32_t param2;
+
+		if (instruction == 1 || instruction == 2) {
+			opcode /= 100;
+			if (opcode - ((opcode / 10) * 10) == 0) { //position mode 
+				param1= p_cmds[p_cmds[idx + 1]];
+			}
+			else {
+				if (opcode - ((opcode / 10) * 10) == 1)
+					param1 = p_cmds[idx + 1];
+				else
+					throw std::runtime_error("param 1 wrong mode");
+			}
+
+			opcode /= 10;
+			if (opcode - ((opcode / 10) * 10) == 0) { //position mode 
+				param2 = p_cmds[p_cmds[idx + 2]];
+			}
+			else {
+				if (opcode - ((opcode / 10) * 10) == 1)
+					param2 = p_cmds[idx + 2];
+				else
+					throw std::runtime_error("param 2 wrong mode");
+			}
+		}
+
+		switch (instruction)
+		{
+
+		case 1:
+			p_cmds[p_cmds[idx + 3]] = param1 + param2;
+			idx += 4;
+			break;
+
+		case 2:
+			p_cmds[p_cmds[idx + 3]] = param1 * param2;
+			idx += 4;
+			break;
+
+		case 3:
+			p_cmds[p_cmds[idx + 1]] = 1; // hard coded for task 1 only called once as per requirement
+			idx += 2;
+			break;
+
+		case 4:
+			std::cout << "--!!"<< p_cmds[p_cmds[idx + 1]] << "!!-- ";
+			idx += 2;
+			break;
+
+		case 99:
+			return;
+		default:
+			throw std::runtime_error("wrong instruction in op code");
+		}
+	}
 
 }
 
@@ -52,16 +124,20 @@ void task_2(){
 int main() {
 	std::ifstream input_fd{ "input\\day5_input.txt" };
 
+	std::string tmp;
+	input_fd >> tmp;
 
-
+	auto cmds = string2vector(tmp);
+	//cmds = string2vector("1002,4,3,8,33,4,9,99,-1");
+	
 	{
 		timer t1("task 1");
-		task_1();
+		task_1(cmds);
 	}
 	
 	{
 		timer t1("task 2");
-		task_2();
+		//task_2(cmds);
 	}
 
 	return 0;
