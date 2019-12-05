@@ -116,8 +116,102 @@ void task_1(std::vector<int32_t> p_cmds) {
 
 }
 
-void task_2(){
+void task_2(std::vector<int32_t> p_cmds, uint16_t p_input){
+	for (std::size_t idx{}; idx < p_cmds.size();)
+	{
 
+		auto opcode = p_cmds[idx];
+
+		auto instruction = opcode - (opcode / 100) * 100;
+		int32_t param1;
+		int32_t param2;
+
+		if (instruction == 1 || instruction == 2 || instruction == 5 || instruction == 6 || instruction == 7 || instruction == 8) {
+			opcode /= 100;
+			if (opcode - ((opcode / 10) * 10) == 0) { //position mode 
+				param1 = p_cmds[p_cmds[idx + 1]];
+			}
+			else {
+				if (opcode - ((opcode / 10) * 10) == 1)
+					param1 = p_cmds[idx + 1];
+				else
+					throw std::runtime_error("param 1 wrong mode");
+			}
+
+			opcode /= 10;
+			if (opcode - ((opcode / 10) * 10) == 0) { //position mode 
+				param2 = p_cmds[p_cmds[idx + 2]];
+			}
+			else {
+				if (opcode - ((opcode / 10) * 10) == 1)
+					param2 = p_cmds[idx + 2];
+				else
+					throw std::runtime_error("param 2 wrong mode");
+			}
+		}
+
+
+		std::size_t old_idx = idx;
+		switch (instruction)
+		{
+			
+		case 1:
+			p_cmds[p_cmds[idx + 3]] = param1 + param2;
+			if(old_idx != p_cmds[idx + 4])
+				idx += 4;
+			break;
+
+		case 2:
+			p_cmds[p_cmds[idx + 3]] = param1 * param2;
+			if (old_idx != p_cmds[idx + 4])
+				idx += 4;
+			break;
+
+		case 3:
+			p_cmds[p_cmds[idx + 1]] = p_input;
+			idx += 2;
+			break;
+
+		case 4:
+			std::cout << "--!!" << p_cmds[p_cmds[idx + 1]] << "!!-- ";
+			if (old_idx != p_cmds[idx + 2])
+				idx += 2;
+			break;
+
+		case 5:
+			if (param1 != 0)
+				idx = param2;
+			else
+				idx += 3;
+			break;
+
+		case 6:
+			if (param1 == 0)
+				idx = param2;
+			else
+				idx += 3;
+			break;
+
+		case 7:
+			p_cmds[p_cmds[idx + 3]] = param1 < param2;
+
+			if (old_idx != p_cmds[idx + 4])
+				idx += 4;
+			break;
+
+		case 8:
+			p_cmds[p_cmds[idx + 3]] = param1 == param2;
+
+			if (old_idx != p_cmds[idx + 4])
+				idx += 4;
+			break;
+
+		case 99:
+			return;
+		default:
+			throw std::runtime_error("wrong instruction in op code");
+		}
+	}
 
 }
 
@@ -128,7 +222,7 @@ int main() {
 	input_fd >> tmp;
 
 	auto cmds = string2vector(tmp);
-	//cmds = string2vector("1002,4,3,8,33,4,9,99,-1");
+	
 	
 	{
 		timer t1("task 1");
@@ -136,8 +230,10 @@ int main() {
 	}
 	
 	{
+		
 		timer t1("task 2");
-		//task_2(cmds);
+		//cmds = string2vector("3,3,1105,-1,9,1101,0,0,12,4,12,99,1");
+		task_2(cmds , 5);
 	}
 
 	return 0;
