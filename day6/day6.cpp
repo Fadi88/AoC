@@ -5,6 +5,7 @@
 #include <chrono>
 #include <map>
 #include <algorithm>
+#include <limits>
 
 class timer {
 public:
@@ -49,7 +50,10 @@ private:
             if(!element.second->is_visited){
                 element.second->distance = 1 + _get_parent_distance(element.second->ptr_center);
                 element.second->is_visited = true;                
+            }else{
+                std::cout ;
             }
+
         }
 
     }
@@ -68,7 +72,17 @@ private:
         
     }
 
+    std::vector<std::string> _get_origin_path(std::string pt){
+        std::vector<std::string> ret{};
 
+        while(m_nodes_map[pt]->name != "COM" ){
+            ret.push_back(m_nodes_map[pt]->name);
+            pt = m_nodes_map[pt]->ptr_center->name;
+        }
+
+        return ret;
+
+    }
 public:
 	void add_orbit(std::string p_center, std::string p_orbiter) {
 
@@ -111,7 +125,26 @@ public:
 
 		return ret;
 	}
+    
+    uint32_t get_distance_between_points(std::string p_p1 ,std::string p_p2){
+        auto path_p1 = _get_origin_path(p_p1);
+        auto path_p2 = _get_origin_path(p_p2);
 
+        _visit_graph();
+        uint32_t ret_distance{std::numeric_limits<uint32_t>::max()};
+        for(auto p1 :path_p1 ){
+            for(auto p2 :path_p2 ){
+                if(p1 == p2)
+                {
+                    auto tmp_distance =m_nodes_map[p_p1]->distance +  m_nodes_map[p_p2]->distance - 2 * m_nodes_map[p1]->distance - 2;
+                    if(tmp_distance < ret_distance)
+                        ret_distance = tmp_distance;
+                }  
+            }
+
+        }
+        return ret_distance;
+    }
 
 	~system_t() {
 		for (auto& ele : m_nodes_map) {
@@ -134,8 +167,15 @@ void task_1(std::map<std::string, std::string> p_orbits) {
 
 }
 
-void task_2(){
-	
+void task_2(std::map<std::string, std::string> p_orbits , std::string p_src, std::string p_dst){
+
+    system_t system_obj;
+
+	for (auto& ele : p_orbits) {
+		system_obj.add_orbit(ele.second , ele.first);
+	}
+
+    std::cout << "task 2 distance : " << system_obj.get_distance_between_points(p_src , p_dst)<<std::endl;
 }
 
 int main() {
@@ -162,7 +202,7 @@ int main() {
 	
 	{
 		timer t1("task 2");
-		task_2();
+		task_2(orbits , "YOU" , "SAN");
 	}
 
 	return 0;
