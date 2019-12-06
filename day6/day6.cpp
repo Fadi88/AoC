@@ -49,10 +49,7 @@ private:
             if(!element.second->is_visited){
                 element.second->distance = 1 + _get_parent_distance(element.second->ptr_center);
                 element.second->is_visited = true;                
-            }else{
-                std::cout ;
             }
-
         }
 
     }
