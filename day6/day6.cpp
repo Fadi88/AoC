@@ -50,10 +50,7 @@ private:
             if(!element.second->is_visited){
                 element.second->distance = 1 + _get_parent_distance(element.second->ptr_center);
                 element.second->is_visited = true;                
-            }else{
-                std::cout ;
             }
-
         }
 
     }
@@ -83,6 +80,7 @@ private:
         return ret;
 
     }
+
 public:
 	void add_orbit(std::string p_center, std::string p_orbiter) {
 
@@ -192,8 +190,6 @@ int main() {
 			orbits[tmp.substr(pos+1)] = tmp.substr(0,pos);
 		}
 	}
-
-
 
 	{
 		timer t1("task 1");
