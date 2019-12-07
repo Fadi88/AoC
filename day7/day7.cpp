@@ -240,19 +240,16 @@ void task_2(std::vector<int32_t> p_cmds_vec) {
         amp_d.set_phase(seq[3]);
         amp_e.set_phase(seq[4]);
 
-        uint32_t cmp0_output{}, cmp1_output{}, cmp2_output{}, cmp3_output{}, cmp4_output{};
 
         while (amp_e.is_still_running()) {
 
             amp_a.set_next_input(cmp4_output);
             amp_a.run_cycle();
-            cmp0_output = amp_a.get_output();
 
-            amp_b.set_next_input(cmp0_output);
+            amp_b.set_next_input(amp_a.get_output());
             amp_b.run_cycle();
-            cmp1_output = amp_b.get_output();
 
-            amp_c.set_next_input(cmp1_output);
+            amp_c.set_next_input(amp_b.get_output());
             amp_c.run_cycle();
             cmp2_output = amp_c.get_output();
 
@@ -265,8 +262,8 @@ void task_2(std::vector<int32_t> p_cmds_vec) {
             cmp4_output = amp_e.get_output();
         }
 
-        if (cmp4_output > max_thrust) {
-            max_thrust = cmp4_output;
+        if (amp_e.get_output() > max_thrust) {
+            max_thrust = amp_e.get_output();
             ret = seq;
 
         }
@@ -278,14 +275,11 @@ void task_2(std::vector<int32_t> p_cmds_vec) {
 }
 
 
-
 int main() {
     std::ifstream input_fd{ "input\\day7_input.txt" };
 
     std::string tmp;
     input_fd >> tmp;
-
-
 
     auto cmds = string2vector(tmp);
 
