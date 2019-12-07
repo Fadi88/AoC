@@ -92,7 +92,6 @@ public:
                 }
             }
 
-
             std::size_t old_idx = idx;
             switch (instruction)
             {
@@ -161,7 +160,6 @@ public:
         }
 
     }
-
 
 private:
     std::vector<int32_t> m_memory;
@@ -243,7 +241,7 @@ void task_2(std::vector<int32_t> p_cmds_vec) {
 
         while (amp_e.is_still_running()) {
 
-            amp_a.set_next_input(cmp4_output);
+            amp_a.set_next_input(amp_e.get_output());
             amp_a.run_cycle();
 
             amp_b.set_next_input(amp_a.get_output());
@@ -251,15 +249,12 @@ void task_2(std::vector<int32_t> p_cmds_vec) {
 
             amp_c.set_next_input(amp_b.get_output());
             amp_c.run_cycle();
-            cmp2_output = amp_c.get_output();
 
-            amp_d.set_next_input(cmp2_output);
+            amp_d.set_next_input(amp_c.get_output());
             amp_d.run_cycle();
-            cmp3_output = amp_d.get_output();
 
-            amp_e.set_next_input(cmp3_output);
+            amp_e.set_next_input(amp_d.get_output());
             amp_e.run_cycle();
-            cmp4_output = amp_e.get_output();
         }
 
         if (amp_e.get_output() > max_thrust) {
@@ -273,7 +268,6 @@ void task_2(std::vector<int32_t> p_cmds_vec) {
     std::cout << max_thrust << std::endl;
 
 }
-
 
 int main() {
     std::ifstream input_fd{ "input\\day7_input.txt" };
