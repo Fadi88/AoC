@@ -4,6 +4,7 @@
 #include <sstream>
 #include <chrono>
 #include <algorithm>
+#include <set>
 
 
 class timer {
@@ -53,43 +54,24 @@ public:
     }
 
     bool is_still_running()const { return !m_has_returned; }
-
     uint32_t get_output()const { return m_output; }
     void set_phase(uint8_t p_phase) { m_phase = p_phase; }
 
     void run_cycle() {
-        for (; !m_has_returned && idx < m_memory.size();)
-        {
+        while ( !m_has_returned && idx < m_memory.size()){
 
             auto opcode = m_memory[idx];
+            auto instruction = opcode % 100;
 
-            auto instruction = opcode - (opcode / 100) * 100;
             int32_t param1;
             int32_t param2;
-            //TODO: make the check with a find in a set or something this looks ugly
-            if (instruction == 1 || instruction == 2 || instruction == 5 || instruction == 6 || instruction == 7 || instruction == 8) {
-                opcode /= 100;
-                //TODO: fix this mess with better math and the conditions with some ternary opertor
-                if (opcode - ((opcode / 10) * 10) == 0) { //position mode 
-                    param1 = m_memory[m_memory[idx + 1]];
-                }
-                else {
-                    if (opcode - ((opcode / 10) * 10) == 1)
-                        param1 = m_memory[idx + 1];
-                    else
-                        throw std::runtime_error("param 1 wrong mode");
-                }
 
+            if (m_instructions_with_3_params.find(instruction) != m_instructions_with_3_params.end()) {
+                opcode /= 100;
+                param1 = opcode % 10 == 0 ? m_memory[m_memory[idx + 1]] : m_memory[idx + 1];
+               
                 opcode /= 10;
-                if (opcode - ((opcode / 10) * 10) == 0) { //position mode 
-                    param2 = m_memory[m_memory[idx + 2]];
-                }
-                else {
-                    if (opcode - ((opcode / 10) * 10) == 1)
-                        param2 = m_memory[idx + 2];
-                    else
-                        throw std::runtime_error("param 2 wrong mode");
-                }
+                param2 = opcode % 10 == 0 ? m_memory[m_memory[idx + 2]] : m_memory[idx + 2];     
             }
 
             std::size_t old_idx = idx;
@@ -169,8 +151,11 @@ private:
     bool m_phase_set{};
     bool m_has_returned{};
     size_t idx{};
+    const static std::set<uint8_t> m_instructions_with_3_params;
 
 };
+
+const std::set<uint8_t> amp_software::m_instructions_with_3_params{ 1,2,5,6,7,8 };
 
 void task_1(std::vector<int32_t> p_cmds_vec) {
     uint32_t max_thrust{ 0 };
@@ -195,7 +180,7 @@ void task_1(std::vector<int32_t> p_cmds_vec) {
         amp_b.set_next_input(amp_a.get_output());
         while (amp_b.is_still_running())
             amp_b.run_cycle();
-        
+
         amp_c.set_phase(seq[2]);
         amp_c.set_next_input(amp_b.get_output());
         while (amp_c.is_still_running())
@@ -205,7 +190,7 @@ void task_1(std::vector<int32_t> p_cmds_vec) {
         amp_d.set_next_input(amp_c.get_output());
         while (amp_d.is_still_running())
             amp_d.run_cycle();
-        
+
         amp_e.set_phase(seq[4]);
         amp_e.set_next_input(amp_d.get_output());
         while (amp_e.is_still_running())
