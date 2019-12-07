@@ -3,7 +3,6 @@
 #include <vector>
 #include <sstream>
 #include <chrono>
-#include <initializer_list>
 #include <algorithm>
 
 
@@ -67,9 +66,10 @@ public:
             auto instruction = opcode - (opcode / 100) * 100;
             int32_t param1;
             int32_t param2;
-
+            //TODO: make the check with a find in a set or something this looks ugly
             if (instruction == 1 || instruction == 2 || instruction == 5 || instruction == 6 || instruction == 7 || instruction == 8) {
                 opcode /= 100;
+                //TODO: fix this mess with better math and the conditions with some ternary opertor
                 if (opcode - ((opcode / 10) * 10) == 0) { //position mode 
                     param1 = m_memory[m_memory[idx + 1]];
                 }
