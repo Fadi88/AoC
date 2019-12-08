@@ -63,8 +63,8 @@ public:
             auto opcode = m_memory[idx];
             auto instruction = opcode % 100;
 
-            int32_t param1;
-            int32_t param2;
+            int32_t param1{};
+            int32_t param2{};
 
             if (m_instructions_with_3_params.find(instruction) != m_instructions_with_3_params.end()) {
                 opcode /= 100;
@@ -80,23 +80,16 @@ public:
 
             case 1:
                 m_memory[m_memory[idx + 3]] = param1 + param2;
-                if (old_idx != m_memory[idx + 4])
-                    idx += 4;
+                idx = old_idx != m_memory[idx + 4] ? idx + 4 : idx;
                 break;
 
             case 2:
                 m_memory[m_memory[idx + 3]] = param1 * param2;
-                if (old_idx != m_memory[idx + 4])
-                    idx += 4;
+                idx = old_idx != m_memory[idx + 4] ? idx + 4 : idx;
                 break;
 
             case 3:
-                if (!m_phase_set) {
-                    m_phase_set = true;
-                    m_memory[m_memory[idx + 1]] = m_phase;
-                }
-                else
-                    m_memory[m_memory[idx + 1]] = m_next_input;
+                m_memory[m_memory[idx + 1]] = !m_phase_set ? m_phase_set = true, m_phase : m_next_input;
                 idx += 2;
                 break;
 
@@ -106,36 +99,27 @@ public:
                 return;
 
             case 5:
-                if (param1 != 0)
-                    idx = param2;
-                else
-                    idx += 3;
+                idx = param1 != 0 ? param2 : idx + 3;
                 break;
 
             case 6:
-                if (param1 == 0)
-                    idx = param2;
-                else
-                    idx += 3;
+                idx = param1 == 0 ? param2 : idx + 3;
                 break;
 
             case 7:
                 m_memory[m_memory[idx + 3]] = param1 < param2;
-
-                if (old_idx != m_memory[idx + 4])
-                    idx += 4;
+                idx = old_idx != m_memory[idx + 4] ? idx + 4 : idx;
                 break;
 
             case 8:
                 m_memory[m_memory[idx + 3]] = param1 == param2;
-
-                if (old_idx != m_memory[idx + 4])
-                    idx += 4;
+                idx = old_idx != m_memory[idx + 4] ? idx + 4 : idx;
                 break;
 
             case 99:
                 m_has_returned = true;
                 break;
+
             default:
                 throw std::runtime_error("wrong instruction in op code");
             }
