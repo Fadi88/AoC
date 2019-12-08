@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <chrono>
+#include <algorithm>
 
 class timer {
 public:
@@ -20,7 +21,6 @@ public:
         double ms = duration * 0.001;
 
         std::cout << "time used by : " << m_point << " was : " << ms << " ms" << std::endl;
-
     }
 
 private:
@@ -32,10 +32,12 @@ std::vector<std::string> string2vector(std::string input_txt) {
     std::vector<std::string> ret;
     size_t pos{};
     uint16_t cmd_instance{};
+
     while ((pos = input_txt.find(',')) != std::string::npos) {
         ret.push_back(input_txt.substr(0, pos));
         input_txt.erase(0, pos + 1);
     }
+
     ret.push_back(input_txt.substr(0, pos));
     return ret;
 }
@@ -65,16 +67,15 @@ void task_1(std::string m_input) {
     std::vector<uint8_t> target_layer;
     for (auto vec : image) {
         if (std::count(vec.begin(), vec.end(), '0') < min_zeros) {
-            min_zeros = std::count(vec.begin(), vec.end(), '0');
+            min_zeros = static_cast<uint16_t>(std::count(vec.begin(), vec.end(), '0'));
             target_layer = vec;
         }
     }
     uint16_t ones, twos;
-    std::cout << "ones in target layer are : " << (ones = std::count(target_layer.begin(), target_layer.end(), '1')) <<std::endl;
-    std::cout << "twos in target layer are : " << (twos = std::count(target_layer.begin(), target_layer.end(), '2')) <<std::endl;
+    std::cout << "ones in target layer are : " << (ones = static_cast<uint16_t>(std::count(target_layer.begin(), target_layer.end(), '1'))) <<std::endl;
+    std::cout << "twos in target layer are : " << (twos = static_cast<uint16_t>(std::count(target_layer.begin(), target_layer.end(), '2'))) <<std::endl;
 
     std::cout << " ones x twos = " << ones * twos << std::endl;
-
 }
 
 void task_2(std::string m_input){
@@ -101,8 +102,7 @@ void task_2(std::string m_input){
     for (auto layer : image) {
 
         for (std::size_t idx{}; idx < layer.size(); ++idx) {
-            if (composite_img[idx] == '2')
-                composite_img[idx] = layer[idx];
+            composite_img[idx] == '2' ? composite_img[idx] = layer[idx]:0;
         }
     }
 
@@ -110,14 +110,10 @@ void task_2(std::string m_input){
         if (idx % 25 == 0)
             std::cout << std::endl;
 
-        if (composite_img[idx] == '1')
-            std::cout << '*';
-        else
-            std::cout << ' ';
-
+        composite_img[idx] == '1' ? std::cout << '#' :  std::cout << ' ';
     }
     std::cout << std::endl<<std::endl;
-    
+  
 }
 
 int main() {
@@ -125,7 +121,6 @@ int main() {
 
     std::string tmp;
     input_fd >> tmp;
-
 
     {
         timer t1("task 1");
