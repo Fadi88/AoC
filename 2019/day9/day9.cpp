@@ -75,7 +75,6 @@ public:
             }
 
             if (m_instructions_with_3_params.find(instruction) != m_instructions_with_3_params.end()) {
-
                 opcode /= 10;
 
                 switch (opcode % 10) {
@@ -101,32 +100,11 @@ public:
                     param3 = m_memory[idx + 3];
                     break;
 
-                case 1:
-                    throw std::runtime_error{"direct mode not supported for third params"};
-                    break;
-
                 case 2:
                     param3 = m_relative_base + m_memory[idx + 3];
                     break;
                 }
 
-            }
-
-            if (instruction == 3) {
-
-                switch (opcode % 10) {
-                case 0:
-                    param1 = m_memory[idx + 1];
-                    break;
-
-                case 1:
-                    throw std::runtime_error{ "direct mode not supported for third params" };
-                    break;
-
-                case 2:
-                    param1 = m_relative_base + m_memory[idx + 1];
-                    break;
-                }
             }
 
             std::size_t old_idx = idx;
@@ -144,7 +122,8 @@ public:
                 break;
 
             case 3:
-                m_memory[param1] = !m_phase_set ? m_phase_set = true, m_phase : m_next_input;
+                m_memory[m_memory[idx] / 100 % 10 == 0 ? m_memory[idx + 1] : m_relative_base + m_memory[idx + 1]] 
+                    = !m_phase_set ? m_phase_set = true, m_phase : m_next_input;
                 idx += 2;
                 break;
 
@@ -221,8 +200,6 @@ std::vector<int64_t> string2vector(std::string input_txt) {
 
 void task_1(std::vector<int64_t> p_cmds) {
     amp_software test{ p_cmds };
-
-
     test.set_phase(1);
 
     while (test.is_still_running()) {
@@ -232,8 +209,6 @@ void task_1(std::vector<int64_t> p_cmds) {
 
 void task_2(std::vector<int64_t> p_cmds) {
     amp_software test{ p_cmds };
-
-
     test.set_phase(2);
 
     while (test.is_still_running()) {
