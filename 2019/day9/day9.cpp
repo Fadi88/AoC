@@ -48,13 +48,14 @@ public:
     void bypass_phase_set() { m_phase_set = true; }
 
     void run_cycle() {
-        while (!m_has_returned && idx < m_memory.size()) {
+        while (!m_has_returned) {
 
             auto opcode = m_memory[idx];
             uint16_t instruction = opcode % 100;
 
             int64_t param1{};
             int64_t param2{};
+            int64_t param3{};
 
             if (instruction != 99) {
                 opcode /= 100;
@@ -92,17 +93,53 @@ public:
                 }
             }
 
+            if (instruction == 1 || instruction == 2 || instruction == 7 || instruction == 8) {
+                opcode /= 10;
+
+                switch (opcode % 10) {
+                case 0:
+                    param3 = m_memory[idx + 3];
+                    break;
+
+                case 1:
+                    throw std::runtime_error{"direct mode not supported for third params"};
+                    break;
+
+                case 2:
+                    param3 = m_relative_base + m_memory[idx + 3];
+                    break;
+                }
+
+            }
+
+            if (instruction == 3) {
+
+                switch (opcode % 10) {
+                case 0:
+                    param1 = m_memory[idx + 1];
+                    break;
+
+                case 1:
+                    throw std::runtime_error{ "direct mode not supported for third params" };
+                    break;
+
+                case 2:
+                    param1 = m_relative_base + m_memory[idx + 1];
+                    break;
+                }
+            }
+
             std::size_t old_idx = idx;
             switch (instruction)
             {
 
             case 1:
-                m_memory[m_memory[idx + 3]] = param1 + param2;
+                m_memory[param3] = param1 + param2;
                 idx = old_idx != m_memory[idx + 4] ? idx + 4 : idx;
                 break;
 
             case 2:
-                m_memory[m_memory[idx + 3]] = param1 * param2;
+                m_memory[param3] = param1 * param2;
                 idx = old_idx != m_memory[idx + 4] ? idx + 4 : idx;
                 break;
 
@@ -113,8 +150,9 @@ public:
 
             case 4:
                 m_output = param1;
+                std::cout << m_output << std::endl;
                 idx += 2;
-                return;
+                break;
 
             case 5:
                 idx = param1 != 0 ? param2 : idx + 3;
@@ -125,12 +163,12 @@ public:
                 break;
 
             case 7:
-                m_memory[m_memory[idx + 3]] = param1 < param2;
+                m_memory[param3] = param1 < param2;
                 idx = old_idx != m_memory[idx + 4] ? idx + 4 : idx;
                 break;
 
             case 8:
-                m_memory[m_memory[idx + 3]] = param1 == param2;
+                m_memory[param3] = param1 == param2;
                 idx = old_idx != m_memory[idx + 4] ? idx + 4 : idx;
                 break;
 
@@ -183,17 +221,24 @@ std::vector<int64_t> string2vector(std::string input_txt) {
 
 void task_1(std::vector<int64_t> p_cmds) {
     amp_software test{ p_cmds };
-    
-    test.bypass_phase_set();
-    test.set_next_input(1);
+
+
+    test.set_phase(1);
 
     while (test.is_still_running()) {
         test.run_cycle();
-        std::cout << test.get_output() << std::endl;
     }
 }
 
 void task_2(std::vector<int64_t> p_cmds) {
+    amp_software test{ p_cmds };
+
+
+    test.set_phase(2);
+
+    while (test.is_still_running()) {
+        test.run_cycle();
+    }
 
 
 }
