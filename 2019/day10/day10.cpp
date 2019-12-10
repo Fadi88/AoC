@@ -32,9 +32,10 @@ private:
 
 class intcode_processor {
 public:
-    intcode_processor(std::vector<int64_t> p_cmd) : m_memory{ p_cmd } {
-        std::vector<int64_t> padding(150, 0);
+    intcode_processor(std::vector<int64_t> p_cmd) : m_memory{ p_cmd }{
+        std::vector<int64_t> padding(200, 0);
         std::copy(padding.begin(), padding.end(), std::back_inserter(m_memory));
+
     }
 
     void set_next_input(int32_t p_input) {
@@ -51,23 +52,25 @@ public:
             auto opcode = m_memory[m_pc];
             uint16_t instruction = opcode % 100;
 
-            int64_t param1{};
-            int64_t param2{};
-            int64_t param3{};
+
+            int64_t* param1_ptr{};
+            int64_t* param2_ptr{};
+            int64_t* param3_ptr{};
+
 
             if (instruction != 99) {
                 opcode /= 100;
                 switch (opcode % 10) {
                 case 0:
-                    param1 = m_memory[m_memory[m_pc + 1]];
+                    param1_ptr = &m_memory[m_memory[m_pc + 1]];
                     break;
 
                 case 1:
-                    param1 = m_memory[m_pc + 1];
+                    param1_ptr = &m_memory[m_pc + 1];
                     break;
 
                 case 2:
-                    param1 = m_memory[m_relative_base + m_memory[m_pc + 1]];
+                    param1_ptr = &m_memory[m_relative_base + m_memory[m_pc + 1]];
                     break;
                 }
             }
@@ -77,15 +80,15 @@ public:
 
                 switch (opcode % 10) {
                 case 0:
-                    param2 = m_memory[m_memory[m_pc + 2]];
+                    param2_ptr = &m_memory[m_memory[m_pc + 2]];
                     break;
 
                 case 1:
-                    param2 = m_memory[m_pc + 2];
+                    param2_ptr = &m_memory[m_pc + 2];
                     break;
 
                 case 2:
-                    param2 = m_memory[m_relative_base + m_memory[m_pc + 2]];
+                    param2_ptr = &m_memory[m_relative_base + m_memory[m_pc + 2]];
                     break;
                 }
             }
@@ -95,62 +98,62 @@ public:
 
                 switch (opcode % 10) {
                 case 0:
-                    param3 = m_memory[m_pc + 3];
+                    param3_ptr = &m_memory[m_memory[m_pc + 3]];
                     break;
 
                 case 2:
-                    param3 = m_relative_base + m_memory[m_pc + 3];
+                    param3_ptr = &m_memory[m_relative_base + m_memory[m_pc + 3]];
                     break;
                 }
 
             }
 
-            std::size_t old_pc = m_pc;
+            std::size_t old_idx = m_pc;
             switch (instruction)
             {
 
             case 1:
-                m_memory[param3] = param1 + param2;
-                m_pc = old_pc != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
+                *param3_ptr = *param1_ptr + *param2_ptr;
+                m_pc = old_idx != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
                 break;
 
             case 2:
-                m_memory[param3] = param1 * param2;
-                m_pc = old_pc != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
+                *param3_ptr = *param1_ptr * *param2_ptr;
+                m_pc = old_idx != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
                 break;
 
             case 3:
-                m_memory[m_memory[m_pc] / 100 % 10 == 0 ? m_memory[m_pc + 1] : m_relative_base + m_memory[m_pc + 1]]
+                *param1_ptr
                     = !m_phase_set ? m_phase_set = true, m_phase : m_next_input;
                 m_pc += 2;
                 break;
 
             case 4:
-                m_output = param1;
+                m_output = *param1_ptr;
                 std::cout << m_output << std::endl;
                 m_pc += 2;
                 break;
 
             case 5:
-                m_pc = param1 != 0 ? param2 : m_pc + 3;
+                m_pc = *param1_ptr != 0 ? *param2_ptr : m_pc + 3;
                 break;
 
             case 6:
-                m_pc = param1 == 0 ? param2 : m_pc + 3;
+                m_pc = *param1_ptr == 0 ? *param2_ptr : m_pc + 3;
                 break;
 
             case 7:
-                m_memory[param3] = param1 < param2;
-                m_pc = old_pc != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
+                *param3_ptr = *param1_ptr < *param2_ptr;
+                m_pc = old_idx != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
                 break;
 
             case 8:
-                m_memory[param3] = param1 == param2;
-                m_pc = old_pc != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
+                *param3_ptr = *param1_ptr == *param2_ptr;
+                m_pc = old_idx != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
                 break;
 
             case 9:
-                m_relative_base += param1;
+                m_relative_base += *param1_ptr;
                 m_pc += 2;
                 break;
 
