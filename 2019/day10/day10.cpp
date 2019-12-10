@@ -30,12 +30,11 @@ private:
 };
 
 
-class amp_software {
+class intcode_processor {
 public:
-    amp_software(std::vector<int64_t> p_cmd) : m_memory{ p_cmd }, m_initial_size{ p_cmd.size() }{
-        std::vector<int64_t> padding(200, 0);
+    intcode_processor(std::vector<int64_t> p_cmd) : m_memory{ p_cmd } {
+        std::vector<int64_t> padding(150, 0);
         std::copy(padding.begin(), padding.end(), std::back_inserter(m_memory));
-
     }
 
     void set_next_input(int32_t p_input) {
@@ -45,33 +44,30 @@ public:
     bool is_still_running()const { return !m_has_returned; }
     int64_t get_output()const { return m_output; }
     void set_phase(uint8_t p_phase) { m_phase = p_phase; }
-    void bypass_phase_set() { m_phase_set = true; }
 
     void run_cycle() {
         while (!m_has_returned) {
 
-            auto opcode = m_memory[idx];
+            auto opcode = m_memory[m_pc];
             uint16_t instruction = opcode % 100;
 
-
-            int64_t* param1_ptr{};
-            int64_t* param2_ptr{};
-            int64_t* param3_ptr{};
-
+            int64_t param1{};
+            int64_t param2{};
+            int64_t param3{};
 
             if (instruction != 99) {
                 opcode /= 100;
                 switch (opcode % 10) {
                 case 0:
-                    param1_ptr = &m_memory[m_memory[idx + 1]];
+                    param1 = m_memory[m_memory[m_pc + 1]];
                     break;
 
                 case 1:
-                    param1_ptr = &m_memory[idx + 1];
+                    param1 = m_memory[m_pc + 1];
                     break;
 
                 case 2:
-                    param1_ptr = &m_memory[m_relative_base + m_memory[idx + 1]];
+                    param1 = m_memory[m_relative_base + m_memory[m_pc + 1]];
                     break;
                 }
             }
@@ -81,15 +77,15 @@ public:
 
                 switch (opcode % 10) {
                 case 0:
-                    param2_ptr = &m_memory[m_memory[idx + 2]];
+                    param2 = m_memory[m_memory[m_pc + 2]];
                     break;
 
                 case 1:
-                    param2_ptr = &m_memory[idx + 2];
+                    param2 = m_memory[m_pc + 2];
                     break;
 
                 case 2:
-                    param2_ptr = &m_memory[m_relative_base + m_memory[idx + 2]];
+                    param2 = m_memory[m_relative_base + m_memory[m_pc + 2]];
                     break;
                 }
             }
@@ -99,68 +95,68 @@ public:
 
                 switch (opcode % 10) {
                 case 0:
-                    param3_ptr = &m_memory[m_memory[idx + 3]];
+                    param3 = m_memory[m_pc + 3];
                     break;
 
                 case 2:
-                    param3_ptr = &m_memory[m_relative_base + m_memory[idx + 3]];
+                    param3 = m_relative_base + m_memory[m_pc + 3];
                     break;
                 }
 
             }
 
-            std::size_t old_idx = idx;
+            std::size_t old_pc = m_pc;
             switch (instruction)
             {
 
             case 1:
-                *param3_ptr = *param1_ptr + *param2_ptr;
-                idx = old_idx != m_memory[idx + 4] ? idx + 4 : idx;
+                m_memory[param3] = param1 + param2;
+                m_pc = old_pc != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
                 break;
 
             case 2:
-                *param3_ptr = *param1_ptr * *param2_ptr;
-                idx = old_idx != m_memory[idx + 4] ? idx + 4 : idx;
+                m_memory[param3] = param1 * param2;
+                m_pc = old_pc != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
                 break;
 
             case 3:
-                *param1_ptr
+                m_memory[m_memory[m_pc] / 100 % 10 == 0 ? m_memory[m_pc + 1] : m_relative_base + m_memory[m_pc + 1]]
                     = !m_phase_set ? m_phase_set = true, m_phase : m_next_input;
-                idx += 2;
+                m_pc += 2;
                 break;
 
             case 4:
-                m_output = *param1_ptr;
+                m_output = param1;
                 std::cout << m_output << std::endl;
-                idx += 2;
+                m_pc += 2;
                 break;
 
             case 5:
-                idx = *param1_ptr != 0 ? *param2_ptr : idx + 3;
+                m_pc = param1 != 0 ? param2 : m_pc + 3;
                 break;
 
             case 6:
-                idx = *param1_ptr == 0 ? *param2_ptr : idx + 3;
+                m_pc = param1 == 0 ? param2 : m_pc + 3;
                 break;
 
             case 7:
-                *param3_ptr = *param1_ptr < *param2_ptr;
-                idx = old_idx != m_memory[idx + 4] ? idx + 4 : idx;
+                m_memory[param3] = param1 < param2;
+                m_pc = old_pc != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
                 break;
 
             case 8:
-                *param3_ptr = *param1_ptr == *param2_ptr;
-                idx = old_idx != m_memory[idx + 4] ? idx + 4 : idx;
+                m_memory[param3] = param1 == param2;
+                m_pc = old_pc != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
                 break;
 
             case 9:
-                m_relative_base += *param1_ptr;
-                idx += 2;
+                m_relative_base += param1;
+                m_pc += 2;
                 break;
 
             case 99:
                 m_has_returned = true;
-                idx += 1;
+                m_pc += 1;
                 break;
 
             default:
@@ -177,14 +173,13 @@ private:
     uint8_t m_phase{};
     bool m_phase_set{};
     bool m_has_returned{};
-    size_t idx{};
+    size_t m_pc{};
     size_t m_relative_base{};
     const static std::set<uint8_t> m_instructions_with_3_params;
-    size_t m_initial_size{};
 
 };
 
-const std::set<uint8_t> amp_software::m_instructions_with_3_params{ 1,2,5,6,7,8 };
+const std::set<uint8_t> intcode_processor::m_instructions_with_3_params{ 1,2,5,6,7,8 };
 
 std::vector<int64_t> string2vector(std::string input_txt) {
     std::vector<int64_t> ret;
@@ -201,7 +196,7 @@ std::vector<int64_t> string2vector(std::string input_txt) {
 }
 
 void task_1(std::vector<int64_t> p_cmds) {
-    amp_software test{ p_cmds };
+    intcode_processor test{ p_cmds };
     test.set_phase(1);
 
     while (test.is_still_running()) {
@@ -210,7 +205,7 @@ void task_1(std::vector<int64_t> p_cmds) {
 }
 
 void task_2(std::vector<int64_t> p_cmds) {
-    amp_software test{ p_cmds };
+    intcode_processor test{ p_cmds };
     test.set_phase(2);
 
     while (test.is_still_running()) {
@@ -230,12 +225,12 @@ int main() {
 
     {
         timer t1("task 1");
-        task_1(cmds);
+        // task_1(cmds);
     }
 
     {
         timer t1("task 2");
-        task_2(cmds);
+        //task_2(cmds);
     }
 
     return 0;
