@@ -4,6 +4,7 @@
 #include <sstream>
 #include <chrono>
 #include <set>
+#include <algorithm>
 
 class timer {
 public:
@@ -30,205 +31,102 @@ private:
 };
 
 
-class intcode_processor {
-public:
-    intcode_processor(std::vector<int64_t> p_cmd) : m_memory{ p_cmd }{
-        std::vector<int64_t> padding(200, 0);
-        std::copy(padding.begin(), padding.end(), std::back_inserter(m_memory));
 
-    }
-
-    void set_next_input(int32_t p_input) {
-        m_next_input = p_input;
-    }
-
-    bool is_still_running()const { return !m_has_returned; }
-    int64_t get_output()const { return m_output; }
-    void set_phase(uint8_t p_phase) { m_phase = p_phase; }
-
-    void run_cycle() {
-        while (!m_has_returned) {
-
-            auto opcode = m_memory[m_pc];
-            uint16_t instruction = opcode % 100;
-
-
-            int64_t* param1_ptr{};
-            int64_t* param2_ptr{};
-            int64_t* param3_ptr{};
-
-
-            if (instruction != 99) {
-                opcode /= 100;
-                switch (opcode % 10) {
-                case 0:
-                    param1_ptr = &m_memory[m_memory[m_pc + 1]];
-                    break;
-
-                case 1:
-                    param1_ptr = &m_memory[m_pc + 1];
-                    break;
-
-                case 2:
-                    param1_ptr = &m_memory[m_relative_base + m_memory[m_pc + 1]];
-                    break;
-                }
-            }
-
-            if (m_instructions_with_3_params.find(instruction) != m_instructions_with_3_params.end()) {
-                opcode /= 10;
-
-                switch (opcode % 10) {
-                case 0:
-                    param2_ptr = &m_memory[m_memory[m_pc + 2]];
-                    break;
-
-                case 1:
-                    param2_ptr = &m_memory[m_pc + 2];
-                    break;
-
-                case 2:
-                    param2_ptr = &m_memory[m_relative_base + m_memory[m_pc + 2]];
-                    break;
-                }
-            }
-
-            if (instruction == 1 || instruction == 2 || instruction == 7 || instruction == 8) {
-                opcode /= 10;
-
-                switch (opcode % 10) {
-                case 0:
-                    param3_ptr = &m_memory[m_memory[m_pc + 3]];
-                    break;
-
-                case 2:
-                    param3_ptr = &m_memory[m_relative_base + m_memory[m_pc + 3]];
-                    break;
-                }
-
-            }
-
-            std::size_t old_idx = m_pc;
-            switch (instruction)
-            {
-
-            case 1:
-                *param3_ptr = *param1_ptr + *param2_ptr;
-                m_pc = old_idx != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
-                break;
-
-            case 2:
-                *param3_ptr = *param1_ptr * *param2_ptr;
-                m_pc = old_idx != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
-                break;
-
-            case 3:
-                *param1_ptr
-                    = !m_phase_set ? m_phase_set = true, m_phase : m_next_input;
-                m_pc += 2;
-                break;
-
-            case 4:
-                m_output = *param1_ptr;
-                std::cout << m_output << std::endl;
-                m_pc += 2;
-                break;
-
-            case 5:
-                m_pc = *param1_ptr != 0 ? *param2_ptr : m_pc + 3;
-                break;
-
-            case 6:
-                m_pc = *param1_ptr == 0 ? *param2_ptr : m_pc + 3;
-                break;
-
-            case 7:
-                *param3_ptr = *param1_ptr < *param2_ptr;
-                m_pc = old_idx != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
-                break;
-
-            case 8:
-                *param3_ptr = *param1_ptr == *param2_ptr;
-                m_pc = old_idx != m_memory[m_pc + 4] ? m_pc + 4 : m_pc;
-                break;
-
-            case 9:
-                m_relative_base += *param1_ptr;
-                m_pc += 2;
-                break;
-
-            case 99:
-                m_has_returned = true;
-                m_pc += 1;
-                break;
-
-            default:
-                throw std::runtime_error("wrong instruction in op code");
-            }
-        }
-
-    }
-
-private:
-    std::vector<int64_t> m_memory;
-    int32_t m_next_input{};
-    int64_t m_output{};
-    uint8_t m_phase{};
-    bool m_phase_set{};
-    bool m_has_returned{};
-    size_t m_pc{};
-    size_t m_relative_base{};
-    const static std::set<uint8_t> m_instructions_with_3_params;
-
+struct point {
+    uint8_t x{};
+    uint8_t y{};
+    uint16_t connected_points{};
 };
 
-const std::set<uint8_t> intcode_processor::m_instructions_with_3_params{ 1,2,5,6,7,8 };
-
-std::vector<int64_t> string2vector(std::string input_txt) {
-    std::vector<int64_t> ret;
-    size_t pos{};
-    int64_t cmd_instance{};
-    while ((pos = input_txt.find(',')) != std::string::npos) {
-        std::stringstream{ input_txt.substr(0, pos) } >> cmd_instance;
-        ret.push_back(cmd_instance);
-        input_txt.erase(0, pos + 1);
-    }
-    std::stringstream{ input_txt.substr(0, pos) } >> cmd_instance;
-    ret.push_back(cmd_instance);
-    return ret;
+bool float_equal(float_t lhs, float_t rhs) {
+    return (std::fabs(lhs - rhs) < 0.000001);
 }
 
-void task_1(std::vector<int64_t> p_cmds) {
-    intcode_processor test{ p_cmds };
-    test.set_phase(1);
+void set_connected_points(std::vector<point> p_map, point& p_point) {
 
-    while (test.is_still_running()) {
-        test.run_cycle();
+    for (point& tmp_pt : p_map) {
+
+        if (tmp_pt.x == p_point.x && tmp_pt.y == p_point.y)
+            continue;
+
+        float_t  a;
+        float_t  b;
+        bool is_vertical{};
+        bool are_connected = true;
+
+        if (tmp_pt.x != p_point.x) {
+            a = float_t(tmp_pt.y - p_point.y) / float_t(tmp_pt.x - p_point.x);
+            b = tmp_pt.y - a * tmp_pt.x;
+
+        }
+        else {
+            is_vertical = true;
+        }
+
+        for (point& checked_pt : p_map) {
+
+            if ((checked_pt.x == p_point.x && checked_pt.y == p_point.y) || (checked_pt.x == tmp_pt.x && checked_pt.y == tmp_pt.y))
+                continue;
+
+            if (is_vertical) {
+                if (checked_pt.x == p_point.x && checked_pt.y > std::min(tmp_pt.y, p_point.y) && checked_pt.y < std::max(tmp_pt.y, p_point.y)) {
+                    are_connected = false;
+                    break;
+                }
+            }
+            else if (float_equal(checked_pt.y, a * checked_pt.x + b)) {
+                if (checked_pt.y > std::min(tmp_pt.y, p_point.y) && checked_pt.y < std::max(tmp_pt.y, p_point.y) && 
+                    checked_pt.x > std::min(tmp_pt.x, p_point.x) && checked_pt.x < std::max(tmp_pt.x, p_point.x)) {
+                    are_connected = false;
+                    break;
+                }
+            }
+
+        }
+        if (are_connected)
+            p_point.connected_points++;
     }
+
 }
 
-void task_2(std::vector<int64_t> p_cmds) {
-    intcode_processor test{ p_cmds };
-    test.set_phase(2);
+void task_1(std::vector<point> p_map) {
 
-    while (test.is_still_running()) {
-        test.run_cycle();
+    for (auto& tmp : p_map) {
+
+        set_connected_points(p_map, tmp);
     }
 
+}
+
+void task_2() {
 
 }
+
+
 
 int main() {
-    std::ifstream input_fd{ "input\\day9_input.txt" };
+    std::ifstream input_fd{ "input\\day10_input.txt" };
 
     std::string tmp;
-    input_fd >> tmp;
+    std::vector<point> map;
 
-    auto cmds = string2vector(tmp);
+    uint8_t idx_y{};
+    while (input_fd >> tmp) {
+        uint8_t idx_x{};
+
+        for (char tmp_chr : tmp) {
+
+            if (tmp_chr == '#')
+                map.push_back({ idx_x ,idx_y });
+            ++idx_x;
+        }
+
+        ++idx_y;
+    }
 
     {
         timer t1("task 1");
-        // task_1(cmds);
+        task_1(map);
     }
 
     {
