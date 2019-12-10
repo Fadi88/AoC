@@ -75,8 +75,8 @@ void set_connected_points(std::vector<point> p_map, point& p_point) {
                 }
             }
             else if (float_equal(checked_pt.y, a * checked_pt.x + b)) {
-                if (checked_pt.y > std::min(tmp_pt.y, p_point.y) && checked_pt.y < std::max(tmp_pt.y, p_point.y) && 
-                    checked_pt.x > std::min(tmp_pt.x, p_point.x) && checked_pt.x < std::max(tmp_pt.x, p_point.x)) {
+                if (checked_pt.y >= std::min(tmp_pt.y, p_point.y) && checked_pt.y <= std::max(tmp_pt.y, p_point.y) && 
+                    checked_pt.x >= std::min(tmp_pt.x, p_point.x) && checked_pt.x <= std::max(tmp_pt.x, p_point.x)) {
                     are_connected = false;
                     break;
                 }
