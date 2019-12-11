@@ -30,75 +30,128 @@ private:
     std::chrono::time_point<std::chrono::high_resolution_clock> m_start_point;
 };
 
+const double pi() { return std::atan(1) * 4; }
 
-
-struct point {
-    uint8_t x{};
-    uint8_t y{};
+class point {
+public:
+    uint16_t x{};
+    uint16_t y{};
     uint16_t connected_points{};
+
+    bool operator == (const point& other) {
+        return x == other.x && y == other.y;
+    }
+
 };
 
-bool float_equal(float_t lhs, float_t rhs) {
-    return (std::fabs(lhs - rhs) < 0.000001);
-}
 
-void set_connected_points(std::vector<point> p_map, point& p_point) {
+class polar_point {
+public:
+    polar_point(double p_a, double p_r) : theta{ p_a }, R{ p_r }{}
 
-    for (point& tmp_pt : p_map) {
+    double theta{};
+    double R;
 
-        if (tmp_pt.x == p_point.x && tmp_pt.y == p_point.y)
-            continue;
-
-        float_t  a;
-        float_t  b;
-        bool is_vertical{};
-        bool are_connected = true;
-
-        if (tmp_pt.x != p_point.x) {
-            a = float_t(tmp_pt.y - p_point.y) / float_t(tmp_pt.x - p_point.x);
-            b = tmp_pt.y - a * tmp_pt.x;
-
-        }
-        else {
-            is_vertical = true;
-        }
-
-        for (point& checked_pt : p_map) {
-
-            if ((checked_pt.x == p_point.x && checked_pt.y == p_point.y) || (checked_pt.x == tmp_pt.x && checked_pt.y == tmp_pt.y))
-                continue;
-
-            if (is_vertical) {
-                if (checked_pt.x == p_point.x && checked_pt.y > std::min(tmp_pt.y, p_point.y) && checked_pt.y < std::max(tmp_pt.y, p_point.y)) {
-                    are_connected = false;
-                    break;
-                }
-            }
-            else if (float_equal(checked_pt.y, a * checked_pt.x + b)) {
-                if (checked_pt.y > std::min(tmp_pt.y, p_point.y) && checked_pt.y < std::max(tmp_pt.y, p_point.y) && 
-                    checked_pt.x > std::min(tmp_pt.x, p_point.x) && checked_pt.x < std::max(tmp_pt.x, p_point.x)) {
-                    are_connected = false;
-                    break;
-                }
-            }
-
-        }
-        if (are_connected)
-            p_point.connected_points++;
+    bool operator ==(const polar_point& other) const {
+        return theta == other.theta && R == other.R;
     }
 
+    bool operator < (const polar_point& other) const {
+        return theta == other.theta ? R < other.R : theta < other.theta;
+    }
+
+
+};
+
+void set_connected_points(std::vector<point>& p_map) {
+    std::set<float> slopes{};
+
+    for (point& start_point : p_map) {
+        slopes.clear();
+
+        for (point& end_point : p_map) {
+
+            if (start_point == end_point)
+                continue;
+            float dy = end_point.y - start_point.y;
+            float dx = end_point.x - start_point.x;
+
+            slopes.insert(std::atan2(dx, dy));
+
+        }
+
+        start_point.connected_points = slopes.size();
+    }
 }
 
-void task_1(std::vector<point> p_map) {
+std::vector<polar_point> calc_polar_map(std::vector<point>& p_map, const point& center) {
+    std::vector<polar_point> ret{};
+
+    for (point& current_point : p_map) {
+        if (current_point.operator==(center)) {
+            continue;
+        }
+
+        float dy = current_point.y - center.y;
+        float dx = current_point.x - center.x;
+
+        double angle = -std::atan2(dx, dy) * 180 / pi() - 90.0f;
+        double dist = std::sqrt(dx * dx + dy * dy);
+
+        ret.emplace_back(std::fmod(std::round(angle) + 360.0f, 360.0f), dist);
+
+    }
+
+    return ret;
+}
+
+void task_1(std::vector<point>& p_map, point& best_point) {
+    set_connected_points(p_map);
+
+    uint16_t max{};
 
     for (auto& tmp : p_map) {
+        if (tmp.connected_points > max) {
+            max = tmp.connected_points;
+            best_point = tmp;
+        }
 
-        set_connected_points(p_map, tmp);
     }
 
 }
 
-void task_2() {
+void task_2(std::vector<point>& p_map, point& best_point) {
+
+    auto polar_map = calc_polar_map(p_map, best_point);
+    uint16_t current_idx{};
+    polar_point ref_point{ 0.0f , 0.0f };
+
+    std::sort(polar_map.begin(), polar_map.end());
+
+    while (polar_map.size()) {
+        ++current_idx;
+
+        auto target_point = std::lower_bound(polar_map.begin(), polar_map.end(), ref_point);
+
+        if (target_point == polar_map.end()) {
+            ref_point.theta = 0;
+            target_point = std::lower_bound(polar_map.begin(), polar_map.end(), ref_point);
+        }
+        else {
+            ref_point.theta = target_point->theta + 0.00001f;
+        }
+
+        auto x = std::round(best_point.x + target_point->R * std::cos((target_point->theta * pi() / 180)));
+        auto y = std::round(best_point.y - target_point->R * std::sin((target_point->theta * pi() / 180)));
+        
+
+        std::cout << current_idx << " - point  was : " << target_point->theta << " , " << target_point->R;
+        std::cout << " ---  x : " << std::round(x) << " y " << std::round(y) << std::endl;
+
+
+        
+        polar_map.erase(target_point);
+    }
 
 }
 
@@ -124,14 +177,16 @@ int main() {
         ++idx_y;
     }
 
+    point center{};
+
     {
         timer t1("task 1");
-        task_1(map);
+        task_1(map, center);
     }
 
     {
         timer t1("task 2");
-        //task_2(cmds);
+        task_2(map, center);
     }
 
     return 0;
