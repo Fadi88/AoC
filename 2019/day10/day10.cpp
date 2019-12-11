@@ -38,30 +38,19 @@ public:
     uint16_t y{};
     uint16_t connected_points{};
 
+    double theta{};
+    double R;
+
     bool operator == (const point& other) {
         return x == other.x && y == other.y;
     }
 
-};
-
-
-class polar_point {
-public:
-    polar_point(double p_a, double p_r) : theta{ p_a }, R{ p_r }{}
-
-    double theta{};
-    double R;
-
-    bool operator ==(const polar_point& other) const {
-        return theta == other.theta && R == other.R;
-    }
-
-    bool operator < (const polar_point& other) const {
+    bool operator < (const point& other) const {
         return theta == other.theta ? R < other.R : theta < other.theta;
     }
 
-
 };
+
 
 void set_connected_points(std::vector<point>& p_map) {
     std::set<float> slopes{};
@@ -84,8 +73,7 @@ void set_connected_points(std::vector<point>& p_map) {
     }
 }
 
-std::vector<polar_point> calc_polar_map(std::vector<point>& p_map, const point& center) {
-    std::vector<polar_point> ret{};
+void calc_polar_map(std::vector<point>& p_map, const point& center) {
 
     for (point& current_point : p_map) {
         if (current_point.operator==(center)) {
@@ -95,14 +83,13 @@ std::vector<polar_point> calc_polar_map(std::vector<point>& p_map, const point& 
         float dy = current_point.y - center.y;
         float dx = current_point.x - center.x;
 
-        double angle = -std::atan2(dx, dy) * 180 / pi() - 90.0f;
+        double angle = std::atan2(dy, dx) * 180 / pi() + 90.0f;
         double dist = std::sqrt(dx * dx + dy * dy);
 
-        ret.emplace_back(std::fmod(std::round(angle) + 360.0f, 360.0f), dist);
+        current_point.theta = std::fmod(std::round(angle*100)/100 + 360.0f, 360.0f);
+        current_point.R = dist;
 
     }
-
-    return ret;
 }
 
 void task_1(std::vector<point>& p_map, point& best_point) {
@@ -122,39 +109,37 @@ void task_1(std::vector<point>& p_map, point& best_point) {
 
 void task_2(std::vector<point>& p_map, point& best_point) {
 
-    auto polar_map = calc_polar_map(p_map, best_point);
     uint16_t current_idx{};
-    polar_point ref_point{ 0.0f , 0.0f };
+    point ref_point{ 0.0f , 0.0f };
 
-    std::sort(polar_map.begin(), polar_map.end());
+    calc_polar_map(p_map, best_point);
+    
+    p_map.erase(std::find(p_map.begin(), p_map.end(), best_point));
 
-    while (polar_map.size()) {
+    std::sort(p_map.begin(), p_map.end());
+
+    while (p_map.size()) {
         ++current_idx;
 
-        auto target_point = std::lower_bound(polar_map.begin(), polar_map.end(), ref_point);
+        auto target_point = std::lower_bound(p_map.begin(), p_map.end(), ref_point);
 
-        if (target_point == polar_map.end()) {
+        if (target_point == p_map.end()) {
             ref_point.theta = 0;
-            target_point = std::lower_bound(polar_map.begin(), polar_map.end(), ref_point);
+            target_point = std::lower_bound(p_map.begin(), p_map.end(), ref_point);
         }
         else {
             ref_point.theta = target_point->theta + 0.00001f;
         }
-
-        auto x = std::round(best_point.x + target_point->R * std::cos((target_point->theta * pi() / 180)));
-        auto y = std::round(best_point.y - target_point->R * std::sin((target_point->theta * pi() / 180)));
         
+        if (current_idx % 10 == 0) {
+            std::cout << current_idx << "  x : " << target_point->x << "  y : " << target_point->y;
+            std::cout << "  angle : " << target_point->theta << "  r : " << target_point->R << std::endl;
+        }
 
-        std::cout << current_idx << " - point  was : " << target_point->theta << " , " << target_point->R;
-        std::cout << " ---  x : " << std::round(x) << " y " << std::round(y) << std::endl;
-
-
-        
-        polar_map.erase(target_point);
+        p_map.erase(target_point);
     }
 
 }
-
 
 
 int main() {
