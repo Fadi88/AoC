@@ -208,7 +208,7 @@ enum class direction {
     LEFT
 };
 
-void task_1(std::vector<int64_t> p_cmds) {
+std::map<std::pair<int, int>, uint8_t> task_1(std::vector<int64_t> p_cmds , uint8_t p_init_color) {
     amp_software robot{ p_cmds };
 
     std::map<std::pair<int, int>, uint8_t> haul;
@@ -224,7 +224,8 @@ void task_1(std::vector<int64_t> p_cmds) {
     while (robot.is_still_running()) {
 
         if (!haul.count({ x,y })) {
-            haul[{x, y}] =  0 ;
+            haul[{x, y}] = p_init_color;
+            p_init_color = 0;
         }
 
         robot.set_next_input(haul[{x, y}]);
@@ -303,12 +304,31 @@ void task_1(std::vector<int64_t> p_cmds) {
 
     }
 
-    std::cout << "blocked painted : " << haul.size() - 1 << std::endl; // -1 because last block is not painted
+    return haul;
 }
 
-void task_2(std::vector<int64_t> p_cmds) {
+void task_2(std::map<std::pair<int, int>, uint8_t> p_haul) {
+    uint8_t arr[6][43]{};
 
+    for (auto& point : p_haul) {
+        if (point.second == 1)
+            arr[point.first.second][point.first.first] = '#';  
+    }
+    
 
+    for (uint8_t y{}; y < 6; ++y) {
+        for (uint8_t x{}; x < 43; ++x) {
+            if (arr[y][x] == '#') {
+                std::cout << 'X';
+            }
+            else
+            {
+                std::cout << ' ';
+            }
+        }
+        std::cout << std::endl;
+    }
+    
 
 }
 
@@ -319,15 +339,19 @@ int main() {
     input_fd >> tmp;
 
     auto cmds = string2vector(tmp);
-
+    std::map<std::pair<int, int>, uint8_t> haul;
     {
         timer t1("task 1");
-        task_1(cmds);
+        auto ret = task_1(cmds , 0);
+
+        std::cout << "blocked painted : " << ret.size() - 1 << std::endl; // -1 because last block is not painted
+
     }
 
     {
         timer t1("task 2");
-        task_2(cmds);
+        haul = task_1(cmds, 1);
+        task_2(haul);
     }
 
     return 0;
