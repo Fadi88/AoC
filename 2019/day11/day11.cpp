@@ -34,7 +34,7 @@ private:
 class amp_software {
 public:
     amp_software(std::vector<int64_t> p_cmd) : m_memory{ p_cmd }, m_initial_size{ p_cmd.size() }{
-        std::vector<int64_t> padding(200, 0);
+        std::vector<int64_t> padding(500, 0);
         std::copy(padding.begin(), padding.end(), std::back_inserter(m_memory));
 
     }
@@ -132,7 +132,7 @@ public:
 
             case 4:
                 m_output = *param1_ptr;
-                std::cout << m_output << std::endl;
+                //std::cout << m_output << std::endl;
                 idx += 2;
                 return;
 
@@ -200,56 +200,110 @@ std::vector<int64_t> string2vector(std::string input_txt) {
     ret.push_back(cmd_instance);
     return ret;
 }
-struct panel {
-    int16_t color{};
-    int16_t times_painted{};
-};
 
-std::vector<std::pair<int8_t, int8_t>> movement{
-    {-1,0}, //left
-    {0,1}, //down
-    {1,0}, //right
-    {0,-1} //up
+enum class direction {
+    UP,
+    DOWN,
+    RIGHT,
+    LEFT
 };
 
 void task_1(std::vector<int64_t> p_cmds) {
     amp_software robot{ p_cmds };
 
-    std::map<std::pair<int, int>, panel> haul;
+    std::map<std::pair<int, int>, uint8_t> haul;
 
     robot.bypass_phase_set();
 
     int16_t x{};
     int16_t y{};
-    
-    int8_t direction{};
 
-    haul[{0, 0}] = { 0,0 };
-
+    direction cur_dir{ direction::UP };
 
 
     while (robot.is_still_running()) {
-        robot.set_next_input(haul[{x,y}].color);
+
+        if (!haul.count({ x,y })) {
+            haul[{x, y}] =  0 ;
+        }
+
+        robot.set_next_input(haul[{x, y}]);
         robot.run_cycle();
 
-        haul[{x, y}].color = robot.get_output();
-        haul[{x, y}].times_painted++;
+        haul[{x, y}] = robot.get_output();
 
         robot.run_cycle();
         auto new_dir = robot.get_output();
 
-        direction += new_dir == 1 ? 1 : -1;
-        direction += 4;
-        direction %= 4;
+        if (new_dir == 0) {
+            switch (cur_dir) {
+            case direction::UP:
+                cur_dir = direction::LEFT;
+                break;
 
-        x += movement[direction].first;
-        y += movement[direction].second;
+            case direction::LEFT:
+                cur_dir = direction::DOWN;
+                break;
 
-        if (!haul.count({ x,y })) {
-            haul[{x, y}] = { 0,0 };
+            case direction::DOWN:
+                cur_dir = direction::RIGHT;
+                break;
+
+            case direction::RIGHT:
+                cur_dir = direction::UP;
+                break;
+
+            default:
+                break;
+            }
+        }
+        else {
+            switch (cur_dir) {
+            case direction::UP:
+                cur_dir = direction::RIGHT;
+                break;
+
+            case direction::RIGHT:
+                cur_dir = direction::DOWN;
+                break;
+
+            case direction::DOWN:
+                cur_dir = direction::LEFT;
+                break;
+
+            case direction::LEFT:
+                cur_dir = direction::UP;
+                break;
+
+            default:
+                break;
+            }
+        }
+
+        switch (cur_dir) {
+        case direction::UP:
+            y--;
+            break;
+
+        case direction::RIGHT:
+            x++;
+            break;
+
+        case direction::DOWN:
+            y++;
+            break;
+
+        case direction::LEFT:
+            x--;
+            break;
+
+        default:
+            break;
         }
 
     }
+
+    std::cout << "blocked painted : " << haul.size() - 1 << std::endl; // -1 because last block is not painted
 }
 
 void task_2(std::vector<int64_t> p_cmds) {
