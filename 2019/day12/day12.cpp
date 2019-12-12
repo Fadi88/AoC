@@ -18,6 +18,27 @@ constexpr std::array<std::pair<uint8_t, uint8_t>, 6> kcombination = {
 
 };
 
+uint64_t gcd(uint64_t a, uint64_t b) { 
+    // Everything divides 0  
+    if (a == 0) 
+       return b; 
+    if (b == 0) 
+       return a; 
+   
+    // base case 
+    if (a == b) 
+        return a; 
+   
+    // a is greater 
+    if (a > b) 
+        return gcd(a-b, b); 
+    return gcd(a, b-a); 
+}
+
+uint64_t lcm(uint64_t a , uint64_t b){
+    return a * b /gcd(a,b);
+
+}
 
 class timer {
 public:
@@ -136,8 +157,8 @@ struct state {
     int32_t v2;
     int32_t p2;
     
-    int32_t v3;
     int32_t p3;
+    int32_t v3;
 
     bool operator == (const state& other) const {
         return p0 == other.p0 && p1 == other.p1 && p2 == other.p2 && p3 == other.p3
@@ -146,14 +167,21 @@ struct state {
     
 };
 
+void print_system(const std::array<moon, 4>& p_system){
+    for (auto& tmp : p_system) {
+        std::cout << "postion <" << tmp.position.x << "," << tmp.position.y << "," << tmp.position.z << "> velocity <" << tmp.velocity.x << "," << tmp.velocity.y << "," << tmp.velocity.z << ">" << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 void task_2(std::array<moon, 4> p_system) {
 
-    uint32_t idx{ 1 };
+    uint64_t idx{ 1 };
 
     
 
     bool freq_x_found{}, freq_y_found{}, freq_z_found{};
-    uint16_t x_peroid, y_peroid, z_peroid;
+    uint32_t x_peroid, y_peroid, z_peroid;
 
     state x0 = {p_system[0].position.x , p_system[0].velocity.x , p_system[1].position.x , p_system[1].velocity.x,
                 p_system[2].position.x , p_system[2].velocity.x , p_system[3].position.x , p_system[3].velocity.x};
@@ -214,17 +242,18 @@ void task_2(std::array<moon, 4> p_system) {
         z_current = {p_system[0].position.z , p_system[0].velocity.z , p_system[1].position.z , p_system[1].velocity.z,
                     p_system[2].position.z , p_system[2].velocity.z , p_system[3].position.z , p_system[3].velocity.z};
        
-        if (x_current == x0) {
+
+        if (x_current == x0 && !freq_x_found) {
             freq_x_found = true;
             x_peroid = idx;
         }
 
-        if (y_current == y0) {
+        if (y_current == y0 && !freq_y_found) {
             freq_y_found = true;
             y_peroid = idx;
         }
 
-        if (z_current == z0) {
+        if (z_current == z0 && !freq_z_found) {
             freq_z_found = true;
             z_peroid = idx;
         }
@@ -232,8 +261,11 @@ void task_2(std::array<moon, 4> p_system) {
         if (freq_x_found && freq_y_found && freq_z_found) {
             break;
         }
+
+
         ++idx;
     }
+    std::cout << " peroid is :" << lcm(x_peroid , lcm(y_peroid , z_peroid)) << std::endl;
 
 }
 
