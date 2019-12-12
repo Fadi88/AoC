@@ -127,42 +127,44 @@ void task_1(std::array<moon, 4> p_system) {
     std::cout << "energy sum is " << sum << std::endl;
 }
 struct state {
-    int32_t  p0;
-    int32_t  p1;
-    int32_t  p2;
-    int32_t  p3;
-
+    int32_t p0;
     int32_t v0;
-    int32_t v1;
-    int32_t v2;
-    int32_t v3;
 
-    bool operator < (const state& other) const {
-        return p0 < other.p0 && p1 < other.p1 && p2 < other.p2 && p3 < other.p3;
-    }
+    int32_t p1;
+    int32_t v1;
+    
+    int32_t v2;
+    int32_t p2;
+    
+    int32_t v3;
+    int32_t p3;
 
     bool operator == (const state& other) const {
         return p0 == other.p0 && p1 == other.p1 && p2 == other.p2 && p3 == other.p3
             && v0 == other.v0 && v1 == other.v1 && v2 == other.v2 && v3 == other.v3;
     }
+    
 };
 
 void task_2(std::array<moon, 4> p_system) {
 
     uint32_t idx{ 1 };
 
-    std::map<state, uint32_t> x_map;
-    std::map<state, uint32_t> y_map;
-    std::map<state, uint32_t> z_map;
+    
 
     bool freq_x_found{}, freq_y_found{}, freq_z_found{};
     uint16_t x_peroid, y_peroid, z_peroid;
 
+    state x0 = {p_system[0].position.x , p_system[0].velocity.x , p_system[1].position.x , p_system[1].velocity.x,
+                p_system[2].position.x , p_system[2].velocity.x , p_system[3].position.x , p_system[3].velocity.x};
+    state y0= {p_system[0].position.y , p_system[0].velocity.y , p_system[1].position.y , p_system[1].velocity.y,
+                p_system[2].position.y , p_system[2].velocity.y , p_system[3].position.y , p_system[3].velocity.y};
+    state z0= {p_system[0].position.z , p_system[0].velocity.z , p_system[1].position.z , p_system[1].velocity.z,
+                p_system[2].position.z , p_system[2].velocity.z , p_system[3].position.z , p_system[3].velocity.z};
+
     while (true) {
 
-        state x_st;
-        state y_st;
-        state z_st;
+        state x_current , y_current , z_current;
 
         for (auto& comb : kcombination) {
             moon& moon_1 = p_system[comb.first];
@@ -205,39 +207,26 @@ void task_2(std::array<moon, 4> p_system) {
             tmp.position.y += tmp.velocity.y;
             tmp.position.z += tmp.velocity.z;
         }
-
-        x_st.p0 = p_system[0].position.x; x_st.p1 = p_system[1].position.x; x_st.p2 = p_system[2].position.x; x_st.p3 = p_system[3].position.x;
-        x_st.v0 = p_system[0].velocity.x; x_st.v1 = p_system[1].velocity.x; x_st.v2 = p_system[2].velocity.x; x_st.v3 = p_system[3].velocity.x;
-
-        y_st.p0 = p_system[0].position.y; y_st.p1 = p_system[1].position.y; y_st.p2 = p_system[2].position.y; y_st.p3 = p_system[3].position.y;
-        y_st.v0 = p_system[0].velocity.y; y_st.v1 = p_system[1].velocity.y; y_st.v2 = p_system[2].velocity.y; y_st.v3 = p_system[3].velocity.y;
-
-        z_st.p0 = p_system[0].position.z; z_st.p1 = p_system[1].position.z; z_st.p2 = p_system[2].position.z; z_st.p3 = p_system[3].position.z;
-        z_st.v0 = p_system[0].velocity.z; z_st.v1 = p_system[1].velocity.z; z_st.v2 = p_system[2].velocity.z; z_st.v3 = p_system[3].velocity.z;
-
-        if (x_map.count(x_st) != 0) {
+        x_current = {p_system[0].position.x , p_system[0].velocity.x , p_system[1].position.x , p_system[1].velocity.x,
+                    p_system[2].position.x , p_system[2].velocity.x , p_system[3].position.x , p_system[3].velocity.x};
+        y_current = {p_system[0].position.y , p_system[0].velocity.y , p_system[1].position.y , p_system[1].velocity.y,
+                    p_system[2].position.y , p_system[2].velocity.y , p_system[3].position.y , p_system[3].velocity.y};
+        z_current = {p_system[0].position.z , p_system[0].velocity.z , p_system[1].position.z , p_system[1].velocity.z,
+                    p_system[2].position.z , p_system[2].velocity.z , p_system[3].position.z , p_system[3].velocity.z};
+       
+        if (x_current == x0) {
             freq_x_found = true;
-            x_peroid = idx - x_map[x_st];
-        }
-        else {
-            x_map[x_st] = idx;
-
+            x_peroid = idx;
         }
 
-        if (y_map.count(y_st) != 0) {
+        if (y_current == y0) {
             freq_y_found = true;
-            y_peroid = idx - y_map[y_st];
-        }
-        else {
-            y_map[y_st] = idx;
+            y_peroid = idx;
         }
 
-        if (z_map.count(z_st) != 0) {
+        if (z_current == z0) {
             freq_z_found = true;
-            z_peroid = idx - z_map[z_st];
-        }
-        else {
-            z_map[z_st] = idx;
+            z_peroid = idx;
         }
 
         if (freq_x_found && freq_y_found && freq_z_found) {
@@ -245,7 +234,6 @@ void task_2(std::array<moon, 4> p_system) {
         }
         ++idx;
     }
-
 
 }
 
