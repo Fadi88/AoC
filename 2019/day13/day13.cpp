@@ -201,157 +201,109 @@ std::vector<int64_t> string2vector(std::string input_txt) {
     return ret;
 }
 
-enum class direction {
-    UP,
-    DOWN,
-    RIGHT,
-    LEFT
+
+struct object {
+    int16_t x;
+    int16_t y;
+
+    uint32_t obj;
 };
 
-std::map<std::pair<int, int>, uint8_t> task_1(std::vector<int64_t> p_cmds , uint8_t p_init_color) {
-    amp_software robot{ p_cmds };
+void task_1(std::vector<int64_t> p_cmds) {
+    amp_software app{ p_cmds };
+    //std::vector<object> results;
+    uint16_t count{};
 
-    std::map<std::pair<int, int>, uint8_t> haul;
+    while (app.is_still_running()) {
+        object tmp{99,99,99};
 
-    robot.bypass_phase_set();
+        app.run_cycle();
+        tmp.x = app.get_output();
 
-    int16_t x{};
-    int16_t y{};
+        app.run_cycle();
+        tmp.y = app.get_output();
 
-    direction cur_dir{ direction::UP };
+        app.run_cycle();
+        tmp.obj = app.get_output();
 
-
-    while (robot.is_still_running()) {
-
-        if (!haul.count({ x,y })) {
-            haul[{x, y}] = p_init_color;
-            p_init_color = 0;
-        }
-
-        robot.set_next_input(haul[{x, y}]);
-        robot.run_cycle();
-
-        haul[{x, y}] = robot.get_output();
-
-        robot.run_cycle();
-        auto new_dir = robot.get_output();
-
-        if (new_dir == 0) {
-            switch (cur_dir) {
-            case direction::UP:
-                cur_dir = direction::LEFT;
-                break;
-
-            case direction::LEFT:
-                cur_dir = direction::DOWN;
-                break;
-
-            case direction::DOWN:
-                cur_dir = direction::RIGHT;
-                break;
-
-            case direction::RIGHT:
-                cur_dir = direction::UP;
-                break;
-
-            default:
-                break;
-            }
-        }
-        else {
-            switch (cur_dir) {
-            case direction::UP:
-                cur_dir = direction::RIGHT;
-                break;
-
-            case direction::RIGHT:
-                cur_dir = direction::DOWN;
-                break;
-
-            case direction::DOWN:
-                cur_dir = direction::LEFT;
-                break;
-
-            case direction::LEFT:
-                cur_dir = direction::UP;
-                break;
-
-            default:
-                break;
-            }
-        }
-
-        switch (cur_dir) {
-        case direction::UP:
-            y--;
-            break;
-
-        case direction::RIGHT:
-            x++;
-            break;
-
-        case direction::DOWN:
-            y++;
-            break;
-
-        case direction::LEFT:
-            x--;
-            break;
-
-        default:
-            break;
-        }
-
+        if (tmp.obj == 2) count++;
     }
-
-    return haul;
-}
-
-void task_2(std::map<std::pair<int, int>, uint8_t> p_haul) {
-    uint8_t arr[6][43]{};
-
-    for (auto& point : p_haul) {
-        if (point.second == 1)
-            arr[point.first.second][point.first.first] = '#';  
+/*
+    uint8_t** frame= new uint8_t* [35];
+    for (size_t idx{}; idx < 35; ++idx) {
+        frame[idx] = new uint8_t[23];
     }
     
-    std::cout << std::endl << "-----------------------------------------" << std::endl;
-    for (uint8_t y{}; y < 6; ++y) {
-        for (uint8_t x{}; x < 43; ++x) {
-            if (arr[y][x] == '#') {
-                std::cout << '#';
-            }
-            else
-            {
-                std::cout << ' ';
-            }
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl << "-----------------------------------------" << std::endl;
 
+    for (auto& curr : results) {
+        frame[curr.x][curr.y] = curr.obj;
+    }
+
+    uint16_t count{};
+    for (auto& curr : results) {
+        if (curr.obj == 2)
+            count++;
+
+    }
+*/
+    std::cout << "tile blocks count is : " << count << std::endl;
+}
+
+void task_2(std::vector<int64_t> p_cmds ) {
+    p_cmds[0] = 2;
+    amp_software app{ p_cmds };
+
+    uint16_t pad_x{}, ball_x{}, score{};
+
+    while (app.is_still_running()) {
+        object tmp{ 99,99,99 };
+
+        app.run_cycle();
+        tmp.x = app.get_output();
+
+        app.run_cycle();
+        tmp.y = app.get_output();
+
+        app.run_cycle();
+        tmp.obj = app.get_output();
+
+        switch (tmp.obj) {
+        case 3:
+            pad_x = tmp.x;
+        case 4:
+            ball_x = tmp.x;
+
+        }
+
+        if (pad_x > ball_x) {
+            app.set_next_input(-1);
+        }
+
+        if (pad_x < ball_x) {
+            app.set_next_input(1);
+        }
+
+        if (tmp.x == -1 && tmp.y == 0)
+            score = tmp.obj;
+    }
+    std::cout << "current score : " << score << std::endl;
 }
 
 int main() {
-    std::ifstream input_fd{ "input\\day11_input.txt" };
+    std::ifstream input_fd{ "input\\day13_input.txt" };
 
     std::string tmp;
     input_fd >> tmp;
 
     auto cmds = string2vector(tmp);
-    std::map<std::pair<int, int>, uint8_t> haul;
     {
         timer t1("task 1");
-        auto ret = task_1(cmds , 0);
-
-        std::cout << "blocked painted : " << ret.size() - 1 << std::endl; // -1 because last block is not painted
-
+       task_1(cmds);
     }
 
     {
         timer t1("task 2");
-        haul = task_1(cmds, 1);
-        task_2(haul);
+        task_2(cmds);
     }
 
     return 0;

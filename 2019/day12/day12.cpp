@@ -128,12 +128,12 @@ void task_1(std::array<moon, 4> p_system) {
             tmp.position.z += tmp.velocity.z;
         }
 
-        if (idx % 200 == 0) {
-            std::cout << " sim step :" << idx << std::endl;
+        if (idx % 250 == 0) {
+            //std::cout << " sim step :" << idx << std::endl;
             for (auto& tmp : p_system) {
-                std::cout << "postion <" << tmp.position.x << "," << tmp.position.y << "," << tmp.position.z << "> velocity <" << tmp.velocity.x << "," << tmp.velocity.y << "," << tmp.velocity.z << ">" << std::endl;
+                //std::cout << "postion <" << tmp.position.x << "," << tmp.position.y << "," << tmp.position.z << "> velocity <" << tmp.velocity.x << "," << tmp.velocity.y << "," << tmp.velocity.z << ">" << std::endl;
             }
-            std::cout << std::endl;
+            //std::cout << std::endl;
         }
 
     }
@@ -265,7 +265,7 @@ void task_2(std::array<moon, 4> p_system) {
 
         ++idx;
     }
-    std::cout << " peroid is :" << lcm(x_peroid , lcm(y_peroid , z_peroid)) << std::endl;
+    std::cout << " peroid is : " << lcm(x_peroid , lcm(y_peroid , z_peroid)) << std::endl;
 
 }
 
