@@ -282,10 +282,15 @@ void task_2(std::vector<int64_t> p_cmds ) {
         if (pad_x < ball_x) {
             app.set_next_input(1);
         }
+        
+        if (pad_x == ball_x) {
+            app.set_next_input(0);    
+        }
 
         if (tmp.x == -1 && tmp.y == 0)
             score = tmp.obj;
-    }
+        }
+
     std::cout << "current score : " << score << std::endl;
 }
 
