@@ -320,7 +320,7 @@ void task_2(std::vector<int64_t> p_cmds, uint8_t** p_frame) {
             std::cout << "Score : " << score << std::endl;
             reset_screen();
             score = tmp.obj;
-            Sleep(10);
+            Sleep(20);
         }
 
     }
