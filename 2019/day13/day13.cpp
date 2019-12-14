@@ -4,7 +4,7 @@
 #include <sstream>
 #include <chrono>
 #include <set>
-#include <map>
+#include <Windows.h>
 
 class timer {
 public:
@@ -209,13 +209,56 @@ struct object {
     uint32_t obj;
 };
 
+void display_frame(uint8_t** p_frame) {
+
+    for (uint8_t y_idx{}; y_idx < 23; ++y_idx) {
+        for (uint8_t x_idx{}; x_idx < 35; ++x_idx) {
+            switch (p_frame[y_idx][x_idx]) {
+            case 0:
+                std::cout << ' ';
+                break;
+            case 1:
+                std::cout << '#';
+                break;
+            case 2:
+                std::cout << '+';
+                break;
+            case 3:
+                std::cout << '-';
+                break;
+            case 4:
+                std::cout << 'O';
+                break;
+            default:
+                std::cout << 'X';
+                break;
+            }
+        }
+        std::cout << std::endl;
+    }
+}
+
+
+void reset_screen() {
+    COORD coord;
+    CONSOLE_SCREEN_BUFFER_INFO buffer_info;
+
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &buffer_info);
+
+    coord.X = 0;
+    coord.Y = buffer_info.dwCursorPosition.Y - 24;
+
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+
+}
+
 void task_1(std::vector<int64_t> p_cmds) {
     amp_software app{ p_cmds };
-    //std::vector<object> results;
+    std::vector<object> results;
     uint16_t count{};
 
     while (app.is_still_running()) {
-        object tmp{99,99,99};
+        object tmp{ 99,99,99 };
 
         app.run_cycle();
         tmp.x = app.get_output();
@@ -228,28 +271,11 @@ void task_1(std::vector<int64_t> p_cmds) {
 
         if (tmp.obj == 2) count++;
     }
-/*
-    uint8_t** frame= new uint8_t* [35];
-    for (size_t idx{}; idx < 35; ++idx) {
-        frame[idx] = new uint8_t[23];
-    }
-    
 
-    for (auto& curr : results) {
-        frame[curr.x][curr.y] = curr.obj;
-    }
-
-    uint16_t count{};
-    for (auto& curr : results) {
-        if (curr.obj == 2)
-            count++;
-
-    }
-*/
     std::cout << "tile blocks count is : " << count << std::endl;
 }
 
-void task_2(std::vector<int64_t> p_cmds ) {
+void task_2(std::vector<int64_t> p_cmds, uint8_t** p_frame) {
     p_cmds[0] = 2;
     amp_software app{ p_cmds };
 
@@ -266,6 +292,8 @@ void task_2(std::vector<int64_t> p_cmds ) {
 
         app.run_cycle();
         tmp.obj = app.get_output();
+        if(tmp.x < 50)
+            p_frame[tmp.y][tmp.x] = tmp.obj;
 
         switch (tmp.obj) {
         case 3:
@@ -282,15 +310,22 @@ void task_2(std::vector<int64_t> p_cmds ) {
         if (pad_x < ball_x) {
             app.set_next_input(1);
         }
-        
+
         if (pad_x == ball_x) {
-            app.set_next_input(0);    
+            app.set_next_input(0);
         }
 
-        if (tmp.x == -1 && tmp.y == 0)
+        if (tmp.x == -1 && tmp.y == 0) {
+            display_frame(p_frame);
+            std::cout << "Score : " << score << std::endl;
+            reset_screen();
             score = tmp.obj;
+            Sleep(10);
         }
 
+    }
+    
+    display_frame(p_frame);
     std::cout << "current score : " << score << std::endl;
 }
 
@@ -300,15 +335,21 @@ int main() {
     std::string tmp;
     input_fd >> tmp;
 
+
+    uint8_t** frame = new uint8_t * [24];
+    for (size_t idx{}; idx < 24; ++idx) {
+        frame[idx] = new uint8_t[35];
+    }
+
     auto cmds = string2vector(tmp);
     {
         timer t1("task 1");
-       task_1(cmds);
+        task_1(cmds);
     }
 
     {
         timer t1("task 2");
-        task_2(cmds);
+        task_2(cmds, frame);
     }
 
     return 0;
