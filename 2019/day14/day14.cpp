@@ -129,7 +129,7 @@ refinery* task_1(std::vector<std::string>& p_input) {
 
         refinery_obj->add_reaction(tmp_rec);
     }
-    std::cout << refinery_obj->get_cost("FUEL", 1) << std::endl;
+    std::cout << "Task 1 ORE needed for 1 FUEL is : " << refinery_obj->get_cost("FUEL", 1) << std::endl;
     return refinery_obj;
 }
 
@@ -138,7 +138,10 @@ void task_2(refinery* p_refinery) {
     // trial and error 
     // plotting first 10 almost shows a linear function
     // guessing starting point is 1e12 / cost of 1 fuel = 3871363
+    // between 3671363 and 3771363 values changes dramatacily there is a high non lineraity
 
+
+    // TODO: automate the lookup later
     std::cout << "cost of task 2 is ORE is : " << p_refinery->get_cost("FUEL", 3279311) << std::endl;
 }
 
