@@ -59,15 +59,48 @@ public:
 class refinery {
 public:
     std::map<std::string, reaction> reaction_map;
+    std::map<std::string, uint16_t> excess;
 
     void add_reaction(reaction p_reaction) {
         reaction_map[p_reaction.output.name] = p_reaction;
     }
+
+    uint32_t get_cost(std::string name, uint16_t quantity = 1) {
+        uint32_t sum{};
+
+
+        for (auto comp : reaction_map[name].inputs) {
+            uint32_t needed_quantity = comp.quantity * quantity / reaction_map[name].output.quantity;
+            if (comp.name == "ORE") {
+                return quantity / reaction_map[name].output.quantity * comp.quantity;
+            }
+            else {
+                if (excess.count(comp.name) > 0) {
+                    if (excess[comp.name] > needed_quantity) {
+                        excess[comp.name] -= needed_quantity;
+                        needed_quantity = 0;
+                    }
+                    else {
+                        needed_quantity -= excess[comp.name];
+                        excess[comp.name] = 0;
+                    }
+                }
+            }
+            
+            uint32_t generated_qunatity = reaction_map[comp.name].output.quantity * std::ceil(static_cast<float>(needed_quantity) / reaction_map[comp.name].output.quantity);
+
+            sum += get_cost(comp.name, generated_qunatity);
+            if (generated_qunatity > needed_quantity)
+                excess[comp.name] += generated_qunatity - needed_quantity;
+        }
+
+        return sum;
+    }
 };
 
-void task_1(std::vector<std::string>& p_input) {
+refinery* task_1(std::vector<std::string>& p_input) {
 
-    refinery refinery_obj;
+    refinery* refinery_obj = new refinery;
 
     for (auto tmp : p_input) {
         std::stringstream res = std::stringstream{ tmp.substr(tmp.find("=>") + 3) };
@@ -94,14 +127,14 @@ void task_1(std::vector<std::string>& p_input) {
 
         } while (tmp.size() != 0);
 
-        refinery_obj.add_reaction(tmp_rec);
+        refinery_obj->add_reaction(tmp_rec);
     }
-
-
+    std::cout << refinery_obj->get_cost("FUEL", 1) << std::endl;
+    return refinery_obj;
 }
 
 
-void task_2() {
+void task_2(refinery* p_refinery) {
 }
 
 
@@ -114,16 +147,16 @@ int main() {
     while (std::getline(fd, tmp))
         input.push_back(tmp);
 
-
+    refinery* refinery_obj;
     {
         timer t1("task 1");
-        task_1(input);
+        refinery_obj = task_1(input);
 
     }
 
     {
         timer t1("task 2");
-        task_2();
+        task_2(refinery_obj);
     }
 
     return 0;
