@@ -213,7 +213,8 @@ uint8_t get_direction(std::pair<int16_t, int16_t> dst_pt, int16_t crt_x, int16_t
 
 }
 
-std::map<std::pair<int16_t, int16_t>, uint8_t> get_maze(std::vector<int64_t> p_cmds) {
+//BFS
+std::map<std::pair<int16_t, int16_t>, uint8_t> get_maze(std::vector<int64_t> p_cmds, std::pair<int16_t, int16_t>& p_oxy) {
 
     std::map<std::pair<int16_t, int16_t>, uint8_t> maze{ {{0,0}, 1} };
 
@@ -240,7 +241,7 @@ std::map<std::pair<int16_t, int16_t>, uint8_t> get_maze(std::vector<int64_t> p_c
 
         auto current_path = to_visit.front();
 
-        for (auto movement : current_path) { // send robot to current visted pointed 
+        for (auto movement : current_path) { // send robot to currenttly visited point
             robot.set_next_input(movement);
             robot.run_cycle();
             x += deltas[movement].first;
@@ -260,8 +261,11 @@ std::map<std::pair<int16_t, int16_t>, uint8_t> get_maze(std::vector<int64_t> p_c
                     auto new_path = current_path;
                     new_path.push_back(delta.first);
                     to_visit.push(new_path);
-                    if (maze[{ nx, ny }] == 2)
+                    if (maze[{ nx, ny }] == 2) {
+                        p_oxy.first = nx;
+                        p_oxy.second = ny;
                         std::cout << "path to oxygen is : " << new_path.size() << std::endl;
+                    }
                 }
 
             }
@@ -273,21 +277,49 @@ std::map<std::pair<int16_t, int16_t>, uint8_t> get_maze(std::vector<int64_t> p_c
                     throw std::runtime_error("backtracking not working");
             }
         }
-
         to_visit.pop();
-
     }
 
     return maze;
 }
 
-std::map<std::pair<int16_t, int16_t>, uint8_t> task_1(std::vector<int64_t> p_cmds) {
-    return get_maze(p_cmds);
+//BFS
+uint16_t get_longest_path(std::map<std::pair<int16_t, int16_t>, uint8_t> maze, std::pair<int16_t, int16_t> p_oxy_pos) {
+    uint16_t longest{};
+
+    std::map< std::pair<uint16_t, uint16_t>, uint16_t> reaching_time{ {p_oxy_pos , 0} };
+    std::queue<std::pair<int16_t, int16_t>> to_visit{ {p_oxy_pos} };
+
+    std::vector<std::pair<int16_t, int16_t>> movements{ { 0, -1},{ 0,+1 }, { -1,0 },{ +1,0 } };
+
+    while (!to_visit.empty()) {
+
+        auto current_point = to_visit.front();
+        auto current_reaching_time{ reaching_time[current_point] };
+
+        int16_t x{ current_point.first }, y{ current_point.second };
+
+        for (auto movement : movements) {
+            int16_t nx{ x + movement.first }, ny{ y + movement.second };
+
+            if (reaching_time.count({ nx,ny }) == 0 && maze.count({ nx,ny }) == 1 && maze[{nx, ny}] == 1) {
+                reaching_time[{nx, ny}] = 1 + current_reaching_time;
+                to_visit.push({ nx, ny });
+                if (reaching_time[{nx, ny}] > longest)
+                    longest = reaching_time[{nx, ny}];
+            }
+        }
+        to_visit.pop();
+    }
+    return longest;
 }
 
-void task_2(std::vector<int64_t> p_cmds) {
-    intcode_computer app{ p_cmds };
+std::map<std::pair<int16_t, int16_t>, uint8_t> task_1(std::vector<int64_t> p_cmds, std::pair<int16_t, int16_t>& p_oxy_pos) {
+    return get_maze(p_cmds, p_oxy_pos);
+}
 
+void task_2(std::map<std::pair<int16_t, int16_t>, uint8_t> maze, std::pair<int16_t, int16_t> p_oxy_pos) {
+    std::cout << "time taken to fill the area : " << get_longest_path(maze, p_oxy_pos) << std::endl;
 }
 
 int main() {
@@ -298,16 +330,17 @@ int main() {
     input_fd >> tmp;
 
     std::map<std::pair<int16_t, int16_t>, uint8_t> maze;
+    std::pair<int16_t, int16_t> oxy_pos;
 
     auto cmds = string2vector(tmp);
     {
         timer t1("task 1");
-        maze = task_1(cmds);
+        maze = task_1(cmds, oxy_pos);
     }
 
     {
         timer t1("task 2");
-        task_2(cmds);
+        task_2(maze, oxy_pos);
     }
 
     return 0;
