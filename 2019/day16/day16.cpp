@@ -71,7 +71,7 @@ void task_1(std::vector <int16_t> input) {
 
 }
 
-void task_2() {
+void task_2(std::vector <int16_t> p_input , int32_t p_offest) {
 
 }
 
@@ -81,9 +81,10 @@ int main() {
 
     std::string tmp;
     input_fd >> tmp;
-    tmp = "12345678";
+    //tmp = "12345678";
     std::vector <int16_t> input;
-
+    
+    auto offest = std::stoi(tmp.substr(0,7));
 
     for (auto ch : tmp) {
         input.push_back(std::atoi(&ch));
@@ -96,7 +97,7 @@ int main() {
 
     {
         timer t1("task 2");
-        task_2();
+        task_2(input , offest);
     }
 
     return 0;
