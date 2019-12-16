@@ -33,38 +33,40 @@ private:
 
 
 int8_t get_weight(uint16_t freq, uint16_t idx) {
-    if (((freq + 1) % (4 * (idx + 1))) < (idx + 1)) {
+    static int8_t arr[]{0,1,0,-1};
+    if(freq == 0){
         return 0;
     }
-    else if (((freq + 1) % (4 * (idx + 1))) < 2 * (idx + 1)) {
-        return 1;
-
-    }
-    else if (((freq + 1) % (4 * (idx + 1))) < 3 * (idx + 1)) {
-        return 0;
-    }
-    else if (((freq + 1) % (4 * (idx + 1))) < 4 * (idx + 1)) {
-        return -1;
+    else{
+        return arr[(idx/freq) % 4];
     }
 }
 
 void task_1(std::vector <int16_t> input) {
 
     std::vector<int16_t> tmp;
+    input.insert(input.begin() , 0);
 
     tmp = input;
 
     for (uint8_t iter{}; iter < 100; ++iter) {
-        for (uint16_t out_idx{}; out_idx < input.size(); ++out_idx) {
+        for (uint16_t out_idx{1}; out_idx < input.size(); ++out_idx) {
             int32_t sum{};
 
-            for (uint16_t in_idx{}; in_idx < input.size(); ++in_idx) {
+            for (uint16_t in_idx{1}; in_idx < input.size(); ++in_idx) {
                 sum += input[in_idx] * get_weight(out_idx, in_idx);
             }
             tmp[out_idx] = std::abs(sum) / 10;
         }
         input = tmp;
     }
+    
+    input.erase(input.begin());
+    std::cout << "task 1 first 8 digit are :";
+    for(uint8_t idx{};idx < 8 ; ++idx{
+        std::cout << input[idx];
+    }
+        std::cout << std::endl;
 
 
 }
