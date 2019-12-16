@@ -63,7 +63,7 @@ void task_1(std::vector <int16_t> input) {
     
     input.erase(input.begin());
     std::cout << "task 1 first 8 digit are :";
-    for(uint8_t idx{};idx < 8 ; ++idx{
+    for(uint8_t idx{};idx < 8 ; ++idx){
         std::cout << input[idx];
     }
         std::cout << std::endl;
