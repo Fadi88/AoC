@@ -10,9 +10,8 @@
 
 class timer {
 public:
-    timer(std::string point) {
+    timer(std::string point) : m_point{ point } {
         m_start_point = std::chrono::high_resolution_clock::now();
-        m_point = point;
     }
 
     ~timer() {
@@ -254,7 +253,7 @@ std::map<std::pair<int16_t, int16_t>, uint8_t> get_maze(std::vector<int64_t> p_c
             int16_t nx{ x + delta.second.first }, ny{ y + delta.second.second };
 
             if (maze.count({ nx,ny }) == 0) {
-                maze[{ nx, ny }] = robot.get_output();
+                maze[{ nx, ny }] = static_cast<uint8_t>(robot.get_output());
                 if (maze[{ nx, ny }] != 0) {
                     auto new_path = current_path;
                     new_path.push_back(delta.first);
@@ -262,6 +261,7 @@ std::map<std::pair<int16_t, int16_t>, uint8_t> get_maze(std::vector<int64_t> p_c
                     if (maze[{ nx, ny }] == 2) {
                         p_oxy.first = nx;
                         p_oxy.second = ny;
+                        std::cout << "oxygen found at : " << nx << "   " << ny << std::endl;
                         std::cout << "path to oxygen is : " << new_path.size() << std::endl;
                     }
                 }
