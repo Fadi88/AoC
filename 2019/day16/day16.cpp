@@ -53,7 +53,7 @@ void task_1(std::vector <int16_t> input) {
         for (uint16_t out_idx{1}; out_idx < input.size(); ++out_idx) {
             int32_t sum{};
 
-            for (uint16_t in_idx{1}; in_idx < input.size(); ++in_idx) {
+            for (uint16_t in_idx{out_idx}; in_idx < input.size(); ++in_idx) {
                 sum += input[in_idx] * get_weight(out_idx, in_idx);
             }
             tmp[out_idx] = std::abs(sum) % 10;
