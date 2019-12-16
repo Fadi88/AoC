@@ -56,7 +56,7 @@ void task_1(std::vector <int16_t> input) {
             for (uint16_t in_idx{1}; in_idx < input.size(); ++in_idx) {
                 sum += input[in_idx] * get_weight(out_idx, in_idx);
             }
-            tmp[out_idx] = std::abs(sum) / 10;
+            tmp[out_idx] = std::abs(sum) % 10;
         }
         input = tmp;
     }
