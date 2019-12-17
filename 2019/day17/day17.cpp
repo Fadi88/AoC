@@ -234,12 +234,12 @@ void task_1(std::vector<int64_t> p_cmds) {
         for(uint16_t iy{1} ; iy < 49 ; ++iy){
             if(arr[iy][ix] == '#'){
                 if(arr[iy-1][ix] == '#' && arr[iy+1][ix] == '#' && arr[iy][ix-1] == '#' && arr[iy][ix+1] == '#'){
-                    std::cout << ix << "  " << iy << std::endl;
                     sum += ix*iy;
                 }
             }
         }
     }
+    std::cout << "task 1 result is : " << sum << std::endl;
 }
 
 void task_2(std::string p_cmd_string) {
@@ -260,9 +260,15 @@ int main() {
         task_1(cmds);
     }
 
+    // R,6, L,8, R,8, R,6, L,8, R,8, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,6, L,8, R,8, L,8, R,6, L,10, L,10
+    // R,6,L,8,R,8
+    // R,4,R,6,R,6,R,4,R,4
+    // L,8,R,6,L,10,L,10
+    // A,A,B,C,B,C,B,C,A,C
+
     {
         timer t1("task 2");
-        task_2();
+        task_2(tmp);
     }
 
     return 0;
