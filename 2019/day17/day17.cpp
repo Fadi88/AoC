@@ -203,23 +203,19 @@ void task_1(std::vector<int64_t> p_cmds) {
     uint8_t x{}, y{};
     uint8_t rx{}, ry{};
 
-    std::map<uint16_t, std::vector<uint16_t>> hor;
-    std::map<uint16_t, std::vector<uint16_t>> ver;
+    uint32_t sum{};
+    
+    uint8_t arr[50][50];
 
     while (robot.is_still_running()) {
         robot.run_cycle();
-        std::cout << uint8_t(robot.get_output());
+        arr[y][x] = robot.get_output();
+        
         switch (robot.get_output()){
-        case 35:
-            hor[y].push_back(x);
-            ver[x].push_back(y);
-            break;
-
         case '<':
         case '>':
         case '^':
         case 'v':
-
             rx = x;
             ry = y;
             break;
@@ -232,7 +228,17 @@ void task_1(std::vector<int64_t> p_cmds) {
         default:
             break;
         }
-        ++x;
+        if(robot.get_output()!=10) ++x;
+    }
+    for(uint16_t ix{1} ; ix < 49 ; ++ix){
+        for(uint16_t iy{1} ; iy < 49 ; ++iy){
+            if(arr[iy][ix] == '#'){
+                if(arr[iy-1][ix] == '#' && arr[iy+1][ix] == '#' && arr[iy][ix-1] == '#' && arr[iy][ix+1] == '#'){
+                    std::cout << ix << "  " << iy << std::endl;
+                    sum += ix*iy;
+                }
+            }
+        }
     }
 }
 
