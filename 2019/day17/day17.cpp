@@ -200,15 +200,19 @@ void task_1(std::vector<int64_t> p_cmds) {
 
     intcode_computer robot{ p_cmds };
 
-    std::vector<std::pair<uint16_t,uint16_t>> points;
     uint8_t x{}, y{};
     uint8_t rx{}, ry{};
+
+    std::map<uint16_t, std::vector<uint16_t>> hor;
+    std::map<uint16_t, std::vector<uint16_t>> ver;
+
     while (robot.is_still_running()) {
         robot.run_cycle();
         std::cout << uint8_t(robot.get_output());
         switch (robot.get_output()){
         case 35:
-            points.push_back({ x,y });
+            hor[y].push_back(x);
+            ver[x].push_back(y);
             break;
 
         case '<':
