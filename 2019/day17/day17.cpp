@@ -242,7 +242,9 @@ void task_1(std::vector<int64_t> p_cmds) {
     }
 }
 
-void task_2() {
+void task_2(std::string p_cmd_string) {
+    p_cmd_string[0] = '2';
+    intcode_computer robot{string2vector(p_cmd_string)};
 }
 
 int main() {
