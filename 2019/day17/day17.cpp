@@ -40,7 +40,7 @@ public:
     }
 
     void set_next_input(int32_t p_input) {
-        m_next_input = p_input;
+        m_next_input.push(p_input);
     }
 
     bool is_still_running()const { return !m_has_returned; }
@@ -109,6 +109,7 @@ public:
             }
 
             std::size_t old_idx = idx;
+            int64_t* test{nullptr};
             switch (instruction)
             {
 
@@ -123,7 +124,10 @@ public:
                 break;
 
             case 3:
-                *param1_ptr = m_next_input;
+                 test = param1_ptr;
+
+                *param1_ptr = m_next_input.front();
+                m_next_input.pop();
                 idx += 2;
                 break;
 
@@ -170,7 +174,7 @@ public:
 
 private:
     std::vector<int64_t> m_memory;
-    int32_t m_next_input{};
+    std::queue<int64_t> m_next_input{};
     int64_t m_output{};
     bool m_has_returned{};
     size_t idx{};
@@ -204,14 +208,14 @@ void task_1(std::vector<int64_t> p_cmds) {
     uint8_t rx{}, ry{};
 
     uint32_t sum{};
-    
+
     uint8_t arr[50][50];
 
     while (robot.is_still_running()) {
         robot.run_cycle();
         arr[y][x] = robot.get_output();
-        
-        switch (robot.get_output()){
+
+        switch (robot.get_output()) {
         case '<':
         case '>':
         case '^':
@@ -228,13 +232,13 @@ void task_1(std::vector<int64_t> p_cmds) {
         default:
             break;
         }
-        if(robot.get_output()!=10) ++x;
+        if (robot.get_output() != 10) ++x;
     }
-    for(uint16_t ix{1} ; ix < 49 ; ++ix){
-        for(uint16_t iy{1} ; iy < 49 ; ++iy){
-            if(arr[iy][ix] == '#'){
-                if(arr[iy-1][ix] == '#' && arr[iy+1][ix] == '#' && arr[iy][ix-1] == '#' && arr[iy][ix+1] == '#'){
-                    sum += ix*iy;
+    for (uint16_t ix{ 1 }; ix < 49; ++ix) {
+        for (uint16_t iy{ 1 }; iy < 49; ++iy) {
+            if (arr[iy][ix] == '#') {
+                if (arr[iy - 1][ix] == '#' && arr[iy + 1][ix] == '#' && arr[iy][ix - 1] == '#' && arr[iy][ix + 1] == '#') {
+                    sum += ix * iy;
                 }
             }
         }
@@ -244,7 +248,46 @@ void task_1(std::vector<int64_t> p_cmds) {
 
 void task_2(std::string p_cmd_string) {
     p_cmd_string[0] = '2';
-    intcode_computer robot{string2vector(p_cmd_string)};
+    intcode_computer robot{ string2vector(p_cmd_string) };
+
+    // R,6, L,8, R,8, R,6, L,8, R,8, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,6, L,8, R,8, L,8, R,6, L,10, L,10
+    // R,6,L,8,R,8
+    // R,4,R,6,R,6,R,4,R,4
+    // L,8,R,6,L,10,L,10
+    // A,A,B,C,B,C,B,C,A,C
+
+    std::string a{ "R,6,L,8,R,8\n" };
+    std::string b{ "R,4,R,6,R,6,R,4,R,4\n" };
+    std::string c{ "L,8,R,6,L,10,L,10\n" };
+
+    std::string seq{ "A,A,B,C,B,C,B,C,A,C\n" };
+
+    for (auto ch : seq) {
+        robot.set_next_input(ch); 
+    }
+
+    for (auto ch : a) {
+        robot.set_next_input(ch);
+    }
+
+    for (auto ch : b) {
+        robot.set_next_input(ch);
+    }
+
+    for (auto ch : c) {
+        robot.set_next_input(ch);
+    }
+
+    robot.set_next_input('n');
+    robot.set_next_input(10);
+   
+
+    while (robot.is_still_running()) {
+        robot.run_cycle();
+        std::cout << static_cast<uint8_t>(robot.get_output());
+        
+    }
+    std::cout <<std::endl<< "task 2 dust collected is : "<< robot.get_output() << std::endl;
 }
 
 int main() {
@@ -260,11 +303,6 @@ int main() {
         task_1(cmds);
     }
 
-    // R,6, L,8, R,8, R,6, L,8, R,8, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,6, L,8, R,8, L,8, R,6, L,10, L,10
-    // R,6,L,8,R,8
-    // R,4,R,6,R,6,R,4,R,4
-    // L,8,R,6,L,10,L,10
-    // A,A,B,C,B,C,B,C,A,C
 
     {
         timer t1("task 2");
