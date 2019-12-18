@@ -31,10 +31,16 @@ private:
     std::chrono::time_point<std::chrono::high_resolution_clock> m_start_point;
 };
 
+uint32_t get_closest_key(std::map<std::pair<int8_t, int8_t>, int8_t>& p_map, int8_t px, int8_t py, std::pair<int8_t, int8_t> p_key) {
+    uint32_t ret{};
+
+    return ret;
+}
 
 void task_1(std::map<std::pair<int8_t, int8_t>, int8_t> p_map) {
 
     int8_t px{}, py{};
+
     std::map<uint8_t, std::pair<int8_t, int8_t>> keys_map;
     std::map<uint8_t, std::pair<int8_t, int8_t>> doors_map;
 
@@ -53,6 +59,37 @@ void task_1(std::map<std::pair<int8_t, int8_t>, int8_t> p_map) {
             doors_map[ele.second] = ele.first;
         }
     }
+
+    uint32_t total_distance{};
+
+    for (uint8_t key_idx{}; key_idx < keys_map.size(); ++key_idx) {
+
+        std::pair<int8_t, int8_t> current_key;
+
+        total_distance += get_closest_key(p_map, px, py, current_key);
+
+        px = keys_map[p_map[current_key]].first;
+        py = keys_map[p_map[current_key]].second;
+
+
+        auto door_loc = doors_map[p_map[current_key] + 'A' - 1];
+
+        // remove key
+        p_map[current_key] = '.';
+
+        // unloack door
+        p_map[door_loc] = '.';
+
+        // delete key
+        keys_map.erase(p_map[current_key]);
+
+        // delete door
+        doors_map.erase(door_loc);
+        
+
+
+    }
+
 }
 
 void task_2() {
@@ -74,7 +111,7 @@ int main() {
     int x{}, y{};
     for (auto& row : maze_str) {
         for (auto& ch : row) {
-            map[{x,y}] = ch;
+            map[{x, y}] = ch;
             ++x;
         }
         ++y;
