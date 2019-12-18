@@ -250,7 +250,11 @@ void task_2(std::string p_cmd_string) {
     p_cmd_string[0] = '2';
     intcode_computer robot{ string2vector(p_cmd_string) };
 
+    // TODO : automate path generation
+
     // R,6, L,8, R,8, R,6, L,8, R,8, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,6, L,8, R,8, L,8, R,6, L,10, L,10
+    
+    // TODO : automate path compression
     // R,6,L,8,R,8
     // R,4,R,6,R,6,R,4,R,4
     // L,8,R,6,L,10,L,10
@@ -278,6 +282,7 @@ void task_2(std::string p_cmd_string) {
         robot.set_next_input(ch);
     }
 
+    // TODO : support viz like the block tile task from day 13
     robot.set_next_input('n');
     robot.set_next_input(10);
    
