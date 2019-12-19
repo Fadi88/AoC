@@ -232,9 +232,9 @@ void task_2(std::vector<int64_t> p_cmds) {
     uint32_t sum{};
 
     std::vector< uint16_t> points;
-    int y = 1000;
+    int y = 5000;
 
-    for (uint16_t x{}; x < 50000; ++x) {
+    for (uint16_t x{5000}; x < 12000; ++x) {
         intcode_computer robot{ p_cmds };
         robot.set_next_input(x);
         robot.set_next_input(y);
@@ -253,17 +253,21 @@ void task_2(std::vector<int64_t> p_cmds) {
     uint16_t x_upper = points.front();
      
 
-    //upper line equation:  x1 = x_lower/y * y1 
+    //upper line equation:  x1 = x_lower/y * y1
     //lower line equation:  x2 = x_upper/y * y2
 
     //solve for sqaure , y2-y1 = R and x1-x2 = R with the above eqaution to obtaine result
 
-    // final point is x1 , y2 
+    // final point is x2 , y1 
 
-    //result is 10000*x+y2
+    //result is 10000*x2+y1
 
+    uint16_t x2 = ((float(y) / x_lower * 99) + 99) / (float(y)/x_upper - float(y)/x_lower);
+    uint16_t y1 = std::round(float(y) / x_upper * x2) - 99;
 
+    std::cout << "task 2 answer is : " << 10000 * x2 + y1 << std::endl;
 }
+
 int main() {
 
     std::ifstream input_fd{ "input\\day19_input.txt" };
