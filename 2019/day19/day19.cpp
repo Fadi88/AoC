@@ -232,9 +232,9 @@ void task_2(std::vector<int64_t> p_cmds) {
     uint32_t sum{};
 
     std::vector< uint16_t> points;
-    int y = 10000;
+    int y = 1000;
 
-    for (uint16_t x{}; x < 100000; ++x) {
+    for (uint16_t x{}; x < 50000; ++x) {
         intcode_computer robot{ p_cmds };
         robot.set_next_input(x);
         robot.set_next_input(y);
@@ -249,9 +249,20 @@ void task_2(std::vector<int64_t> p_cmds) {
 
     }
 
-    uint16_t x_lower = points.front();
-    uint16_t x_upper = points.back();
+    uint16_t x_lower = points.back();
+    uint16_t x_upper = points.front();
      
+
+    //upper line equation:  x1 = x_lower/y * y1 
+    //lower line equation:  x2 = x_upper/y * y2
+
+    //solve for sqaure , y2-y1 = R and x1-x2 = R with the above eqaution to obtaine result
+
+    // final point is x1 , y2 
+
+    //result is 10000*x+y2
+
+
 }
 int main() {
 
