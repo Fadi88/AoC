@@ -6,6 +6,7 @@
 #include <set>
 #include <map>
 #include <queue>
+#include <unordered_map>
 
 
 class timer {
@@ -31,66 +32,90 @@ private:
     std::chrono::time_point<std::chrono::high_resolution_clock> m_start_point;
 };
 
-uint32_t get_closest_key(std::map<std::pair<int8_t, int8_t>, int8_t>& p_map, int8_t px, int8_t py, std::pair<int8_t, int8_t> p_key) {
-    uint32_t ret{};
+struct point {
+    int16_t x;
+    int16_t y;
+    int16_t distance;
+
+    bool operator < (const point& other) const {
+        return x < other.x && y < other.y;
+    }
+};
+
+struct path {
+    int16_t distance{};
+    std::vector<uint8_t> doors;
+};
+
+
+path get_path(uint8_t p_map[81][81], point p_src, point p_dst) {
+    path ret;
+    ret.distance = -1;
+
+    p_src.distance = 0;
+
+    std::queue<point> to_visit;
+    to_visit.push({ p_src });
+    std::pair<int8_t, int8_t> directions[]= { std::make_pair(-1,0) , std::make_pair(1,0) , std::make_pair(0,-1), std::make_pair(0,+1) };
+
+    while (!to_visit.empty()) {
+
+
+    }
+
 
     return ret;
 }
 
-void task_1(std::map<std::pair<int8_t, int8_t>, int8_t> p_map) {
+void task_1(uint8_t p_map[81][81]) {
 
     int8_t px{}, py{};
 
-    std::map<uint8_t, std::pair<int8_t, int8_t>> keys_map;
-    std::map<uint8_t, std::pair<int8_t, int8_t>> doors_map;
+    std::map<uint8_t, point> keys_map;
+    std::map<uint8_t, point> doors_map;
 
-    for (auto& ele : p_map) {
+    for (uint8_t y_idx{}; y_idx < 81; ++y_idx) {
+        for (uint8_t x_idx{}; x_idx < 81; ++x_idx) {
 
-        if (ele.second == '@') {
-            px = ele.first.first;
-            py = ele.first.second;
-        }
+            if (p_map[y_idx][x_idx] == '@') {
+                px = x_idx;
+                py = y_idx;
+            }
 
-        if (ele.second >= 'a' && ele.second <= 'z') {
-            keys_map[ele.second] = ele.first;
-        }
+            if (p_map[y_idx][x_idx] >= 'a' && p_map[y_idx][x_idx] <= 'z') {
+                keys_map[p_map[y_idx][x_idx]] = { x_idx , y_idx };
+            }
 
-        if (ele.second >= 'A' && ele.second <= 'Z') {
-            doors_map[ele.second] = ele.first;
+            if (p_map[y_idx][x_idx] >= 'A' && p_map[y_idx][x_idx] <= 'Z') {
+                doors_map[p_map[y_idx][x_idx]] = { x_idx , y_idx };
+            }
         }
     }
 
-    uint32_t total_distance{};
+    std::map<std::pair<uint8_t, uint8_t>, path> paths_map;
 
-    for (uint8_t key_idx{}; key_idx < keys_map.size(); ++key_idx) {
+    for (auto dst_key : keys_map) {
+        path tmp = get_path(p_map, { 0,0 }, dst_key.second);
+        if (tmp.distance != -1)
+            paths_map[{'@', dst_key.first}] = tmp;
+    }
 
-        std::pair<int8_t, int8_t> current_key;
+    for (auto src_key : keys_map) {
+        for (auto dst_key : keys_map) {
 
-        total_distance += get_closest_key(p_map, px, py, current_key);
+            if (src_key.first == dst_key.first || dst_key.first > src_key.first)
+                continue;
 
-        px = keys_map[p_map[current_key]].first;
-        py = keys_map[p_map[current_key]].second;
+            path tmp = get_path(p_map, src_key.second, dst_key.second);
 
-
-        auto door_loc = doors_map[p_map[current_key] + 'A' - 1];
-
-        // remove key
-        p_map[current_key] = '.';
-
-        // unloack door
-        p_map[door_loc] = '.';
-
-        // delete key
-        keys_map.erase(p_map[current_key]);
-
-        // delete door
-        doors_map.erase(door_loc);
-        
-
+            if (tmp.distance != -1)
+                paths_map[{src_key.first, dst_key.first}] = tmp;
+        }
 
     }
 
 }
+
 
 void task_2() {
 
@@ -106,12 +131,11 @@ int main() {
         maze_str.push_back(tmp);
     }
 
-    std::map<std::pair<int8_t, int8_t>, int8_t> map;
-
-    int x{}, y{};
+    int16_t x{}, y{};
+    uint8_t maze[81][81];
     for (auto& row : maze_str) {
         for (auto& ch : row) {
-            map[{x, y}] = ch;
+            maze[y][x] = ch;
             ++x;
         }
         ++y;
@@ -120,7 +144,7 @@ int main() {
 
     {
         timer t1("task 1");
-        task_1(map);
+        task_1(maze);
     }
 
 
