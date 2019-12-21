@@ -109,7 +109,7 @@ public:
             }
 
             std::size_t old_idx = idx;
-            int64_t* test{nullptr};
+            int64_t* test{ nullptr };
             switch (instruction)
             {
 
@@ -124,7 +124,7 @@ public:
                 break;
 
             case 3:
-                 test = param1_ptr;
+                test = param1_ptr;
 
                 *param1_ptr = m_next_input.front();
                 m_next_input.pop();
@@ -252,47 +252,47 @@ void task_2(std::string p_cmd_string) {
 
     // TODO : automate path generation
 
-    // R,6, L,8, R,8, R,6, L,8, R,8, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,4, R,6, R,6, R,4, R,4, L,8, R,6, L,10, L,10, R,6, L,8, R,8, L,8, R,6, L,10, L,10
-    
-    // TODO : automate path compression
-    // R,6,L,8,R,8
-    // R,4,R,6,R,6,R,4,R,4
-    // L,8,R,6,L,10,L,10
-    // A,A,B,C,B,C,B,C,A,C
+    std::string path{ "R,6,L,8,R,8,R,6,L,8,R,8,R,4,R,6,R,6,R,4,R,4,L,8,R,6,L,10,L,10,R,4,R,6,R,6,R,4,R,4,L,8,R,6,L,10,L,10,R,4,R,6,R,6,R,4,R,4,L,8,R,6,L,10,L,10,R,6,L,8,R,8,L,8,R,6,L,10,L,10" };
 
-    std::string a{ "R,6,L,8,R,8\n" };
-    std::string b{ "R,4,R,6,R,6,R,4,R,4\n" };
-    std::string c{ "L,8,R,6,L,10,L,10\n" };
 
-    std::string seq{ "A,A,B,C,B,C,B,C,A,C\n" };
+    // TODO : automate compression
+    std::vector<std::string> subroutines;
+    subroutines.push_back("R,6,L,8,R,8");
+    subroutines.push_back("R,4,R,6,R,6,R,4,R,4");
+    subroutines.push_back("L,8,R,6,L,10,L,10");
+
+
+
+    std::string seq{ path };
+
+    for (int8_t idx{}; idx < subroutines.size(); ++idx) {
+        std::string sub = subroutines[idx];
+        while (seq.find(sub) != seq.npos) {
+            seq.replace(seq.find(sub), sub.size(), { int8_t(idx + 'A') });
+        }
+    }
 
     for (auto ch : seq) {
-        robot.set_next_input(ch); 
-    }
-
-    for (auto ch : a) {
         robot.set_next_input(ch);
     }
+    robot.set_next_input('\n');
 
-    for (auto ch : b) {
-        robot.set_next_input(ch);
+    for (auto& sub : subroutines) {
+        for (auto ch : sub) {
+            robot.set_next_input(ch);
+        }
+        robot.set_next_input('\n');
     }
 
-    for (auto ch : c) {
-        robot.set_next_input(ch);
-    }
-
-    // TODO : support viz like the block tile task from day 13
     robot.set_next_input('n');
-    robot.set_next_input(10);
-   
+    robot.set_next_input('\n');
 
     while (robot.is_still_running()) {
         robot.run_cycle();
         std::cout << static_cast<uint8_t>(robot.get_output());
-        
+
     }
-    std::cout <<std::endl<< "task 2 dust collected is : "<< robot.get_output() << std::endl;
+    std::cout << std::endl << "task 2 dust collected is : " << robot.get_output() << std::endl;
 }
 
 int main() {
