@@ -246,6 +246,36 @@ void task_1(std::vector<int64_t> p_cmds) {
     std::cout << "task 1 result is : " << sum << std::endl;
 }
 
+uint16_t count_occurence(std::string src, std::string trgt) {
+
+    uint16_t count{};
+    if (trgt.size() == 0)
+        return trgt.size();
+    while (src.find(trgt) != src.npos) {
+        ++count;
+        // erase from zero since we dont care about all the values before the target string to make search space smaller for the next iteration
+        src.erase(0, src.find(trgt) + trgt.size());
+    }
+
+    return count;
+}
+
+std::string get_next_candiate(std::string path_seg, std::string current_candiate) {
+
+    if (current_candiate.size() != 0)
+        current_candiate += ",";
+
+    path_seg.erase(0, current_candiate.size());
+    if (path_seg[0] == ',')
+        path_seg.erase(0, 1);
+
+    current_candiate += path_seg.substr(0, path_seg.find(','));
+    path_seg.erase(0, path_seg.find(',') + 1);
+    current_candiate += ',' + path_seg.substr(0, path_seg.find(','));
+
+    return current_candiate;
+}
+
 void task_2(std::string p_cmd_string) {
     p_cmd_string[0] = '2';
     intcode_computer robot{ string2vector(p_cmd_string) };
@@ -255,13 +285,21 @@ void task_2(std::string p_cmd_string) {
     std::string path{ "R,6,L,8,R,8,R,6,L,8,R,8,R,4,R,6,R,6,R,4,R,4,L,8,R,6,L,10,L,10,R,4,R,6,R,6,R,4,R,4,L,8,R,6,L,10,L,10,R,4,R,6,R,6,R,4,R,4,L,8,R,6,L,10,L,10,R,6,L,8,R,8,L,8,R,6,L,10,L,10" };
 
 
-    // TODO : automate compression
     std::vector<std::string> subroutines;
-    subroutines.push_back("R,6,L,8,R,8");
-    subroutines.push_back("R,4,R,6,R,6,R,4,R,4");
-    subroutines.push_back("L,8,R,6,L,10,L,10");
+    std::string path_copy = path;
 
+    for (int8_t idx{}; idx < 3; ++idx) {
+        std::string routine_candiate{};
 
+        while (count_occurence(path_copy, get_next_candiate(path_copy, routine_candiate)) > 2 && routine_candiate.size() < 19) {
+            routine_candiate = get_next_candiate(path_copy, routine_candiate);
+
+        }
+        subroutines.push_back(routine_candiate);
+        while (path_copy.find(routine_candiate) != path_copy.npos)
+            path_copy.replace(path_copy.find(routine_candiate), routine_candiate.size()+1, "");
+
+    }
 
     std::string seq{ path };
 
