@@ -7,6 +7,7 @@
 #include <map>
 #include <queue>
 #include <numeric>
+#include <cmath>
 
 
 class timer {
@@ -74,7 +75,7 @@ void task_1(std::vector<std::string> p_ops) {
     std::cout << "task 1 position is : " << std::find(deck.begin(), deck.end(), 2019) - deck.begin() << std::endl;
 }
 
-std::pair<int32_t,int32_t> task_1_2(std::vector<std::string> p_ops) {
+void task_1_2(std::vector<std::string> p_ops) {
 
     int32_t coef{ 1 }, offset{ 0 };
     int16_t deck_size{ 10007 };
@@ -82,7 +83,7 @@ std::pair<int32_t,int32_t> task_1_2(std::vector<std::string> p_ops) {
     for (auto& op : p_ops) {
         if (op.find("new stack") != op.npos) {
             coef = (deck_size - coef) % deck_size;
-            offset = (-offset -1)% deck_size;
+            offset = (-offset - 1) % deck_size;
         }
         else if (op.find("increment") != op.npos) {
             std::stringstream op_stream{ op.substr(op.rfind(' ')) };
@@ -103,16 +104,44 @@ std::pair<int32_t,int32_t> task_1_2(std::vector<std::string> p_ops) {
     }
 
     std::cout << "task 1 improved : " << (2019 * coef + offset) % deck_size << std::endl;
-    return { coef , offset };
 }
 
-void task_2(std::pair<int32_t, int32_t> p_ops) {
+void task_2(std::vector<std::string> p_ops) {
 
-    int64_t len{ 119315717514047 };
-    int64_t rep{ 101741582076661 };
+    uint64_t coef{ 1 }, offset{ 0 };
+    uint64_t deck_size{ 119315717514047 };
+
+    uint64_t rep{ 101741582076661 };
 
     uint16_t pos{ 2020 };
 
+    for (auto& op : p_ops) {
+        if (op.find("new stack") != op.npos) {
+            coef = (deck_size - coef) % deck_size;
+            offset = (-offset - 1) % deck_size;
+        }
+        else if (op.find("increment") != op.npos) {
+            std::stringstream op_stream{ op.substr(op.rfind(' ')) };
+            int16_t value;
+            op_stream >> value;
+
+            coef = (coef * value) % deck_size;
+            offset = (offset * value) % deck_size;
+
+        }
+        else if (op.find("cut") != op.npos) {
+            std::stringstream op_stream{ op.substr(op.rfind(' ')) };
+            int16_t value;
+            op_stream >> value;
+
+            offset = (offset - value + deck_size) % deck_size;
+        }
+        std::cout << coef << "  " << offset << std::endl;
+    }
+    uint64_t coef_augmented = static_cast<uint64_t>(std::pow(coef, rep)) % deck_size;
+    int64_t offset_augmented = offset * (1 - coef_augmented) / (1 - coef);
+
+    std::cout << (2020 * coef_augmented + offset_augmented) % deck_size;
 
 }
 
@@ -126,8 +155,6 @@ int main() {
         ops.push_back(tmp);
     }
 
-    std::pair<int32_t, int32_t> reduced_op;
-
     {
         timer t1("task 1");
         task_1(ops);
@@ -135,12 +162,12 @@ int main() {
 
     {
         timer t1("task 1 improved");
-        reduced_op = task_1_2(ops);
+        task_1_2(ops);
     }
 
     {
         timer t1("task 2");
-        task_2(reduced_op);
+        task_2(ops);
     }
 
     return 0;
