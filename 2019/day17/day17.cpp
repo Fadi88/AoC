@@ -200,13 +200,21 @@ std::vector<int64_t> string2vector(std::string input_txt) {
     return ret;
 }
 
-void task_1(std::vector<int64_t> p_cmds) {
+
+struct maze {
+    std::set<std::pair<int16_t, int16_t>> path;
+    uint8_t robot_dir;
+    int16_t robot_loc_x;
+    int16_t robot_loc_y;
+};
+
+maze task_1(std::vector<int64_t> p_cmds) {
 
     intcode_computer robot{ p_cmds };
 
     uint8_t x{}, y{};
     uint8_t rx{}, ry{};
-
+    maze ret;
     uint32_t sum{};
 
     uint8_t arr[50][50];
@@ -222,11 +230,18 @@ void task_1(std::vector<int64_t> p_cmds) {
         case 'v':
             rx = x;
             ry = y;
+            ret.robot_loc_x = x;
+            ret.robot_loc_y = y;
+            ret.robot_dir = robot.get_output();
             break;
 
         case 10:
             x = 0;
             ++y;
+            break;
+
+        case '#':
+            ret.path.insert({ x,y });
             break;
 
         default:
@@ -244,6 +259,7 @@ void task_1(std::vector<int64_t> p_cmds) {
         }
     }
     std::cout << "task 1 result is : " << sum << std::endl;
+    return ret;
 }
 
 uint16_t count_occurence(std::string src, std::string trgt) {
@@ -276,12 +292,20 @@ std::string get_next_candiate(std::string path_seg, std::string current_candiate
     return current_candiate;
 }
 
-void task_2(std::string p_cmd_string) {
+std::string get_path(const maze& p_maze) {
+
+    std::string path;
+
+
+    return path;
+}
+
+void task_2(std::string p_cmd_string, maze p_maze) {
     p_cmd_string[0] = '2';
     intcode_computer robot{ string2vector(p_cmd_string) };
 
     // TODO : automate path generation
-
+    std::string  path_test = get_path(p_maze);
     std::string path{ "R,6,L,8,R,8,R,6,L,8,R,8,R,4,R,6,R,6,R,4,R,4,L,8,R,6,L,10,L,10,R,4,R,6,R,6,R,4,R,4,L,8,R,6,L,10,L,10,R,4,R,6,R,6,R,4,R,4,L,8,R,6,L,10,L,10,R,6,L,8,R,8,L,8,R,6,L,10,L,10" };
 
 
@@ -297,7 +321,7 @@ void task_2(std::string p_cmd_string) {
         }
         subroutines.push_back(routine_candiate);
         while (path_copy.find(routine_candiate) != path_copy.npos)
-            path_copy.replace(path_copy.find(routine_candiate), routine_candiate.size()+1, "");
+            path_copy.replace(path_copy.find(routine_candiate), routine_candiate.size() + 1, "");
 
     }
 
@@ -340,16 +364,17 @@ int main() {
     std::string tmp;
     input_fd >> tmp;
 
+    maze obj;
     auto cmds = string2vector(tmp);
     {
         timer t1("task 1");
-        task_1(cmds);
+        obj = task_1(cmds);
     }
 
 
     {
         timer t1("task 2");
-        task_2(tmp);
+        task_2(tmp, obj);
     }
 
     return 0;
