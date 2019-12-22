@@ -38,7 +38,6 @@ void task_1(std::vector<std::string> p_ops) {
     std::vector<uint16_t> deck(10007);
 
     std::iota(deck.begin(), deck.end(), 0);
-
     for (auto& op : p_ops) {
         if (op.find("new stack") != op.npos) {
             std::reverse(deck.begin(), deck.end());
@@ -75,7 +74,45 @@ void task_1(std::vector<std::string> p_ops) {
     std::cout << "task 1 position is : " << std::find(deck.begin(), deck.end(), 2019) - deck.begin() << std::endl;
 }
 
-void task_2(std::vector<std::string> p_ops) {
+std::pair<int32_t,int32_t> task_1_2(std::vector<std::string> p_ops) {
+
+    int32_t coef{ 1 }, offset{ 0 };
+    int16_t deck_size{ 10007 };
+
+    for (auto& op : p_ops) {
+        if (op.find("new stack") != op.npos) {
+            coef = (deck_size - coef) % deck_size;
+            offset = (-offset -1)% deck_size;
+        }
+        else if (op.find("increment") != op.npos) {
+            std::stringstream op_stream{ op.substr(op.rfind(' ')) };
+            int16_t value;
+            op_stream >> value;
+
+            coef = (coef * value) % deck_size;
+            offset = (offset * value) % deck_size;
+
+        }
+        else if (op.find("cut") != op.npos) {
+            std::stringstream op_stream{ op.substr(op.rfind(' ')) };
+            int16_t value;
+            op_stream >> value;
+
+            offset = (offset - value + deck_size) % deck_size;
+        }
+    }
+
+    std::cout << "task 1 improved : " << (2019 * coef + offset) % deck_size << std::endl;
+    return { coef , offset };
+}
+
+void task_2(std::pair<int32_t, int32_t> p_ops) {
+
+    int64_t len{ 119315717514047 };
+    int64_t rep{ 101741582076661 };
+
+    uint16_t pos{ 2020 };
+
 
 }
 
@@ -89,14 +126,21 @@ int main() {
         ops.push_back(tmp);
     }
 
+    std::pair<int32_t, int32_t> reduced_op;
+
     {
         timer t1("task 1");
         task_1(ops);
     }
 
     {
+        timer t1("task 1 improved");
+        reduced_op = task_1_2(ops);
+    }
+
+    {
         timer t1("task 2");
-        task_2(ops);
+        task_2(reduced_op);
     }
 
     return 0;
