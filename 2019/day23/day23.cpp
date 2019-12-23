@@ -41,7 +41,7 @@ public:
 
     void set_next_input(int64_t p_input) {
         if (m_address == -1) {
-            m_address = p_input;
+            m_address = static_cast<int16_t>(p_input);
         }
         else
         {
@@ -51,7 +51,7 @@ public:
 
     bool is_still_running()const { return !m_has_returned; }
     bool is_queue_empty()const { return m_next_input.empty(); }
-    bool is_idle()const { return m_idle; }
+    bool is_idle()const { return m_is_idle; }
 
     std::vector<int64_t> get_output() {
         std::vector<int64_t> ret = m_output;
@@ -88,7 +88,7 @@ public:
                 }
             }
 
-            if (m_instructions_with_3_params.find(instruction) != m_instructions_with_3_params.end()) {
+            if (m_instructions_with_3_params.find(static_cast<uint8_t>(instruction)) != m_instructions_with_3_params.end()) {
                 opcode /= 10;
 
                 switch (opcode % 10) {
@@ -136,20 +136,20 @@ public:
                 break;
 
             case 3:
-                if (!m_address_set) {
+                if (!m_is_address_set) {
                     *param1_ptr = m_address;
-                    m_address_set = true;
+                    m_is_address_set = true;
                 }
                 else {
                     if (m_next_input.empty()) {
                         *param1_ptr = -1;
-                        m_idle = true;
+                        m_is_idle = true;
                         return;
                     }
                     else {
                         *param1_ptr = m_next_input.front();
                         m_next_input.pop();
-                        m_idle = false;
+                        m_is_idle = false;
                     }
                 }
                 idx += 2;
@@ -187,6 +187,7 @@ public:
 
             case 99:
                 m_has_returned = true;
+                m_is_idle = true;
                 idx += 1;
                 break;
 
@@ -207,8 +208,8 @@ private:
     const static std::set<uint8_t> m_instructions_with_3_params;
     size_t m_initial_size{};
     int16_t m_address{ -1 };
-    bool m_address_set{ false };
-    bool m_idle{ false };
+    bool m_is_address_set{ false };
+    bool m_is_idle{ false };
 
 };
 
@@ -254,7 +255,7 @@ void task_1(std::vector<int64_t> p_cmds) {
                 break;
             }
 
-            for (int16_t msg_idx{}; msg_idx < output.size(); msg_idx += 3) {
+            for (uint16_t msg_idx{}; msg_idx < output.size(); msg_idx += 3) {
                 network[output[msg_idx]].set_next_input(output[msg_idx + 1]);
                 network[output[msg_idx]].set_next_input(output[msg_idx + 2]);
             }
@@ -301,7 +302,7 @@ void task_2(std::vector<int64_t> p_cmds) {
             }
             
         }
-        if (std::all_of(network.cbegin(), network.cend(), [](const intcode_computer& obj) { return obj.is_idle() || obj.is_queue_empty(); })) {
+        if (std::all_of(network.cbegin(), network.cend(), [](const intcode_computer& obj) { return obj.is_idle() ; })) {
             if (ny == 0)
                 continue;
 
