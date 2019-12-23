@@ -39,7 +39,7 @@ public:
         std::copy(padding.begin(), padding.end(), std::back_inserter(m_memory));
     }
 
-    void set_next_input(int32_t p_input) {
+    void set_next_input(int64_t p_input) {
         if (m_address == -1) {
             m_address = p_input;
         }
@@ -50,10 +50,13 @@ public:
     }
 
     bool is_still_running()const { return !m_has_returned; }
-    std::vector<int64_t> get_output() { 
+    bool is_queue_empty()const { return m_next_input.empty(); }
+    bool is_idle()const { return m_idle; }
+
+    std::vector<int64_t> get_output() {
         std::vector<int64_t> ret = m_output;
         m_output.clear();
-        return ret; 
+        return ret;
     }
 
     void run_cycle() {
@@ -140,11 +143,13 @@ public:
                 else {
                     if (m_next_input.empty()) {
                         *param1_ptr = -1;
+                        m_idle = true;
                         return;
                     }
                     else {
                         *param1_ptr = m_next_input.front();
                         m_next_input.pop();
+                        m_idle = false;
                     }
                 }
                 idx += 2;
@@ -153,6 +158,8 @@ public:
             case 4:
                 m_output.push_back(*param1_ptr);
                 idx += 2;
+                if (m_output.size() == 3)
+                    return;
                 break;
 
             case 5:
@@ -201,6 +208,7 @@ private:
     size_t m_initial_size{};
     int16_t m_address{ -1 };
     bool m_address_set{ false };
+    bool m_idle{ false };
 
 };
 
@@ -231,26 +239,27 @@ void task_1(std::vector<int64_t> p_cmds) {
         network.back().set_next_input(-1);
     }
 
-
-    int16_t add = 0;
-    while (true) {
+    bool msg_fnd{};
+    while (!msg_fnd) {
         for (auto& machine : network) {
 
             machine.run_cycle();
             auto output = machine.get_output();
             if (output.size() == 0)
                 continue;
+
             if (output[0] == 255) {
-                continue;
+                std::cout << "task 1 return was : " << output[2] << std::endl;
+                msg_fnd = true;
+                break;
             }
-            
 
             for (int16_t msg_idx{}; msg_idx < output.size(); msg_idx += 3) {
-                network[output[msg_idx]].set_next_input( output[msg_idx + 1] );
-                network[output[msg_idx]].set_next_input( output[msg_idx + 2] );
+                network[output[msg_idx]].set_next_input(output[msg_idx + 1]);
+                network[output[msg_idx]].set_next_input(output[msg_idx + 2]);
             }
 
-            
+
         }
     }
 
@@ -258,6 +267,56 @@ void task_1(std::vector<int64_t> p_cmds) {
 
 void task_2(std::vector<int64_t> p_cmds) {
 
+    std::vector<intcode_computer> network;
+
+    intcode_computer nat{ p_cmds };
+    nat.set_next_input(255);
+
+    for (uint8_t idx{}; idx < 50; ++idx) {
+        network.push_back({ p_cmds });
+        network.back().set_next_input(idx);
+        network.back().set_next_input(-1);
+    }
+    std::vector<int64_t> nat_cmds_history;
+    int64_t nx{}, ny{};
+
+    while (true) {
+        for (auto& machine : network) {
+
+            machine.run_cycle();
+            auto output = machine.get_output();
+            if (output.size() == 0)
+                continue;
+
+            if (output[0] == 255) {
+                nx = output[1];
+                ny = output[2];
+
+                continue;
+            }
+
+            for (int16_t msg_idx{}; msg_idx < output.size(); msg_idx += 3) {
+                network[output[msg_idx]].set_next_input(output[msg_idx + 1]);
+                network[output[msg_idx]].set_next_input(output[msg_idx + 2]);
+            }
+            
+        }
+        if (std::all_of(network.cbegin(), network.cend(), [](const intcode_computer& obj) { return obj.is_idle() || obj.is_queue_empty(); })) {
+            if (ny == 0)
+                continue;
+
+            if (nat_cmds_history.size() != 0 && ny == nat_cmds_history.back()) {
+                std::cout << "task 2 output was :" << ny << std::endl;
+                return;
+            }
+
+            network[0].set_next_input(nx);
+            network[0].set_next_input(ny);
+            network[0].run_cycle();
+            nat_cmds_history.push_back(ny);
+
+        }
+    }
 
 }
 
