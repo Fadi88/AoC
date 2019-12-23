@@ -108,7 +108,7 @@ void task_1_2(std::vector<std::string> p_ops) {
 
 void task_2(std::vector<std::string> p_ops) {
 
-    uint64_t coef{ 1 }, offset{ 0 };
+    uint64_t  coef{ 1 }, offset{ 0 };
     uint64_t deck_size{ 119315717514047 };
 
     uint64_t rep{ 101741582076661 };
@@ -139,7 +139,7 @@ void task_2(std::vector<std::string> p_ops) {
         std::cout << coef << "  " << offset << std::endl;
     }
     uint64_t coef_augmented = static_cast<uint64_t>(std::pow(coef, rep)) % deck_size;
-    int64_t offset_augmented = offset * (1 - coef_augmented) / (1 - coef);
+    uint64_t offset_augmented = offset * (1 - coef_augmented) / (1 - coef);
 
     std::cout << (2020 * coef_augmented + offset_augmented) % deck_size;
 
