@@ -5,8 +5,6 @@
 #include <chrono>
 #include <set>
 #include <map>
-#include <queue>
-#include <numeric>
 #include <array>
 
 class timer {
@@ -42,7 +40,6 @@ uint32_t get_biodiversity_index(std::array<std::array<uint8_t, 5>, 5> arr) {
                 pattern |= 1 << idx;
             ++idx;
         }
-
     }
 
     return pattern;
@@ -117,16 +114,39 @@ void task_1(std::array<std::array<uint8_t, 5>, 5> arr) {
 
 
 void task_2(std::array<std::array<uint8_t, 5>, 5> arr) {
+    /*
+    std::set<std::tuple<int16_t, int16_t, int16_t>> infested;
+    std::vector<std::pair<int8_t, int8_t>> dirs{ {0,1} , {0,-1} , {1,0} , {-1,0} };
+
+    int8_t x{}, y{};
+    for (auto r : arr) {
+        for (auto c : r) {
+            if (c == '#')
+                infested.insert({ x,y,0 });
+            ++x;
+        }
+        ++y;
+        x = 0;
+    }
 
 
+    for (uint8_t idx{}; idx < 200 ; ++idx) {
+        std::set<std::tuple<int16_t, int16_t, int16_t>> new_infested{};
+        for (auto& bug : infested) {
+           
+        }
 
+        infested = new_infested;
+    }
+
+    std::cout << "task 2 number of bugs is : " << infested.size() << std::endl;
+    */
 }
 
 int main() {
 
-    std::ifstream input_fd{ "input\\day24_input.txt" };
-
-    std::array<std::array<uint8_t, 5>, 5> arr;
+    std::ifstream input_fd{"input\\day24_input.txt"};
+    std::array<std::array<uint8_t, 5>, 5> arr{};
     std::string tmp;
 
     uint8_t ix{}, iy{};
