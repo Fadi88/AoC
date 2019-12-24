@@ -142,7 +142,7 @@ public:
                 }
                 else {
                     if (m_next_input.empty()) {
-                        *param1_ptr = -1;
+                        //*param1_ptr = -1;
                         m_is_idle = true;
                         return;
                     }
