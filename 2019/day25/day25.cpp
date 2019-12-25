@@ -201,17 +201,17 @@ std::vector<int64_t> string2vector(std::string input_txt) {
 }
 std::map<int8_t, std::string> dirs{ {1,"north\n"} , {2,"south\n"} , {3,"east\n"}, {4,"west\n"} };
 
-void task_1(std::vector<int64_t> p_cmds) {
-    
+void task_1_automated(std::vector<int64_t> p_cmds) {
+
 
 
     std::queue<std::vector<int8_t>> to_visit{ {{1} , {2}} };
 
-    
+
 
     while (!to_visit.empty()) {
         intcode_computer robot{ p_cmds };
-        
+
         std::vector<int8_t> current_path = to_visit.front();
         to_visit.pop();
 
@@ -225,19 +225,13 @@ void task_1(std::vector<int64_t> p_cmds) {
         uint8_t cycle_index{  };
         std::set<std::string> items;
         while (robot.is_still_running()) {
-            
+
             robot.run_cycle();
-    
+
             tmp += int8_t(robot.get_output());
             if (tmp.find("Command?") != tmp.npos) {
-                if (tmp.find("jam") != tmp.npos) {
-                    for (auto ch : "take jam\ninv\n") {
-                        robot.set_next_input(ch);
-                    }
-                }
-
                 ++cycle_index;
-                if (cycle_index < current_path.size()+1) {
+                if (cycle_index < current_path.size() + 1) {
                     tmp.clear();
                 }
                 else {
@@ -262,8 +256,6 @@ void task_1(std::vector<int64_t> p_cmds) {
                         new_path.push_back(4);
                         to_visit.push(new_path);
                     }
-                    
-
                     break;
                 }
             }
@@ -272,6 +264,36 @@ void task_1(std::vector<int64_t> p_cmds) {
 
 }
 
+void task_1_explore(std::vector<int64_t> p_cmds) {
+    intcode_computer robot{ p_cmds };
+
+    std::string tmp,cmd;
+
+
+    while (robot.is_still_running()) {
+
+        robot.run_cycle();
+
+        tmp += int8_t(robot.get_output());
+        std::cout << uint8_t(robot.get_output());
+        std::cout.flush();
+
+        if (tmp.find("Command?") != tmp.npos) {
+            std::cout << std::endl;
+
+            tmp.clear();
+            std::getline(std::cin, cmd);
+
+            for (auto ch : cmd) {
+                robot.set_next_input(ch);
+            }
+            robot.set_next_input(10);
+        }
+
+        
+
+    }
+}
 void task_2(std::vector<int64_t> p_cmds) {
 
 
@@ -288,7 +310,7 @@ int main() {
     auto cmds = string2vector(tmp);
     {
         timer t1("task 1");
-        task_1(cmds);
+        task_1_explore(cmds);
     }
 
 
