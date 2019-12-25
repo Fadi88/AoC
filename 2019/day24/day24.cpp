@@ -109,43 +109,61 @@ void task_1(std::array<std::array<uint8_t, 5>, 5> arr) {
         evlove_eris(arr);
     }
 
+    for (int idx{}; idx < 100; ++idx) {
+        evlove_eris(arr);
+        std::cout <<get_biodiversity_index(arr) << std::endl;
+    }
+
     std::cout << "task 1 first bio diversity index repeated is : " << get_biodiversity_index(arr) << std::endl;
 }
 
 
 void task_2(std::array<std::array<uint8_t, 5>, 5> arr) {
-    /*
+
     std::set<std::tuple<int16_t, int16_t, int16_t>> infested;
     std::vector<std::pair<int8_t, int8_t>> dirs{ {0,1} , {0,-1} , {1,0} , {-1,0} };
 
-    int8_t x{}, y{};
+
+    int8_t tmp_x{}, tmp_y{};
     for (auto r : arr) {
         for (auto c : r) {
             if (c == '#')
-                infested.insert({ x,y,0 });
-            ++x;
+                infested.insert({ tmp_x,tmp_y,0 });
+            ++tmp_x;
         }
-        ++y;
-        x = 0;
+        ++tmp_y;
+        tmp_x = 0;
     }
 
-
-    for (uint8_t idx{}; idx < 200 ; ++idx) {
+    for (uint8_t idx{}; idx < 200; ++idx) {
         std::set<std::tuple<int16_t, int16_t, int16_t>> new_infested{};
         for (auto& bug : infested) {
-           
+            int16_t x , y , z;
+            x = std::get<0>(bug);
+            y = std::get<1>(bug);
+            z = std::get<2>(bug);
+
+            for (auto& dir : dirs) {
+                int16_t cx = x + dir.first;
+                int16_t cy = y + dir.second;
+
+                if (cx == 2 && cy == 2) {
+
+                }
+            }
+
         }
 
         infested = new_infested;
     }
 
     std::cout << "task 2 number of bugs is : " << infested.size() << std::endl;
-    */
+
 }
 
 int main() {
 
-    std::ifstream input_fd{"input\\day24_input.txt"};
+    std::ifstream input_fd{ "input\\day24_input.txt" };
     std::array<std::array<uint8_t, 5>, 5> arr{};
     std::string tmp;
 
