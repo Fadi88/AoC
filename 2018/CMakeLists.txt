@@ -5,3 +5,4 @@ project(2018)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${CMAKE_PROJECT_NAME})
 
 add_subdirectory(day01)
+add_subdirectory(day02)
