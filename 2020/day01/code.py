@@ -35,15 +35,18 @@ def part2():
 
         for a in range(len(ls)):
             for b in range(len(ls)):
+                if a == b :
+                    continue
+                tmp_sum = ls[a] + ls[b]
+
                 for c in range(len(ls)):
-                    if a == b or b == c or c == a:
+                    if c == b or c == a:
                         continue
-                    if ls[a] + ls[b] + ls[c]== 2020:
+                    if  tmp_sum + ls[c]== 2020:
                         print("answer part 2 : " + str(ls[a] * ls[b] * ls[c]) )
                         return
 
 if __name__ == "__main__":
-    
 
     part1()
     part2()
