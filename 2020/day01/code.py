@@ -8,18 +8,45 @@ def profiler(method):
     return wrapper_method
 
 @profiler
-def part1(fin):
-    pass
+def part1():
+  
+    with open('input.txt', 'r') as f_in :
+        ls = []
+        for l in f_in:
+            ls.append(int(l))
+
+        for i in range(len(ls)):
+            for t in range(len(ls)):
+                if i == t :
+                    continue
+                if ls[i] + ls[t] == 2020:
+                    print("answer part 1 : " + str(ls[i] * ls[t]) )
+                    return
+
+
+
 
 @profiler
-def part2(fin):
-    pass
+def part2():
+    with open('input.txt', 'r') as f_in :
+        ls = []
+        for l in f_in:
+            ls.append(int(l))
+
+        for a in range(len(ls)):
+            for b in range(len(ls)):
+                for c in range(len(ls)):
+                    if a == b or b == c or c == a:
+                        continue
+                    if ls[a] + ls[b] + ls[c]== 2020:
+                        print("answer part 2 : " + str(ls[a] * ls[b] * ls[c]) )
+                        return
 
 if __name__ == "__main__":
-    f_in = open('input.txt', 'r')
+    
 
-    part1(f_in)
-    part2(f_in)
+    part1()
+    part2()
 
-    f_in.close()
+    
     
