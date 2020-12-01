@@ -8,18 +8,22 @@ def profiler(method):
     return wrapper_method
 
 @profiler
-def part1(fin):
-    pass
+def part1():
+
+    with open('input.txt', 'r') as f_in:
+        pass
+    
 
 @profiler
-def part2(fin):
-    pass
+def part2():
+    with open('input.txt', 'r') as f_in:
+        pass
 
 if __name__ == "__main__":
-    f_in = open('input.txt', 'r')
+    
 
-    part1(f_in)
-    part2(f_in)
+    part1()
+    part2()
 
-    f_in.close()
+    
     
