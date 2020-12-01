@@ -2,8 +2,6 @@ import os
 
 
 for i in range(25):
-    if i == 0:
-        continue
     dir = "day" + "{:02d}".format(i+1)
     if not os.path.exists(dir):
         os.mkdir(dir)
