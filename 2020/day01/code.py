@@ -7,44 +7,41 @@ def profiler(method):
         print('Method '  + method.__name__ +' took : ' + "{:2.5f}".format(time.time()-t) + ' sec')
     return wrapper_method
 
+target_val = 2020
+
 @profiler
 def part1():
   
-    with open('input.txt', 'r') as f_in :
-        ls = []
-        for l in f_in:
-            ls.append(int(l))
+    ls = None
 
-        for i in range(len(ls)):
-            for t in range(len(ls)):
-                if i == t :
-                    continue
-                if ls[i] + ls[t] == 2020:
-                    print("answer part 1 : " + str(ls[i] * ls[t]) )
-                    return
+    with open('input.txt', 'r') as f_in :
+        ls = [int(l) for l in f_in]
+
+    for i in range(len(ls)):
+        if target_val - ls[i] in ls:
+            print("answer part 1 : " + str(ls[i] * ( target_val - ls[i])))
+            return
 
 
 
 
 @profiler
 def part2():
+
+    ls = None
+
     with open('input.txt', 'r') as f_in :
-        ls = []
-        for l in f_in:
-            ls.append(int(l))
+        ls = [int(l) for l in f_in]
 
-        for a in range(len(ls)):
-            for b in range(len(ls)):
-                if a == b :
-                    continue
-                tmp_sum = ls[a] + ls[b]
+    for a in range(len(ls)):
+        for b in range(len(ls)):
+            if a == b :
+                continue
+            tmp_sum = ls[a] + ls[b]
 
-                for c in range(len(ls)):
-                    if c == b or c == a:
-                        continue
-                    if  tmp_sum + ls[c]== 2020:
-                        print("answer part 2 : " + str(ls[a] * ls[b] * ls[c]) )
-                        return
+            if target_val - tmp_sum in ls:
+                print("answer part 2 : " + str(ls[a] * ls[b] * (target_val - tmp_sum)))
+                return
 
 if __name__ == "__main__":
 
