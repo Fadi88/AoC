@@ -19,7 +19,7 @@ def part1():
             password = l [l.find(':') +1:].strip()
             if  int(lim[0]) <= password.count(ch)  and password.count(ch) <= int(lim[1]):
                 cnt += 1
-        print("part 1 answer : " ,cnt)
+        print("part 1 answer : " + str(cnt))
     
 
 @profiler
@@ -42,7 +42,7 @@ def part2():
 
             if min != max:
                 cnt += 1
-        print("part 2 answer : " ,cnt)
+        print("part 2 answer : " + str(cnt))
 
 if __name__ == "__main__":
     
