@@ -11,18 +11,11 @@ def profiler(method):
 def part1():
 
     cnt = 0
-    l_idx = 0
     dx , dy = (3,1)
     with open('input.txt', 'r') as f_in:
-        for l in f_in:
-            if l_idx % len(l.strip())== 0:
-                y = 0
-            else:
-                y = (dx * l_idx) % len(l.strip())
-            if l[y] == '#':
+        for l_idx,l in enumerate(f_in):
+            if l[(dx * l_idx) % len(l.strip())] == '#':
                 cnt += 1
-
-            l_idx += dy
         print("part 1 : " ,cnt)
 
 
@@ -36,21 +29,11 @@ def part2():
     for dx, dy in trials:
         with open('input.txt', 'r') as f_in:
             cnt = 0
-            l_idx = 0
-            for l in f_in:
+            for l_idx,l in enumerate(f_in):
                 if l_idx % dy != 0:
-                    l_idx += 1
                     continue
-
-                if l_idx % len(l.strip())== 0:
-                    y = 0
-                else:
-                    y = (dx * l_idx) % len(l.strip())
-                if l[y] == '#':
+                if l[(dx * l_idx) % len(l.strip())] == '#':
                     cnt += 1
-                l_idx += 1
-
-            print(cnt)
             prod *= cnt
     print("part 2 : " ,prod)
 
