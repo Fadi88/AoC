@@ -39,9 +39,10 @@ def sim_cycle_p1(ls):
                     if ls[x][y] == '#':
                         cnt += 1
 
-                    if cnt >= 4:
-                        ret[i] = ret[i][:t] + 'L' + ret[i][t + 1 :]
-                        switched = True
+                        if cnt >= 4:
+                            ret[i] = ret[i][:t] + 'L' + ret[i][t + 1 :]
+                            switched = True
+                            break
 
 
     return ret,switched
@@ -66,7 +67,6 @@ def sim_cycle_p2(ls):
                         if ls[x][y] == '#' or ls[x][y] == 'L':
                             break
 
-
                 if cnt == 0:
                     ret[i] = ret[i] = ret[i][:t] + '#' + ret[i][t + 1 :]
                     switched = True
@@ -82,13 +82,13 @@ def sim_cycle_p2(ls):
                             break
                         if ls[x][y] == '#':
                             cnt += 1
+                            if cnt == 5:
+                                ret[i] = ret[i][:t] + 'L' + ret[i][t + 1 :]
+                                switched = True
+                                break
+
                         if ls[x][y] == '#' or ls[x][y] == 'L':
                             break
-
-                    if cnt >= 5:
-                        ret[i] = ret[i][:t] + 'L' + ret[i][t + 1 :]
-                        switched = True
-
 
     return ret,switched
 
@@ -133,10 +133,7 @@ def part2():
     print('part 2 answer : ' , chairs)
 
 if __name__ == "__main__":
-    
-
+ 
     part1()
     part2()
-
-    
-    
+ 
