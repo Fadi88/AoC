@@ -45,7 +45,7 @@ def get_content_count(color):
 
     for cr_cnt , cr_color in zip(bags_count[color] , bags[color]):
 
-        if cr_color in bags and bags[cr_color] is not None:
+        if bags[cr_color] is not None:
             cnt += cr_cnt + cr_cnt * get_content_count(cr_color)
         else :
             cnt += cr_cnt
