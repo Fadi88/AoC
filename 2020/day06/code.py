@@ -11,13 +11,29 @@ def profiler(method):
 def part1():
 
     with open('input.txt', 'r') as f_in:
-        pass
+        ls = [set(t.replace('\n' , '')) for t in f_in.read().split('\n\n')]
+        
+        cnt = 0
+        for gr in ls :
+            cnt += len(gr)
+        print('part 1 answer : ' , cnt)
     
 
 @profiler
 def part2():
     with open('input.txt', 'r') as f_in:
-        pass
+        ls = f_in.read().split('\n\n')
+
+        cnt = 0
+        for gr in ls:
+            indvs = gr.split('\n')
+            tmp = set(indvs[0])
+
+            for indv in indvs :
+                tmp = tmp.intersection(indv)
+            cnt += len(tmp)
+            
+        print('part 2 answer : ' , cnt)
 
 if __name__ == "__main__":
     
