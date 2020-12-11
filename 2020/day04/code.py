@@ -12,14 +12,7 @@ def part1():
 
     pass_list = []
     with open('input.txt', 'r') as f_in:
-        tmp_line = ""
-
-        for l in f_in:
-            if l == "\r\n":
-                pass_list.append(tmp_line)
-                tmp_line = ""
-                continue
-            tmp_line += l.replace('\r\n' , ' ')
+        pass_list = [tmp.replace('\r\n' , ' ')for tmp in f_in.read().split('\r\n\r\n')]
 
         cnt = 0
 
@@ -35,16 +28,10 @@ def part2():
 
     pass_list = []
     with open('input.txt', 'r') as f_in:
-        tmp_line = ""
-
-        for l in f_in:
-            if l == "\r\n":
-                pass_list.append(tmp_line)
-                tmp_line = ""
-                continue
-            tmp_line += l.replace('\r\n' , ' ')
 
         cnt = 0
+        pass_list = [tmp.replace('\r\n' , ' ')for tmp in f_in.read().split('\r\n\r\n')]
+
         for item in pass_list:
 
             if item.count('byr') == 1 and item.count('iyr') == 1 and item.count('eyr') == 1  and item.count('hgt') == 1 \
