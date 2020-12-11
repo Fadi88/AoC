@@ -41,12 +41,12 @@ def part1():
         print('part 1 answer : ' , cnt)
 
 def get_content_count(color):
-    cnt = 0
+    cnt = 1
 
     for cr_cnt , cr_color in zip(bags_count[color] , bags[color]):
 
         if cr_color in bags and bags[cr_color] is not None:
-            cnt += (cr_cnt * get_content_count(cr_color))
+            cnt += cr_cnt * get_content_count(cr_color)
         else :
             cnt += cr_cnt 
 
@@ -55,7 +55,7 @@ def get_content_count(color):
 
 @profiler
 def part2():
-    print('part 2 answer : ' , get_content_count(target_color))
+    print('part 2 answer : ' , get_content_count(target_color) - 1)
 
 if __name__ == "__main__":
 
