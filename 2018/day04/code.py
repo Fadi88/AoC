@@ -4,8 +4,9 @@ from collections import defaultdict
 def profiler(method):
     def wrapper_method(*arg, **kw):
         t = time.time()
-        method(*arg, **kw)
+        ret = method(*arg, **kw)
         print('Method '  + method.__name__ +' took : ' + "{:2.5f}".format(time.time()-t) + ' sec')
+        return ret
     return wrapper_method
 
 @profiler
@@ -44,20 +45,40 @@ def part1():
         
     hi_pr = hist.index(max(hist))
 
-    print(hi_pr * chosen_1)
+    print('part 1 answer : ' , hi_pr * chosen_1)
+
+    return tracker
 
     
 
 @profiler
-def part2():
-    with open('input.txt', 'r') as f_in:
-        pass
+def part2(tracker):
+
+    total_hist = {}
+    for guard in tracker:
+        hist = [0] * 60
+        for nap in tracker[guard]:
+            for i in range(nap[0] , nap[1]):
+                hist[i] += 1
+        total_hist[guard] = hist
+
+    chosen_1 = None
+    chosen_dur = 0
+    chosen_min = 0
+
+    for guard in total_hist:
+        for i in range(60):
+            if total_hist[guard][i] > chosen_dur:
+                
+                chosen_dur = total_hist[guard][i]
+                chosen_1 = guard
+                chosen_min = i
+              
+
+    print('part 2 answer : ' , chosen_1 * chosen_min)
 
 if __name__ == "__main__":
-    
 
-    part1()
-    part2()
 
-    
-    
+    tracker = part1()
+    part2(tracker)
