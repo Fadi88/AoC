@@ -102,14 +102,8 @@ def part1():
         ls,switch = sim_cycle_p1(ls)
         if not switch:
             break
-    
-    chairs = 0
-    for l in ls:
-        for c in l:
-            if c == '#':
-                chairs += 1
 
-    print('part 1 answer : ' , chairs)
+    print('part 1 answer : ' , sum([l.count('#') for l in ls]))
 
     
 
@@ -123,14 +117,9 @@ def part2():
         ls,switch = sim_cycle_p2(ls)
         if not switch:
             break
-    
-    chairs = 0
-    for l in ls:
-        for c in l:
-            if c == '#':
-                chairs += 1
 
-    print('part 2 answer : ' , chairs)
+
+    print('part 2 answer : ' , sum([l.count('#') for l in ls]))
 
 if __name__ == "__main__":
  
