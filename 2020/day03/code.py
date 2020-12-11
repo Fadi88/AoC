@@ -19,7 +19,6 @@ def part1():
         print("part 1 : " ,cnt)
 
 
-
 @profiler
 def part2():
         
