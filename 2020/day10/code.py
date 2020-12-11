@@ -14,13 +14,10 @@ def part1():
 
     l =  [int(tmp.strip()) for tmp in open('input.txt', 'r').readlines()]
 
-    l.append(0)
-    l.append(max(l) + 3)
     l.sort()
 
-
-    d1 = 0 
-    d3 = 0
+    d1 = 1 
+    d3 = 1
 
     for i in range(1, len(l)):
         if l[i] - l[i - 1 ] == 1:
