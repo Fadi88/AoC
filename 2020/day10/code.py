@@ -38,18 +38,21 @@ def part2():
 
     l =  [int(tmp.strip()) for tmp in open('input.txt', 'r').readlines()]
 
+    dev = max(l) + 3
+
     l.append(0)
+    l.append(dev)
     l.sort()
 
     comb = defaultdict(lambda : 0)
 
-    comb[l[-1]+3] = 1
+    comb[0] = 1
     
-    for v in l[::-1]:
-        comb[v] = comb[v+1] + comb[v+2] + comb[v+3]
+    for v in l[1:]:
+        comb[v] = comb[v-1] + comb[v-2] + comb[v-3]
         #print(v , comb[v])
 
-    print("Part 2 answer :", comb[0])
+    print("Part 2 answer :", comb[dev])
 
 if __name__ == "__main__":
 
