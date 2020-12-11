@@ -35,30 +35,29 @@ def part2(target):
     with open('input.txt', 'r') as f_in:
         input = [int(l) for l in f_in]
 
+        highest = max(input)
+
         for i in range(len(input)):
             sum = input[i]
-            ls = [input[i]]
-            wrong_seq = False
+            hi = 0
+            lo = highest
 
             for a in range(i+1 , len(input)):
                 sum += input[a]
-                ls.append(input[a])
+
+                if input[a] > hi:
+                    hi = input[a]
+                if input[a] < lo:
+                    lo = input[a]
+
                 if sum > target :
-                    wrong_seq = True
                     break
                 elif sum == target:
-                    print('part 2 answer : ' , min(ls) + max(ls))
+                    print('part 2 answer : ' , hi + lo)
                     return
-
-            if wrong_seq:
-                continue
 
 
 if __name__ == "__main__":
-    
 
     target = part1()
     part2(target)
-
-    
-    
