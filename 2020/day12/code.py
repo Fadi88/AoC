@@ -5,8 +5,9 @@ import numpy as np
 def profiler(method):
     def wrapper_method(*arg, **kw):
         t = time.time()
-        method(*arg, **kw)
+        ret = method(*arg, **kw)
         print('Method '  + method.__name__ +' took : ' + "{:2.5f}".format(time.time()-t) + ' sec')
+        return ret
     return wrapper_method
 
 @profiler
