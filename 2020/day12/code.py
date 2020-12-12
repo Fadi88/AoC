@@ -24,23 +24,17 @@ def part1():
             x += mag * math.cos(math.radians(ang))
             y += mag * math.sin(math.radians(ang))
 
-        elif dr == 'N':
-            y += mag
-
-        elif dr == 'S':
-            y -= mag
-
-        elif dr == 'E':
-            x += mag
-
-        elif dr == 'W':
-            x -= mag
-
         elif dr == 'R':
             ang -= mag
    
         elif dr == 'L':
             ang += mag
+
+        else :
+            delta = {'N' : (0,+mag) , 'S' : (0,-mag) , 'E' : (mag,0) ,  'W' : (-mag,0)} 
+
+            x += delta[dr][0]
+            y += delta[dr][1]
 
     print('part 1 answer : ' , int(abs(x) +  abs(y)))
 
@@ -55,38 +49,32 @@ def part2():
 
     for l in open('input.txt'):
         dr = l[0]
-        mag = int(l.strip()[1:])
+        mag = int(l.strip()[1:])        
 
         if dr == 'F' :
             x += mag * wx
             y += mag * wy
 
-        elif dr == 'N':
-            wy += mag
-
-        elif dr == 'S':
-            wy -= mag
-
-        elif dr == 'E':
-            wx += mag
-
-        elif dr == 'W':
-            wx -= mag
-
         # source https://stackoverflow.com/a/3162731
         elif dr == 'R':
-            nx =  wx * math.cos(math.radians(mag)) + wy * math.sin(math.radians(mag))
+            nx =   wx * math.cos(math.radians(mag)) + wy * math.sin(math.radians(mag))
             ny =  -wx * math.sin(math.radians(mag)) + wy * math.cos(math.radians(mag))
 
             wx = round(nx)
             wy = round(ny)
  
         elif dr == 'L':
-            nx =  wx * math.cos(-math.radians(mag)) + wy * math.sin(-math.radians(mag))
+            nx =   wx * math.cos(-math.radians(mag)) + wy * math.sin(-math.radians(mag))
             ny =  -wx * math.sin(-math.radians(mag)) + wy * math.cos(-math.radians(mag))
 
             wx = round(nx)
             wy = round(ny)
+
+        else :
+            delta = {'N' : (0,+mag) , 'S' : (0,-mag) , 'E' : (mag,0) ,  'W' : (-mag,0)}
+
+            wx += delta[dr][0]
+            wy += delta[dr][1]
             
     print('part 2 answer : ' , abs(x) +  abs(y))
 
@@ -104,18 +92,6 @@ def p2_matrix():
         if dr == 'F' :
             pos += mag * wp
 
-        elif dr == 'N':
-            wp += mag * np.array([0,1])
-
-        elif dr == 'S':
-            wp += mag * np.array([0,-1])
-
-        elif dr == 'E':
-            wp += mag * np.array([1,0])
-
-        elif dr == 'W':
-            wp += mag * np.array([-1,0])
-
         elif dr == 'R':
             theta = np.radians(mag)
             Rt = np.array([[np.cos(theta) , -np.sin(theta)] , [np.sin(theta) , np.cos(theta)]])
@@ -126,6 +102,11 @@ def p2_matrix():
             Rt = np.array([[np.cos(theta) , -np.sin(theta)] , [np.sin(theta) , np.cos(theta)]])
 
             wp = np.rint(wp.dot(Rt)).astype(int)
+
+        else :
+            delta = {'N' : np.array([0,1]) , 'S' : np.array([0,-1]), 'E' : np.array([1,0]) ,  'W' : np.array([-1,0])}
+
+            wp += mag * delta[dr]
             
     print('part 2 using matrix answer : ' , np.abs(pos[0]) +  np.abs(pos[1]))
 
@@ -144,23 +125,15 @@ def p2_complex():
         if dr == 'F' :
             pos += mag * wp
 
-        elif dr == 'N':
-            wp += mag * 1j
-
-        elif dr == 'S':
-            wp -= mag * 1j
-
-        elif dr == 'E':
-            wp += mag * 1
-
-        elif dr == 'W':
-            wp -= mag * 1
-
         elif dr == 'R':
            wp *= 1j**(-mag/90)
- 
+
         elif dr == 'L':
            wp *= 1j**(mag/90)
+ 
+        else :
+            delta = {'N' : 1j , 'S' : -1j, 'E' : 1 ,  'W' : -1}
+            wp += mag * delta[dr]
             
     print('part 2 using complex answer : ' , int(abs(pos.real) +  abs(pos.imag)))
 
