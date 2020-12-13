@@ -1,6 +1,5 @@
 import time,os
 import re
-from math import gcd
 
 def profiler(method):
     def wrapper_method(*arg, **kw):
@@ -25,13 +24,9 @@ def part1():
         if (n_dep*bus - bound) < delay :
             delay =  n_dep*bus - bound
             chosen_bus = bus
-       
 
     print(chosen_bus*delay)
-    
 
-        
-    
 @profiler
 def part2():
     l =  open('input.txt', 'r').read().split('\n')
@@ -44,7 +39,7 @@ def part2():
             continue
         sched.append((int(bus) , idx))
 
-    
+    '''
     st_n = 760000000000000 // sched[0][0] + 1 
            
     for i in range(10000000000,15000000000):
@@ -57,15 +52,24 @@ def part2():
         if found :
             print( i , (st_n + i) * sched[0][0])
             break
+    '''
 
-            
+    answer = sched[0][0]
+    inc    = sched[0][0]
 
-        
+    for ele in sched[1:]:
+        found = False
+        while not found:
 
+            answer += inc
 
+            if (answer + ele[1]) % ele[0] == 0:
+                found = True
 
+        inc *= ele[0]
 
-
+    print(answer)
+          
 if __name__ == "__main__":
 
     part1()
