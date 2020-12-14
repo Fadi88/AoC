@@ -25,7 +25,6 @@ def part1():
             nums = re.findall(r'\d+', l)
             
             loc = int(nums[0])
-            
             val = '{:036b}'.format(int(nums[1]))
 
             for idx,ch in enumerate(mask):
@@ -45,7 +44,6 @@ def part2():
         l = l.strip()
 
         if 'mask' in l :
-
             mask = l.replace('mask = ','')
 
         else :
@@ -60,9 +58,10 @@ def part2():
             xs = mask.count('X')
             x_loc = [i for i, ltr in enumerate(mask) if ltr == 'X']
 
-            for i in range(2**xs):
+            for i in map(lambda tmp : bin(tmp)[2:].zfill(xs),range(2**xs)):
                 mod_loc = list(bin(base_loc)[2:].zfill(36))
-                for idx , dig in zip(x_loc , bin(i)[2:].zfill(xs)):
+                assert len(x_loc) == len(i)
+                for idx , dig in zip(x_loc,i):
                     mod_loc[idx] = dig
                 mem[int(''.join(mod_loc) , 2)] = val
 
