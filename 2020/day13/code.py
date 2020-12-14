@@ -1,5 +1,6 @@
 import time,os
 import re
+from modint import chinese_remainder
 
 def profiler(method):
     def wrapper_method(*arg, **kw):
@@ -38,11 +39,10 @@ def part2():
         if bus == 'x':
             continue
         sched.append((int(bus) , idx))
-
     '''
     st_n = 760000000000000 // sched[0][0] + 1 
            
-    for i in range(10000000000,15000000000):
+    for i in range(10000000000,11000000000):
         found = True
         for ele in sched[1:] :
             if ((st_n + i) * sched[0][0] + ele[1]) % ele[0] != 0 :
@@ -54,9 +54,18 @@ def part2():
             break
     '''
 
+    ids  = []
+    rems = []
+
+    for ele in sched:
+        ids.append(ele[0])
+        rems.append( -ele[1] % ele[0])
+
+    print(chinese_remainder(ids,rems))
     answer = sched[0][0]
     inc    = sched[0][0]
 
+    
     for ele in sched[1:]:
         found = False
         while not found:
@@ -69,6 +78,7 @@ def part2():
         inc *= ele[0]
 
     print(answer)
+
           
 if __name__ == "__main__":
 
