@@ -63,50 +63,54 @@ def part2():
             else:
                 my_ticket = vals
 
-    valid_tickets = []
+    pos = {}
+    for i in range(len(my_ticket)):
+        pos[i] = set(rule_map.keys())
+
     for tik in other_tickets:
         valid_ticket = True
-
         for val in tik:
             if val not in comb_rules:
                 valid_ticket = False
                 break
 
-        if valid_ticket:
-            valid_tickets.append(tik)
-
-    pos = {}
-    for i in range(len(my_ticket)):
-        pos[i] = set(rule_map.keys())
-
-    for tik in valid_tickets:
+        if not valid_ticket:
+            continue
+        
         for idx,val in enumerate(tik):
             for rule in rule_map:
                 if val not in rule_map[rule]:
                     pos[idx].remove(rule)
- 
-    pos_prob = {}
-    for tmp in pos :
-        pos_prob[len(pos[tmp])] = tmp
 
-    for i in range(len(pos)):
-        field = list(pos[pos_prob[i+1]])[0]
-        for rule in pos:
-            if len(pos[rule]) > 1:
-                pos[rule].remove(field)
+    visited = [False] * len(pos)
 
-    departure_idx_map = {}
-    for tmp in pos:
-        field = pos[tmp].pop()
-        if field.startswith('departure'):
-            departure_idx_map[field] = tmp
+    for _ in range(len(pos)):
+        target_idx = -1
+
+        for idx in pos:
+            if len(pos[idx]) == 1 and not visited[idx]:
+                visited[idx] = True
+                target_idx = idx
+                target_field = pos[idx].pop()
+                pos[idx].add(target_field)
+                break
+        
+        for idx in pos:
+            if idx == target_idx:
+                continue
+            if target_field in pos[idx]:
+                pos[idx].remove(target_field)
+
+    departure_idx = []
+    for ele in pos:
+        if 'departure' in pos[ele].pop():
+            departure_idx.append(ele)
 
     prod = 1
-    for idx in departure_idx_map.values():
+    for idx in departure_idx:
         prod *= my_ticket[idx]
 
     print(prod)
-        
 
 if __name__ == "__main__":
 
