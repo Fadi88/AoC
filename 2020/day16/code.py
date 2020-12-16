@@ -91,8 +91,7 @@ def part2():
             if len(pos[idx]) == 1 and not visited[idx]:
                 visited[idx] = True
                 target_idx = idx
-                target_field = pos[idx].pop()
-                pos[idx].add(target_field)
+                target_field = [e for e in pos[idx]][0]
                 break
         
         for idx in pos:
