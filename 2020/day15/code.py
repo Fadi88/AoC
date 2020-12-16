@@ -21,7 +21,7 @@ def part1():
           idx = [i for i,num in enumerate(input) if num == input[-1]]
           input.append(idx[-1] - idx[-2])
         
-    print(input[2019])
+    print(input[-1])
         
 
 @profiler
@@ -45,9 +45,24 @@ def part2():
             age[mem].append(i)
             
 
+    print(age.keys())
     print(mem)
 
+@profiler
+def part2_list():
+
+    input = list(map(int, open('input.txt', 'r').read().split(',')))
+
+    for _ in range(30000000):
+        if input.count(input[-1]) == 1 :
+            input.append(0)
+        else :
+          idx = [i for i,num in enumerate(input) if num == input[-1]]
+          input.append(idx[-1] - idx[-2])
+        
+    print(input[30000000-1])
 if __name__ == "__main__":
 
     part1()
     part2()
+    #part2_list()
