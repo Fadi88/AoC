@@ -10,22 +10,15 @@ def profiler(method):
 
 @profiler
 def part1():
-    rules = []
     comb_rules = set()
-    my_ticket = []
     other_tickets = []
 
     for l in open('input.txt', 'r').read().split('\n'):
         if 'or' in l:
             vals = list(map(int, re.findall(r'(\d+)' , l)))
-            rules.append(((vals[0] , vals[1]) , (vals[2] , vals[3])))
-            comb_rules.update(set(range(vals[0] , vals[1] + 1)))
-            comb_rules.update(set(range(vals[2] , vals[3] + 1)))
+            comb_rules |= set(range(vals[0] , vals[1] + 1)) | set(range(vals[2] , vals[3] + 1))
 
-        elif ',' in l:
-            vals = list(map(int , l.split(',')))
-            if len(my_ticket) != 0 : other_tickets.append(vals)
-            else : my_ticket = vals
+        elif ',' in l : other_tickets.append(list(map(int , l.split(','))))
 
     print(sum([val for tik in other_tickets for val in tik if val not in comb_rules]))
 
@@ -33,22 +26,17 @@ def part1():
 def part2():
     comb_rules = set()
     rule_map = {}
-    my_ticket = []
     other_tickets = []
 
     for l in open('input.txt', 'r').read().split('\n'):
         if 'or' in l:
             vals = list(map(int, re.findall(r'(\d+)' , l)))
-            comb_rules.update(set(range(vals[0] , vals[1] + 1)))
-            comb_rules.update(set(range(vals[2] , vals[3] + 1)))
+            comb_rules |= set(range(vals[0] , vals[1] + 1)) | set(range(vals[2] , vals[3] + 1))
             rule_map[l[:l.find(':') ]] = set(range(vals[0] , vals[1] + 1)) | set(range(vals[2] , vals[3] + 1))
 
-        elif ',' in l:
-            vals = list(map(int , l.split(',')))
-            if len(my_ticket) != 0 : other_tickets.append(vals)
-            else : my_ticket = vals
+        elif ',' in l :  other_tickets.append(list(map(int , l.split(','))))
 
-    pos = { i : set(rule_map.keys()) for i in range(len(my_ticket)) }
+    pos = { i : set(rule_map.keys()) for i in range(len(other_tickets[0])) }
 
     for tik in other_tickets:
         if any([val not in comb_rules for val in tik]) : continue
@@ -60,8 +48,6 @@ def part2():
     visited = [False for _ in range(len(pos))]
 
     for _ in range(len(pos)):
-        target_idx = -1
-
         for idx in pos:
             if len(pos[idx]) == 1 and not visited[idx]:
                 visited[idx] = True
@@ -73,7 +59,7 @@ def part2():
             if idx == target_idx : continue
             if target_field in pos[idx] : pos[idx].remove(target_field)
 
-    print(reduce(operator.mul , [ my_ticket[i] for i in pos if 'departure' in pos[i].pop()]))
+    print(reduce(operator.mul , [ other_tickets[0][i] for i in pos if 'departure' in pos[i].pop()]))
 
 if __name__ == "__main__":
 
