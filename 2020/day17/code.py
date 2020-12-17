@@ -11,11 +11,11 @@ def profiler(method):
 @profiler
 def part1():
     l =  open('input.txt', 'r').read().split()
-    map = [(x,y,0) for y,line in enumerate(l) for x,ch in enumerate(line) if ch == '#']
+    map =set((x,y,0) for y,line in enumerate(l) for x,ch in enumerate(line) if ch == '#')
 
     for _ in range(6):
         act = {}
-        new_map = []
+        new_map = set()
         for x,y,z in map:
             for dx in [-1,0,1]:
                 for dy in [-1,0,1]:
@@ -26,9 +26,9 @@ def part1():
 
         for ele in act :
             if ele not in map and act[ele] == 3:
-                new_map.append(ele)
+                new_map.add(ele)
             elif ele in map and act[ele] in [2,3]:
-                new_map.append(ele)
+                new_map.add(ele)
  
         map = new_map
     print(len(map))
@@ -38,11 +38,11 @@ def part1():
 def part2():
 
     l =  open('input.txt', 'r').read().split()
-    map = [(x,y,0,0) for y,line in enumerate(l) for x,ch in enumerate(line) if ch == '#']
+    map =set((x,y,0,0) for y,line in enumerate(l) for x,ch in enumerate(line) if ch == '#')
 
     for _ in range(6):
         act = {}
-        new_map = []
+        new_map = set()
         for x,y,z,w in map:
             for dx in [-1,0,1]:
                 for dy in [-1,0,1]:
@@ -54,9 +54,9 @@ def part2():
 
         for ele in act :
             if ele not in map and act[ele] == 3:
-                new_map.append(ele)
+                new_map.add(ele)
             elif ele in map and act[ele] in [2,3]:
-                new_map.append(ele)
+                new_map.add(ele)
  
         map = new_map
     print(len(map))
