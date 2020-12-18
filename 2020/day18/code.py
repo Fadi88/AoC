@@ -43,6 +43,50 @@ def part2():
         sum += int(eval_p2(l))
     print(sum)
 
+class p1:
+    def __init__(self,val):
+        self.val = val
+
+    def __add__(self,other):
+        return p1(self.val + other.val)
+
+    def __sub__(self,other):
+        return p1(self.val * other.val)
+
+class p2:
+    def __init__(self,val):
+        self.val = val
+
+    def __sub__(self,other):
+        return p2(self.val * other.val)
+
+    def __mul__(self,other):
+        return p2(self.val + other.val)
+
+@profiler
+def part1_wrapper():
+    sum = 0
+    for l in open('input.txt').read().split('\n'):
+        l = re.sub(r'(\d+)' , r'p1(\1)', l)
+        l = l.replace('*' , '-')
+        sum += eval(l).val
+
+    print(sum)
+
+@profiler
+def part2_wrapper():
+    sum = 0
+    for l in open('input.txt').read().split('\n'):
+        l = re.sub(r'(\d+)' , r'p2(\1)', l)
+        l = l.replace('*' , '-')
+        l = l.replace('+' , '*')
+        sum += eval(l).val
+
+    print(sum)
+    
 if __name__ == "__main__":
     part1()
     part2()
+    #https://stackoverflow.com/questions/11811051/change-operator-precedence-in-python
+    part1_wrapper()
+    part2_wrapper()
