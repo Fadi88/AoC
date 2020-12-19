@@ -46,22 +46,22 @@ def part2():
 class p1:
     def __init__(self,val):
         self.val = val
-
     def __add__(self,other):
         return p1(self.val + other.val)
-
     def __sub__(self,other):
         return p1(self.val * other.val)
+    def __int__(self):
+        return self.val
 
 class p2:
     def __init__(self,val):
         self.val = val
-
     def __sub__(self,other):
         return p2(self.val * other.val)
-
     def __mul__(self,other):
         return p2(self.val + other.val)
+    def __int__(self):
+        return self.val
 
 @profiler
 def part1_wrapper():
@@ -69,7 +69,7 @@ def part1_wrapper():
     for l in open('input.txt').read().split('\n'):
         l = re.sub(r'(\d+)' , r'p1(\1)', l)
         l = l.replace('*' , '-')
-        sum += eval(l).val
+        sum += int(eval(l))
 
     print(sum)
 
@@ -80,7 +80,7 @@ def part2_wrapper():
         l = re.sub(r'(\d+)' , r'p2(\1)', l)
         l = l.replace('*' , '-')
         l = l.replace('+' , '*')
-        sum += eval(l).val
+        sum += int(eval(l))
 
     print(sum)
     
