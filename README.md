@@ -1,7 +1,5 @@
 # adventofcode19
 
-solutions for [advent of code 2019](https://adventofcode.com/2019)
+solutions for [advent of code](https://adventofcode.com)
 
-langugae used : C++
-
-build tool : cmake
+langugae used : C++ and python
