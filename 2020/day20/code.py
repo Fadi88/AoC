@@ -186,7 +186,6 @@ def part2():
                 monster.add((i,ky))
         ky += 1
 
-    monster_cnt = 0
     for _ in range(2):
         image = flip(image)
         for _ in range(4):
@@ -200,9 +199,16 @@ def part2():
                         dy = y + p[1]
                         parts.append(image[dy][dx] == '#')
                     if all(parts) :
-                        monster_cnt += 1
+                        for p in monster:
+                            dx = x + p[0]
+                            dy = y + p[1]
+                            image[dy] = image[dy][ : dx] + 'O' + image[dy][ dx +1 :]
 
-    print(sum([l.count('#') for l in image]) - monster_cnt*len(monster))
+    with open('output.txt' , 'w+') as f:
+        for l in rotate(image):
+            f.write(l + '\n' )
+
+    print(sum([l.count('#') for l in image]))
 
 if __name__ == "__main__" :
 
