@@ -27,6 +27,7 @@ def matches(t1,t2):
 def flip(t):
     return [l[::-1] for l in t]
 
+# https://stackoverflow.com/a/34347121
 def rotate(t):
     return [*map("".join, zip(*reversed(t)))]
 
