@@ -10,7 +10,6 @@ def profiler(method):
     return wrapper_method
 
 def matches(t1,t2):
-
     t1r = ''.join([t[-1] for t in t1])
     t2r = ''.join([t[-1] for t in t2])
     t1l = ''.join([t[0] for t in t1])
@@ -25,47 +24,69 @@ def matches(t1,t2):
                 return True
     return False
 
+def flip(t):
+    ret = []
+    for l in t:
+        ret.append(l[::-1])
+    return ret
+
+def rotate(t):
+    return [*map("".join, zip(*reversed(t)))]
+
 def set_corner(cor , right , down):
-    return cor
+    rr = ''.join([t[-1] for t in right])
+    dr = ''.join([t[-1] for t in down])
+    rl = ''.join([t[0] for t in right])
+    dl = ''.join([t[0] for t in down])
+    
+    r_edges = [right[0] , right[-1] , right[0][::-1] , right[-1][::-1] , rr , rr[::-1] , rl , rl[::-1]]
+    d_edges = [down[0] , down[-1] , down[0][::-1] , down[-1][::-1] , dr , dr[::-1] , dl , dl[::-1]]
+
+    for _ in range(2):
+        cor = flip(cor)
+        for _ in range(4):
+            cor = rotate(cor)
+            if cor[-1] in d_edges and ''.join([t[-1] for t in cor]) in r_edges:
+                return cor
+
+    return None
 
 def remove_border(t):
-    return t
+    return [x[1:-1] for x in t[1:-1]]
 
 def set_left_edge(t1,t2):
     ref = ''.join([t[-1] for t in t1])
-    
-    t2r = ''.join([t[-1] for t in t2])
-    t2l = ''.join([t[0] for t in t2])
 
-    if t2l == ref :
-        pass
-        # nothing to be done
-    elif t2l[::-1] == ref :
-        pass
-        # flip hor
-    elif t2r == ref :
-        pass
-        # flip ver
-    elif t2r[::-1] == ref :
-        pass
-        # rotate 180
-    elif t2[0] == ref :
-        pass
-        # mirror
-    elif t2[0][::-1] == ref :
-        pass
-        # rotate 90 degree
-    elif t2[-1] == ref :
-        pass
-        # rotate - 90 degree
-    elif t2[-1][::-1] == ref :
-        pass
-        # rotate -90 and flip vertically
-
-    return remove_border(t2)
+    for _ in range(2):
+        t2 = flip(t2)
+        for _ in range(4):
+            t2 = rotate(t2)
+            if ''.join([t[0] for t in t2]) == ref :
+                return t2
+    return None
 
 def set_upper_edge(t1,t2):
-    return remove_border(t2)
+    ref = t1[-1]
+    for _ in range(2):
+        t2 = flip(t2)
+        for _ in range(4):
+            t2 = rotate(t2)
+            if t2[0] == ref :
+                return t2
+    return None
+
+def assemble_image(img,tiles):
+    whole_image = []
+
+    for l in img:
+        slice = [''] * len(tiles[l[0]])
+        for t in l:
+            for i,s in enumerate(tiles[t]):
+                slice[i] += s
+        for s in slice:
+            whole_image.append(s)
+
+    return whole_image
 
 @profiler
 def part1():
@@ -129,7 +150,7 @@ def part2():
                 image[0][y] = cand
                 added.add(cand)
                 break
-    
+
     for x in range(1,sz):
         for y in range(sz):
             pos = connected[image[x-1][y]]
@@ -139,18 +160,22 @@ def part2():
                     added.add(cand)
                     break
 
-    # set 0,0 tile
     tiles[image[0][0]] = set_corner(tiles[image[0][0]] , tiles[image[0][1]] , tiles[image[1][0]])
 
     for y,l in enumerate(image):
-        print(l)
         if y != 0 :
             prv = image[y-1][0]
             tiles[l[0]] = set_upper_edge(tiles[prv] , tiles[l[0]])
+
         for x,tile in enumerate(l):
             if x != 0 :
                 prv = image[y][x-1]
                 tiles[tile] = set_left_edge(tiles[prv] , tiles[tile])
+
+    for t in tiles:
+        tiles[t] = remove_border(tiles[t])
+    
+    image = assemble_image(image,tiles)
 
 if __name__ == "__main__" :
 
