@@ -85,7 +85,7 @@ def part2():
                     rules_done[ele] = rules_parse[ele]
 
     cnt = sum([bool(re.fullmatch(rules_done['0'].replace('x' , str(1)) , msg)) for msg in msgs])
-    
+    print(rules_done['0'])
     prv_cnt = 0
     rep = 2
     while prv_cnt != cnt:

@@ -54,7 +54,7 @@ def part2():
                 target_idx = idx
                 target_field = [e for e in pos[idx]][0]
                 break
-        
+
         for idx in pos:
             if idx == target_idx : continue
             if target_field in pos[idx] : pos[idx].remove(target_field)
