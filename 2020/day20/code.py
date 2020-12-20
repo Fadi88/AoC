@@ -174,8 +174,35 @@ def part2():
 
     for t in tiles:
         tiles[t] = remove_border(tiles[t])
-    
+
     image = assemble_image(image,tiles)
+
+    ky = 0
+    monster = set()
+    for l in open('monster.txt').read().split('\n'):
+        kx = len(l)
+        for i,ch in enumerate(l):
+            if ch == '#':
+                monster.add((i,ky))
+        ky += 1
+
+    monster_cnt = 0
+    for _ in range(2):
+        image = flip(image)
+        for _ in range(4):
+            image = rotate(image)
+
+            for x in range(0,len(image)-kx):
+                for y in range(0,len(image)-ky):
+                    parts = [] 
+                    for i,p in enumerate(monster):
+                        dx = x + p[0]
+                        dy = y + p[1]
+                        parts.append(image[dy][dx] == '#')
+                    if all(parts) :
+                        monster_cnt += 1
+
+    print(sum([l.count('#') for l in image]) - monster_cnt*len(monster))
 
 if __name__ == "__main__" :
 
