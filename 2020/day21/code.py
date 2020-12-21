@@ -66,7 +66,7 @@ def part2():
     for i in map.values():
         sus |= i
 
-    visited = defaultdict(lambda : False)
+    visited = defaultdict(bool)
 
     for _ in range(len(map)):
         for idx in map:
