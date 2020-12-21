@@ -203,7 +203,7 @@ def part2():
                             image[dy] = image[dy][ : dx] + 'O' + image[dy][ dx +1 :]
 
     with open('output.txt' , 'w+') as f:
-        for l in rotate(image):
+        for l in rotate(rotate(rotate(image))):
             f.write(l + '\n' )
 
     print(sum([l.count('#') for l in image]))
