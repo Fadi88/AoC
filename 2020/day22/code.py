@@ -20,7 +20,7 @@ def play_game(game):
             seen.add(str(game[1]) + str(game[2]))
         else :
             game[2].clear()
-            return game
+            break
 
         p1 = game[1].pop(0)
         p2 = game[2].pop(0)
@@ -49,7 +49,6 @@ def play_game(game):
                 game[2].append(p1)
             else :
                 assert False
-
     return game
 
 @profiler
@@ -80,6 +79,8 @@ def part1():
         elif p1 < p2 :
             game[2].append(p2)
             game[2].append(p1)
+        else :
+            assert False
 
     l = game[1] if len(game[1]) > 0 else game[2]
 
