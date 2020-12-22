@@ -1,4 +1,5 @@
 import time,os,re
+from copy import deepcopy
 
 def profiler(method):
     def wrapper_method(*arg, **kw):
@@ -49,20 +50,7 @@ def play_game(game):
     return game
 
 @profiler
-def part1():
-
-    game = {}
-    game[1] = []
-    game[2] = []
-
-    for l in open('input.txt'):
-        l = l.strip()
-        if 'Player' in l :
-            player = re.findall(r'\d+',l)[0]
-        else :
-            card = re.findall(r'\d+',l)
-            if len(card) == 1:
-                game[int(player)].append(int(card[0]))
+def part1(game):
 
     round = 0
     while len(game[1]) != 0 and len(game[2]) != 0 :
@@ -72,19 +60,23 @@ def part1():
 
         if p1 > p2:
             game[1].extend([p1 , p2])
-
         elif p1 < p2 :
             game[2].extend([p2 , p1])
-
         else :
             assert False
 
     l = game[1] if len(game[1]) > 0 else game[2]
 
-    print(round , sum([c * (i+1) for i,c in enumerate(l[::-1])]))
+    print(round , sum([c * (i+1) for i,c in enumerate(l[::-1])]), len(game[1]) > 0)
 
 @profiler
-def part2():
+def part2(game):
+
+    game = play_game(game)
+    l = game[1] if len(game[1]) > 0 else game[2]
+    print(cnt , sum([c * (i+1) for i,c in enumerate(l[::-1])]) , len(game[1]) > 0)
+
+if __name__ == "__main__":
 
     game = {}
     game[1] = []
@@ -99,13 +91,5 @@ def part2():
             if len(card) == 1:
                 game[int(player)].append(int(card[0]))
 
-    game = play_game(game)
-
-    l = game[1] if len(game[1]) > 0 else game[2]
-
-    print(cnt , sum([c * (i+1) for i,c in enumerate(l[::-1])]))
-
-if __name__ == "__main__":
-
-    part1()
-    part2()
+    part1(deepcopy(game))
+    part2(deepcopy(game))
