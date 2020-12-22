@@ -25,7 +25,8 @@ def matches(t1,t2):
     return False
 
 def flip(t):
-    return [l[::-1] for l in t]
+    #return [l[::-1] for l in t]
+    return t[::-1]
 
 # https://stackoverflow.com/a/34347121
 def rotate(t):
