@@ -16,8 +16,9 @@ def play_game(game):
     cnt += 1
 
     while len(game[1]) != 0 and len(game[2]) != 0 :
-        if str(game[1]) + str(game[2]) not in seen :
-            seen.add(str(game[1]) + str(game[2]))
+        key = str(game[1]) + str(game[2])
+        if key not in seen :
+            seen.add(key)
         else :
             game[2].clear()
             break
@@ -32,21 +33,17 @@ def play_game(game):
             tmp = play_game(tmp)
 
             if len(tmp[2]) == 0:
-                game[1].append(p1)
-                game[1].append(p2)
+                game[1].extend([p1 , p2])
             elif len(tmp[2]):
-                game[2].append(p2)
-                game[2].append(p1)
+                game[2].extend([p2 , p1])
             else :
                 assert False
 
         else :
             if p1 > p2:
-                game[1].append(p1)
-                game[1].append(p2)
+                game[1].extend([p1 , p2])
             elif p1 < p2 :
-                game[2].append(p2)
-                game[2].append(p1)
+                game[2].extend([p2 , p1])
             else :
                 assert False
     return game
@@ -74,21 +71,17 @@ def part1():
         p2 = game[2].pop(0)
 
         if p1 > p2:
-            game[1].append(p1)
-            game[1].append(p2)
+            game[1].extend([p1 , p2])
+
         elif p1 < p2 :
-            game[2].append(p2)
-            game[2].append(p1)
+            game[2].extend([p2 , p1])
+
         else :
             assert False
 
     l = game[1] if len(game[1]) > 0 else game[2]
 
-    score = 0
-    for i,c in enumerate(l[::-1]):
-        score += ( c * (i + 1))
-
-    print(round , score)
+    print(round , sum([c * (i+1) for i,c in enumerate(l[::-1])]))
 
 @profiler
 def part2():
@@ -110,11 +103,7 @@ def part2():
 
     l = game[1] if len(game[1]) > 0 else game[2]
 
-    score = 0
-    for i,c in enumerate(l[::-1]):
-        score += ( c * (i + 1))
-
-    print(cnt , score)
+    print(cnt , sum([c * (i+1) for i,c in enumerate(l[::-1])]))
 
 if __name__ == "__main__":
 
