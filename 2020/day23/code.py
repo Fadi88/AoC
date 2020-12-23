@@ -12,7 +12,6 @@ def profiler(method):
 def part1(inp):
 
     cups = [*map(int,list(inp))]
-    org_cups = set(cups)
     cc = 0
 
     for _ in range(100):
@@ -26,8 +25,8 @@ def part1(inp):
 
         while dc not in cups:
             dc -= 1
-            if dc < min(org_cups) :
-                dc = max(org_cups)
+            if dc < 1 :
+                dc = 9
         
         cups.insert(cups.index(dc) + 1, c3)
         cups.insert(cups.index(dc) + 1, c2)
