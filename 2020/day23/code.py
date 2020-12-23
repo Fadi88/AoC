@@ -24,10 +24,8 @@ def part1(inp):
         cups.remove(c3)
 
         while dc not in cups:
-            dc -= 1
-            if dc < 1 :
-                dc = 9
-        
+            dc = dc - 1 if dc > 1 else 9 
+
         cups.insert(cups.index(dc) + 1, c3)
         cups.insert(cups.index(dc) + 1, c2)
         cups.insert(cups.index(dc) + 1, c1)
