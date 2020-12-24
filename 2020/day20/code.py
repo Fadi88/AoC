@@ -107,7 +107,6 @@ def part1():
 
     prod = 1
     
-    print(sum([len(connected[i]) for i in connected ] ))
     for i in connected:
         if len(connected[i]) == 2:
             prod *= i
@@ -195,13 +194,11 @@ def part2():
                 for y in range(0,len(image)-ky):
                     parts = [] 
                     for i,p in enumerate(monster):
-                        dx = x + p[0]
-                        dy = y + p[1]
+                        dx , dy = x + p[0] ,  y + p[1]
                         parts.append(image[dy][dx] == '#')
                     if all(parts) :
                         for p in monster:
-                            dx = x + p[0]
-                            dy = y + p[1]
+                            dx , dy = x + p[0] ,  y + p[1]
                             image[dy] = image[dy][ : dx] + 'O' + image[dy][ dx +1 :]
 
     with open('output.txt' , 'w+') as f:
