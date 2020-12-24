@@ -39,6 +39,7 @@ def part2(inp):
 
     cups = [*map(int,list(inp))]
     ls = {}
+    #ls = [None] * 1000001
 
     for i in range(1000000):
         if i < len(cups) - 1:
@@ -59,6 +60,7 @@ def part2(inp):
 
         ls[cc] = ls[c3]
         dc =  1000000 if cc == 1 else cc -1
+        #dc = ((cc - 1 + 1000000) % 1000000) + 1
 
         while dc in [c1,c2,c3]:
             dc = 1000000 if dc == 1 else dc - 1

@@ -106,7 +106,8 @@ def part1():
                 connected[t].add(i)
 
     prod = 1
-
+    
+    print(sum([len(connected[i]) for i in connected ] ))
     for i in connected:
         if len(connected[i]) == 2:
             prod *= i
