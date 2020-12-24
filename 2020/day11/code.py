@@ -13,12 +13,8 @@ def sim_cycle(ls,diag=False):
     switched = False
     ret = ls.copy()
     directions = [(0,1) , (0,-1) , (1,0) , (-1 , 0) , (1 , 1) , (-1 , -1) , (-1 , 1), (1 , -1)]
-    if diag :
-        rng = range(1,31)
-        lim = 5
-    else :
-        rng = [1]
-        lim = 4
+
+    rng , lim = (range(1,31) , 5) if diag else ([1] , 4)
 
     for i in range(len(ls)):
         for t in range(len(ls[i])):
@@ -26,8 +22,7 @@ def sim_cycle(ls,diag=False):
                 cnt = 0
                 for dx,dy in directions:
                     for fac in rng :
-                        x = i + fac * dx
-                        y = t + fac *dy
+                        x , y = i + fac * dx , t + fac *dy
                         if x < 0 or x == len(ls) or y < 0 or y == len(ls[i]) : break
                         if ls[x][y] == '#' : cnt += 1
                         if ls[x][y] == '#' or ls[x][y] == 'L': break
@@ -41,8 +36,7 @@ def sim_cycle(ls,diag=False):
 
                 for dx,dy in directions:
                     for fac in rng :
-                        x = i + fac * dx
-                        y = t + fac * dy
+                        x , y  = i + fac * dx , t + fac * dy
                         if x < 0 or x == len(ls) or y < 0 or y == len(ls[i]) : break
 
                         if ls[x][y] == '#':
