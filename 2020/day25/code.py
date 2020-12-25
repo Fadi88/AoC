@@ -19,10 +19,7 @@ def get_loop_size(subject_num , pub_key):
     return loop_size
 
 def get_encryption_key(loop_size,subject_num):
-    val = 1
-    for _ in range(loop_size):
-        val = (val * subject_num) % 20201227
-    return val
+    return pow(subject_num , loop_size , 20201227)
 
 @profiler
 def part1():
