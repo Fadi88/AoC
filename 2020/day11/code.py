@@ -62,7 +62,6 @@ def part1():
 
     print('part 1 answer : ' , cnt , sum([l.count('#') for l in ls]))
 
-
 @profiler
 def part2():
 
