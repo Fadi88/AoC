@@ -21,24 +21,22 @@ def get_loop_size(subject_num , pub_key):
 def get_encryption_key(loop_size,subject_num):
     val = 1
     for _ in range(loop_size):
-        val *= subject_num
-        val %= 20201227
+        val = (val * subject_num) % 20201227
     return val
-        
 
 @profiler
 def part1():
-    d = 15335876
-    c = 15086442
+    card_pub_key = 15335876
+    door_pub_key = 15086442
 
-    c_loop_size = get_loop_size(7,c)
-    d_loop_size = get_loop_size(7,d)
+    door_loop_size = get_loop_size(7,door_pub_key)
+    card_loop_size = get_loop_size(7,card_pub_key)
 
-    enc_c = get_encryption_key(c_loop_size , d)
-    enc_d = get_encryption_key(d_loop_size , c)
+    encryp_door = get_encryption_key(door_loop_size , card_pub_key)
+    encryp_card = get_encryption_key(card_loop_size , door_pub_key)
 
-    assert enc_d == enc_d
-    print(enc_c)
+    assert encryp_card == encryp_door
+    print(encryp_card)
 
 if __name__ == "__main__":
     

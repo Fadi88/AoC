@@ -117,7 +117,7 @@ def part2():
 
     tiles = defaultdict(list)
 
-    for l in  open('input.txt'):
+    for l in  open('test.txt'):
         if 'Tile' in l :
             tile = int(re.findall(r'\d+', l)[0])
         elif '.' in l or '#' in l:
@@ -202,7 +202,7 @@ def part2():
                             image[dy] = image[dy][ : dx] + 'O' + image[dy][ dx +1 :]
 
     with open('output.txt' , 'w+') as f:
-        for l in rotate(rotate(rotate(image))):
+        for l in rotate(rotate(rotate(rotate(flip(image))))):
             f.write(l + '\n' )
 
     print(sum([l.count('#') for l in image]))
