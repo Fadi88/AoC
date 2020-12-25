@@ -14,8 +14,7 @@ def get_loop_size(subject_num , pub_key):
     val = 1
     while val != pub_key:
         loop_size += 1
-        val *= subject_num
-        val %= 20201227
+        val = (val * subject_num) % 20201227
     return loop_size
 
 def get_encryption_key(loop_size,subject_num):
