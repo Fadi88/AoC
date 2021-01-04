@@ -75,7 +75,9 @@ def part2():
         for l in f:
             p = l.strip().split('->')
             table[p[1].strip()] = p[0].strip()
-    table['b'] = '46065'
+
+    table['b'] = str(eval_sig(table,'a'))
+    cache = {}
     print(eval_sig(table,'a'))
 
 if __name__ == "__main__":
