@@ -109,6 +109,7 @@ def part1():
     to_visit = [[a] for a in attacks]
 
     minimum_cost = 100000
+    visited = []
 
     while to_visit:
 
@@ -120,9 +121,13 @@ def part1():
             for a in attacks:
                 tmp = s.copy()
                 tmp.append(a)
-                to_visit.append(tmp)
+                tmp_cp = tmp.copy()
+                if not tmp_cp in visited:
+                    to_visit.append(tmp)
         elif b_hp < 1:
             if cost < minimum_cost:
+                s.sort()
+                visited.append(s)
                 minimum_cost = cost
 
     print(minimum_cost)
@@ -136,6 +141,7 @@ def part2():
     to_visit = [[a] for a in attacks]
 
     minimum_cost = 100000
+    visited = []
 
     while to_visit:
 
@@ -147,10 +153,13 @@ def part2():
             for a in attacks:
                 tmp = s.copy()
                 tmp.append(a)
-                to_visit.append(tmp)
+                tmp_cp = tmp.copy()
+                if not tmp_cp in visited:
+                    to_visit.append(tmp)
         elif b_hp < 1:
             if cost < minimum_cost:
-                minimum_cost = cost
+                s.sort()
+                visited.append(s)
 
     print(minimum_cost)
 
