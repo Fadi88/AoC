@@ -54,10 +54,8 @@ def part2():
                     if c == ' ':
                         dec += ' '
                     else:
-                        new_c = (ord(c)+(sec_id % 26))
-                        if new_c > ord('z'):
-                            new_c -= 26
-                        dec += chr(new_c)
+                        new_c =  (ord(c)-ord('a')+(sec_id % 26))%26
+                        dec += chr(ord('a') + new_c)
                 if 'north' in dec:
                     print(sec_id)
                     break
