@@ -39,49 +39,70 @@ def part_1():
 class node:
     def __init__(self, v) -> None:
         self.val = v
-        self.prev = None
-        self.next = None
+        self.prev = self
+        self.next = self
+
+
+def print_table(n):
+    visited = False
+
+    while True:
+        if n.val == 0:
+            if not visited:
+                visited = True
+            else:
+                break
+        print(n.val, end=" ")
+
+        n = n.next
+
+    print()
 
 
 @ profiler
 def part_2():
-    n_player = 9
-    n_marbles = 25
+    n_player = 459
+    n_marbles = 71320 * 100
 
     head = node(0)
-    head.next = head
-    head.prev = head
 
     scores = [0] * n_player
-    next_marble = 0
-    current_marble = head
+    next_marble = 1
+    current_node = head
 
     while next_marble < n_marbles:
-        next_marble += 1
+
         tmp_node = node(next_marble)
+
         if next_marble % 23 != 0:
-            current_node = current_marble.next.next
+            current_node = current_node.next
 
             tmp_node.next = current_node.next
-            current_node.next = tmp_node
             tmp_node.prev = current_node
+            tmp_node.next.prev = tmp_node
+
+            current_node.next = tmp_node
             current_node = tmp_node
 
         else:
-            tmp_node = current_marble.prev.prev.prev.prev.prev.prev.prev
+            to_remove = current_node
 
-            scores[(next_marble - 1) % n_player] += next_marble + tmp_node.val
+            for _ in range(7):
+                to_remove = to_remove.prev
 
-            tmp_node.prev.next = tmp_node.next
-            tmp_node.next.prev = tmp_node.prev
+            scores[(next_marble - 1) % n_player] += next_marble + to_remove.val
 
+            to_remove.prev.next = to_remove.next
+            to_remove.next.prev = to_remove.prev
+
+            current_node = to_remove.next
+
+            del(to_remove)
             del(tmp_node)
 
-    tmp = head.next
-    while (tmp.val != 0):
-        print(tmp.val, end=" ")
-        tmp = tmp.next
-    print(scores)
+        next_marble += 1
+
+    print(max(scores))
 
 
 if __name__ == "__main__":
