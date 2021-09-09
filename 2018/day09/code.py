@@ -72,9 +72,11 @@ def part_2():
 
     while next_marble < n_marbles:
 
-        tmp_node = node(next_marble)
+        
 
         if next_marble % 23 != 0:
+            tmp_node = node(next_marble)
+    
             current_node = current_node.next
 
             tmp_node.next = current_node.next
@@ -85,10 +87,7 @@ def part_2():
             current_node = tmp_node
 
         else:
-            to_remove = current_node
-
-            for _ in range(7):
-                to_remove = to_remove.prev
+            to_remove = current_node.prev.prev.prev.prev.prev.prev.prev
 
             scores[(next_marble - 1) % n_player] += next_marble + to_remove.val
 
@@ -98,7 +97,6 @@ def part_2():
             current_node = to_remove.next
 
             del(to_remove)
-            del(tmp_node)
 
         next_marble += 1
 
