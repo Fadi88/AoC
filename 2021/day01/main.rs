@@ -10,8 +10,11 @@ fn bench(f: fn()) {
 }
 
 fn part_1() {
-    let l = fs::read_to_string("day01/input.txt").unwrap();
-    let nums: Vec<u16> = l.lines().map(|v| v.parse::<u16>().unwrap()).collect();
+    let nums: Vec<u16> = fs::read_to_string("day01/input.txt")
+        .unwrap()
+        .lines()
+        .map(|v| v.parse::<u16>().unwrap())
+        .collect();
 
     let mut cnt: u16 = 0;
     for i in 1..nums.len() {
@@ -24,8 +27,11 @@ fn part_1() {
 }
 
 fn part_2() {
-    let l = fs::read_to_string("day01/input.txt").unwrap();
-    let nums: Vec<u16> = l.lines().map(|v| v.parse::<u16>().unwrap()).collect();
+    let nums: Vec<u16> = fs::read_to_string("day01/input.txt")
+        .unwrap()
+        .lines()
+        .map(|v| v.parse::<u16>().unwrap())
+        .collect();
 
     let mut cnt: u16 = 0;
     for i in 2..nums.len() - 1 {
