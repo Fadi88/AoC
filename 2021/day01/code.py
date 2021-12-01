@@ -1,45 +1,39 @@
-import time,os
+import time
+import os
+
 
 def profiler(method):
     def wrapper_method(*arg, **kw):
         t = time.time()
-        method(*arg, **kw)
-        print('Method '  + method.__name__ +' took : ' + "{:2.5f}".format(time.time()-t) + ' sec')
+        ret = method(*arg, **kw)
+        print('Method ' + method.__name__ + ' took : ' +
+              "{:2.5f}".format(time.time()-t) + ' sec')
+        return ret
     return wrapper_method
 
-target_val = 2020
 
 @profiler
 def part1():
-  
-    ls = None
+    l = [int(l) for l in open('input.txt')]
+    cnt = 0
+    for i in range(1, len(l)):
+        if l[i] > l[i-1]:
+            cnt += 1
 
-    with open('input.txt', 'r') as f_in :
-        ls = [int(l) for l in f_in]
-
-    for i in range(len(ls)):
-        if target_val - ls[i] in ls:
-            print("answer part 1 : " + str(ls[i] * ( target_val - ls[i])))
-            return
+    print("part 1 ", cnt)
 
 
 @profiler
 def part2():
+    l = [int(l) for l in open('input.txt')]
 
-    ls = None
+    cnt = 0
+    for i in range(2, len(l)-1):
+        if l[i + 1] > l[i - 2]:
+            cnt += 1
 
-    with open('input.txt', 'r') as f_in :
-        ls = [int(l) for l in f_in]
+    print("part 2 ", cnt)
 
-    for a in range(len(ls)):
-        for b in range(len(ls)):
-            if a == b :
-                continue
-            tmp_sum = ls[a] + ls[b]
-
-            if target_val - tmp_sum in ls:
-                print("answer part 2 : " + str(ls[a] * ls[b] * (target_val - tmp_sum)))
-                return
 
 if __name__ == "__main__":
 
