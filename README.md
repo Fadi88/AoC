@@ -1,5 +1,5 @@
-# adventofcode19
+# adventofcode
 
 solutions for [advent of code](https://adventofcode.com)
 
-langugae used : C++ and python
+langugae used : C++ and python and sometimes also Rust
