@@ -49,24 +49,42 @@ fn part_2() {
         .map(|l| l.unwrap().chars().collect())
         .collect();
 
-    let mut _nums_oxy = ls.clone();
-    let mut _nums_car = ls.clone();
+    let mut nums_oxy = ls.clone();
 
     for bit in 0..ls[0].len() {
-        let mut ones: u16 = 0;
+        let bits = nums_oxy.iter().map(|x| x[bit]).collect::<Vec<_>>();
 
-        for l in &_nums_oxy {
-            if l[bit] == '1' {
-                ones += 1;
-            }
+        let c0 = bits.iter().filter(|x| **x == '0').count();
+        let c1 = bits.iter().filter(|x| **x == '1').count();
+
+        let keep = if c1 >= c0 { '1' } else { '0' };
+
+        nums_oxy.retain(|x| x[bit] == keep);
+        if nums_oxy.len() == 1 {
+            break;
         }
-
-        for _l in &_nums_oxy {
-            if (ones as usize) < _nums_oxy.len() / 2 {
-                //nums_oxy.remove(1);
-            }
-        } 
     }
+
+    let mut nums_car = ls.clone();
+
+    for bit in 0..ls[0].len() {
+        let bits = nums_car.iter().map(|x| x[bit]).collect::<Vec<_>>();
+
+        let c0 = bits.iter().filter(|x| **x == '0').count();
+        let c1 = bits.iter().filter(|x| **x == '1').count();
+
+        let keep = if c1 >= c0 { '0' } else { '1' };
+
+        nums_car.retain(|x| x[bit] == keep);
+        if nums_car.len() == 1 {
+            break;
+        }
+    }
+
+    let oxy = u32::from_str_radix(&nums_oxy[0].iter().collect::<String>(), 2).unwrap();
+    let car = u32::from_str_radix(&nums_car[0].iter().collect::<String>(), 2).unwrap();
+
+    println!("part 2 : {:?}", oxy * car);
 }
 
 fn main() {
