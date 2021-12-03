@@ -17,19 +17,18 @@ def part1():
     nums = [l.strip() for l in open("input.txt")]
 
     gamma = list(nums[0])
-    epsilon = list(nums[0])
 
     for bit in range(len(nums[0])):
         bits = [l[bit] for l in nums]
 
-        if bits.count('1') > bits.count('0'):
-            gamma[bit] = '1'
-            epsilon[bit] = '0'
-        else:
-            gamma[bit] = '0'
-            epsilon[bit] = '1'
+        gamma[bit] = str(int(bits.count('1') > bits.count('0') * 1))
 
-    print("part 1 : ", int(''.join(gamma), 2) * int(''.join(epsilon), 2))
+    epsilon = int(''.join(gamma).replace(
+        '0', 'x').replace('1', '0').replace('x', '1') , 2)
+    gamma = int(''.join(gamma),2)
+    
+
+    print("part 1 : ", gamma * epsilon)
 
 
 @profiler
