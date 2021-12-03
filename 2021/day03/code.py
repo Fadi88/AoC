@@ -40,8 +40,9 @@ def part2():
 
         bits_oxy = [l[bit] for l in nums_oxy]
 
-        nums_oxy = [l for l in nums_oxy if l[bit] == '1'] if bits_oxy.count(
-            '1') >= bits_oxy.count('0') else [l for l in nums_oxy if l[bit] == '0']
+        keep = '1' if bits_oxy.count('1') >= bits_oxy.count('0') else '0'
+
+        nums_oxy = list(filter(lambda x: x[bit] == keep, nums_oxy))
 
         if len(nums_oxy) == 1:
             break
@@ -50,8 +51,9 @@ def part2():
 
         bits_car = [l[bit] for l in nums_car]
 
-        nums_car = [l for l in nums_car if l[bit] == '0'] if bits_car.count(
-            '1') >= bits_car.count('0') else [l for l in nums_car if l[bit] == '1']
+        keep = '0' if bits_car.count('1') >= bits_car.count('0') else '1'
+
+        nums_car = list(filter(lambda x: x[bit] == keep, nums_car))
 
         if len(nums_car) == 1:
             break
