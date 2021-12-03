@@ -24,9 +24,8 @@ def part1():
         gamma[bit] = str(int(bits.count('1') > bits.count('0') * 1))
 
     epsilon = int(''.join(gamma).replace(
-        '0', 'x').replace('1', '0').replace('x', '1') , 2)
-    gamma = int(''.join(gamma),2)
-    
+        '0', 'x').replace('1', '0').replace('x', '1'), 2)
+    gamma = int(''.join(gamma), 2)
 
     print("part 1 : ", gamma * epsilon)
 
@@ -41,10 +40,8 @@ def part2():
 
         bits_oxy = [l[bit] for l in nums_oxy]
 
-        if bits_oxy.count('1') >= bits_oxy.count('0'):
-            nums_oxy = [l for l in nums_oxy if l[bit] == '1']
-        else:
-            nums_oxy = [l for l in nums_oxy if l[bit] == '0']
+        nums_oxy = [l for l in nums_oxy if l[bit] == '1'] if bits_oxy.count(
+            '1') >= bits_oxy.count('0') else [l for l in nums_oxy if l[bit] == '0']
 
         if len(nums_oxy) == 1:
             break
@@ -53,10 +50,8 @@ def part2():
 
         bits_car = [l[bit] for l in nums_car]
 
-        if bits_car.count('1') >= bits_car.count('0'):
-            nums_car = [l for l in nums_car if l[bit] == '0']
-        else:
-            nums_car = [l for l in nums_car if l[bit] == '1']
+        nums_car = [l for l in nums_car if l[bit] == '0'] if bits_car.count(
+            '1') >= bits_car.count('0') else [l for l in nums_car if l[bit] == '1']
 
         if len(nums_car) == 1:
             break
