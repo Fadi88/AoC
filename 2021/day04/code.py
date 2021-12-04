@@ -34,12 +34,12 @@ def part1():
         for board in boards:
             score = []
 
-            for i in range(len(board[0])):
+            for l in board:
                 if all(i is None for i in l):
                     score.append(get_baord_sum(board)*num)
 
-            for l in board:
-                if all(i is None for i in l):
+            for i in range(len(board[0])):
+                if all(l[i] is None for l in board):
                     score.append(get_baord_sum(board)*num)
 
             if len(score) > 0:
@@ -67,19 +67,19 @@ def part2():
         # check all boards for marked lines
         for board in boards:
 
-            for i in range(len(board[0])):
-                if all(i is None for i in l):
-                    score.append(get_baord_sum(board)*num)
-                    if board in boards:
-                        boards.remove(board)
-
             for l in board:
                 if all(i is None for i in l):
                     score.append(get_baord_sum(board)*num)
                     if board in boards:
                         boards.remove(board)
 
-    print("part 2 : " , score[-1])
+            for i in range(len(board[0])):
+                if all(l[i] is None for l in board):
+                    score.append(get_baord_sum(board)*num)
+                    if board in boards:
+                        boards.remove(board)
+
+    print("part 2 : ", score[-1])
 
 
 if __name__ == "__main__":
