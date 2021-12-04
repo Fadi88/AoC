@@ -1,5 +1,4 @@
 import time
-import re
 
 
 def profiler(method):
