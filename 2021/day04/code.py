@@ -32,20 +32,12 @@ def part1():
 
         # check all boards for marked lines
         for board in boards:
-            score = []
-
-            for l in board:
-                if all(i is None for i in l):
-                    score.append(get_baord_sum(board)*num)
 
             for i in range(len(board[0])):
-                if all(l[i] is None for l in board):
-                    score.append(get_baord_sum(board)*num)
-
-            if len(score) > 0:
-                print("part 1 : ", score[0])
-
-                return
+                if all(l[i] is None for l in board) or \
+                        all(e is None for e in board[i]):
+                    print("part 1 : ", get_baord_sum(board) * num)
+                    return
 
 
 @profiler
@@ -67,14 +59,9 @@ def part2():
         # check all boards for marked lines
         for board in boards:
 
-            for l in board:
-                if all(i is None for i in l):
-                    score.append(get_baord_sum(board)*num)
-                    if board in boards:
-                        boards.remove(board)
-
             for i in range(len(board[0])):
-                if all(l[i] is None for l in board):
+                if all(l[i] is None for l in board) or \
+                        all(e is None for e in board[i]):
                     score.append(get_baord_sum(board)*num)
                     if board in boards:
                         boards.remove(board)
