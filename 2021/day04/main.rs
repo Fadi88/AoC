@@ -19,20 +19,35 @@ fn part_1() {
 
     let ls: Vec<_> = buf.split("\n\n").collect();
 
-    let _nums: Vec<_> = ls[0]
+    let nums: Vec<_> = ls[0]
         .split(',')
-        .map(|x| x.parse::<u16>().unwrap())
+        .map(|x| x.parse::<i16>().unwrap())
         .collect();
 
-    //println!("{}", ls[1]);
-    let mut _baords = ls
-        .iter()
-        .skip(1)
-        .map(|b_st| b_st.split('\n').collect::<Vec<_>>())
-        .collect::<Vec<_>>()
-        .iter()
-        .map(|s| s.split("\n").collect::<Vec<_>>());
+    let mut boards: Vec<Vec<Vec<i16>>> = Vec::new();
+
+    for board in ls.iter().skip(1) {
+        let mut b: Vec<Vec<i16>> = Vec::new();
+        for l in board.split('\n') {
+            b.push(
+                l.split_whitespace()
+                    .map(|n| n.parse::<i16>().unwrap())
+                    .collect(),
+            );
+        }
+        boards.push(b);
+    }
+    for num in nums{
+        for board in boards{
+            for l in board{
+                if l.contains(&num){
+                    
+                }
+            }
+        }
+    }
 }
+
 
 fn part_2() {}
 
