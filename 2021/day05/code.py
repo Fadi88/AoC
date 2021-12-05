@@ -48,9 +48,9 @@ def part2():
                 cnt[(x, p1[1])] += 1
         else:
             xs = range(p1[0], p2[0] +
-                       1) if p1[0] < p2[0] else range(p1[0], p2[0] - 1, -1)
+                       1) if p1[0] < p2[0] else range(p2[0], p1[0] + 1)[::-1]
             ys = range(p1[1], p2[1] +
-                       1) if p1[1] < p2[1] else range(p1[1], p2[1] - 1, -1)
+                       1) if p1[1] < p2[1] else range(p2[1], p1[1] + 1)[::-1]
 
             for x, y in zip(xs, ys):
                 cnt[(x, y)] += 1
