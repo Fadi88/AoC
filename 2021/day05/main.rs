@@ -46,12 +46,12 @@ fn part_2() {
         let p2 = &v[1];
 
         if p1[0] == p2[0] {
-            for i in min(p1[1], p2[1])..=max(p1[1], p2[1]) {
-                *cnt.entry((p1[0], i)).or_insert(0) += 1;
+            for y in min(p1[1], p2[1])..=max(p1[1], p2[1]) {
+                *cnt.entry((p1[0], y)).or_insert(0) += 1;
             }
         } else if p1[1] == p2[1] {
-            for i in min(p1[0], p2[0])..=max(p1[0], p2[0]) {
-                *cnt.entry((i, p1[1])).or_insert(0) += 1;
+            for x in min(p1[0], p2[0])..=max(p1[0], p2[0]) {
+                *cnt.entry((x, p1[1])).or_insert(0) += 1;
             }
         } else {
             let xs: Vec<u16>;
@@ -68,8 +68,8 @@ fn part_2() {
                 ys = (p2[1]..=p1[1]).rev().collect();
             }
 
-            for i in 0..ys.len() {
-                *cnt.entry((xs[i], ys[i])).or_insert(0) += 1;
+            for (x, y) in xs.iter().zip(ys.iter()) {
+                *cnt.entry((*x, *y)).or_insert(0) += 1;
             }
         }
     }
