@@ -34,23 +34,23 @@ def part2():
 
     input = [int(i) for i in open("day06/input.txt").read().split(',')]
 
-    tracker = {i: 0 for i in range(9)}
+    ages = {i: 0 for i in range(9)}
 
-    for i in input:
-        tracker[i] += 1
+    for age in input:
+        ages[age] += 1
 
     for _ in range(256):
-        tmp = {i: 0 for i in range(9)}
-        for i in tracker:
-            if i == 0:
-                tmp[8] += tracker[0]
-                tmp[6] += tracker[0]
+        new_ages = {i: 0 for i in range(9)}
+        for age in ages:
+            if age == 0:
+                new_ages[8] += ages[0]
+                new_ages[6] += ages[0]
             else:
-                tmp[i-1] += tracker[i]
+                new_ages[age-1] += ages[age]
 
-        tracker = tmp
+        ages = new_ages
 
-    print(sum(tracker.values()))
+    print(sum(ages.values()))
 
 
 if __name__ == "__main__":
