@@ -63,13 +63,34 @@ fn part_2() {
         "{:?}",
         tracker
             .into_values()
-            .collect::<Vec<u64>>()
+            .collect::<Vec<_>>()
             .iter()
             .sum::<u64>()
     );
+}
+fn part2_array() {
+    let input: Vec<u8> = fs::read_to_string("day06/input.txt")
+        .unwrap()
+        .split(',')
+        .map(|x| x.parse::<u8>().unwrap())
+        .collect();
+
+    let mut tracker: [u64; 9] = [0; 9];
+
+    for i in input {
+        tracker[i as usize] += 1;
+    }
+
+    for _ in 0..256 {
+        tracker.rotate_left(1);
+        tracker[6] += tracker[8];
+    }
+
+    println!("{:?}" , tracker.into_iter().sum::<u64>());
 }
 
 fn main() {
     bench(part_1);
     bench(part_2);
+    bench(part2_array);
 }
