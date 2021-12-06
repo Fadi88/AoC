@@ -26,3 +26,7 @@ path="day05/main.rs"
 [[bin]]
 name="day06"
 path="day06/main.rs"
+
+[[bin]]
+name="day07"
+path="day07/main.rs"
