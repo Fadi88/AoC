@@ -13,12 +13,44 @@ def profiler(method):
 
 @profiler
 def part1():
-    pass
+    input = [int(i) for i in open("day06/input.txt").read().split(',')]
+
+    for _ in range(80):
+        tmp = []
+        for i in input:
+            if i == 0:
+                tmp.append(8)
+                tmp.append(6)
+            else:
+                tmp.append(i-1)
+
+        input = tmp
+
+    print(len(tmp))
 
 
 @profiler
 def part2():
-    pass
+
+    input = [int(i) for i in open("day06/input.txt").read().split(',')]
+
+    tracker = {i: 0 for i in range(9)}
+
+    for i in input:
+        tracker[i] += 1
+
+    for _ in range(256):
+        tmp = {i: 0 for i in range(9)}
+        for i in tracker:
+            if i == 0:
+                tmp[8] += tracker[0]
+                tmp[6] += tracker[0]
+            else:
+                tmp[i-1] += tracker[i]
+
+        tracker = tmp
+
+    print(sum(tracker.values()))
 
 
 if __name__ == "__main__":
