@@ -14,9 +14,9 @@ fn bench(f: fn()) {
 fn part_1() {
     let mut cnt: HashMap<(u16, u16), u8> = HashMap::new();
     for l in fs::read_to_string("day05/input.txt").unwrap().lines() {
-        let v: Vec<Vec<_>> = l
+        let v: Vec<Vec<u16>> = l
             .split(" -> ")
-            .map(|x| x.split(',').map(|x| x.parse::<u16>().unwrap()).collect())
+            .map(|x| x.split(',').map(|x| x.parse().unwrap()).collect())
             .collect();
         let p1 = &v[0];
         let p2 = &v[1];
@@ -56,17 +56,18 @@ fn part_2() {
         } else {
             let xs: Vec<u16>;
             let ys: Vec<u16>;
-            if p1[0] < p2[0] {
-                xs = (p1[0]..=p2[0]).collect();
-            } else {
-                xs = (p2[0]..=p1[0]).rev().collect();
-            }
 
-            if p1[1] < p2[1] {
-                ys = (p1[1]..=p2[1]).collect();
+            xs = if p1[0] < p2[0] {
+                (p1[0]..=p2[0]).collect()
             } else {
-                ys = (p2[1]..=p1[1]).rev().collect();
-            }
+                (p2[0]..=p1[0]).rev().collect()
+            };
+
+            ys = if p1[1] < p2[1] {
+                (p1[1]..=p2[1]).collect()
+            } else {
+                (p2[1]..=p1[1]).rev().collect()
+            };
 
             for (x, y) in xs.iter().zip(ys.iter()) {
                 *cnt.entry((*x, *y)).or_insert(0) += 1;
