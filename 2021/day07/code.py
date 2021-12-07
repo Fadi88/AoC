@@ -15,7 +15,7 @@ def profiler(method):
 def part1():
     input = list(map(int, open("day07/input.txt").read().split(',')))
 
-    p1 = min([sum(map(lambda x:  abs(x-i), input)) for i in input])
+    p1 = min([sum(map(lambda x:  abs(x-i), input)) for i in range(max(input))])
 
     print("part 1 : ", p1)
 
@@ -28,7 +28,7 @@ def get_fuel(dist):
 def part2():
     input = list(map(int, open("day07/input.txt").read().split(',')))
 
-    p2 = min([sum(map(lambda x:  get_fuel(abs(x-i)), input)) for i in input])
+    p2 = min([sum(map(lambda x:  get_fuel(abs(x-i)), input)) for i in range(max(input))])
 
     print("part 2 : ", p2)
 
