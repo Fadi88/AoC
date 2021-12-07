@@ -23,7 +23,8 @@ fn part_1() {
         .map(|x| x.parse::<i32>().unwrap())
         .collect::<Vec<_>>();
 
-    let p1 = *input
+    let p1 = *(0..=*input.iter().max().unwrap())
+        .collect::<Vec<_>>()
         .iter()
         .map(|v| get_fuel_p1(&input, v.clone()))
         .collect::<Vec<_>>()
@@ -52,7 +53,8 @@ fn part_2() {
         .map(|x| x.parse::<i32>().unwrap())
         .collect::<Vec<_>>();
 
-    let p2 = *input
+    let p2 = *(0..=*input.iter().max().unwrap())
+        .collect::<Vec<_>>()
         .iter()
         .map(|v| get_fuel_p2(&input, v.clone()))
         .collect::<Vec<_>>()
