@@ -9,9 +9,12 @@ fn bench(f: fn()) {
 }
 
 fn get_fuel_p1(input: &[i32], i: i32) -> i32 {
-    let res = input.iter().map(|x| (x - i).abs()).collect::<Vec<_>>();
-
-    res.iter().sum()
+    input
+        .iter()
+        .map(|x| (x - i).abs())
+        .collect::<Vec<_>>()
+        .iter()
+        .sum()
 }
 
 fn part_1() {
@@ -32,15 +35,15 @@ fn part_1() {
 }
 
 fn get_fuel_p2(input: &[i32], i: i32) -> i32 {
-    let res = input
+    input
         .iter()
         .map(|x| {
             let dist = (x - i).abs();
             dist * (dist + 1) / 2
         })
-        .collect::<Vec<_>>();
-
-    res.iter().sum()
+        .collect::<Vec<_>>()
+        .iter()
+        .sum()
 }
 
 fn part_2() {
