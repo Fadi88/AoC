@@ -13,12 +13,24 @@ def profiler(method):
 
 @profiler
 def part1():
-    pass
+    input = list(map(int, open("day07/input.txt").read().split(',')))
+
+    p1 = min([sum(map(lambda x:  abs(x-i), input)) for i in input])
+
+    print("part 1 : ", p1)
+
+
+def get_fuel(dist):
+    return dist * (dist + 1) // 2
 
 
 @profiler
 def part2():
-    pass
+    input = list(map(int, open("day07/input.txt").read().split(',')))
+
+    p2 = min([sum(map(lambda x:  get_fuel(abs(x-i)), input)) for i in input])
+
+    print("part 2 : ", p2)
 
 
 if __name__ == "__main__":
