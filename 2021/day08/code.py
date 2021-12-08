@@ -36,7 +36,6 @@ def part2():
     total = 0
 
     for l in open("day08/input.txt"):
-        #mapping = {i: seg for i in range(10)}
         mapping = [set()] * 10
 
         l = l.split(' | ')
