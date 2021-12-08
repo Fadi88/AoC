@@ -83,42 +83,38 @@ def part2_segment():
     t = ['abcefg', 'cf', 'acdeg', 'acdfg', 'bcdf', 'abdfg', 'abdefg',
          'acf', 'abcdefg', 'abcdfg']
 
-    cnt_ref = Counter(''.join(t))
     ref = defaultdict(list)
 
-    for i in cnt_ref:
-        ref[cnt_ref[i]].append(i)
+    for i in set(''.join(t)):
+        ref[''.join(t).count(i)].append(i)
 
     total = 0
     for l in open('day08/input.txt'):
 
         p = l.strip().split(' | ')
 
-        c = Counter(''.join(p[0].split(' ')))
+        freq = Counter(''.join(p[0].split(' ')))
 
         mapping = {}
 
         four = list(filter(lambda x: len(x) == 4, p[0].split(' ')))[0]
-        for i in c:
-            if c[i] in [4, 6, 9]:
-                mapping[i] = ref[c[i]][0]
-            elif c[i] == 7:
+        for i in freq:
+            if freq[i] in [4, 6, 9]:
+                mapping[i] = ref[freq[i]][0]
+            elif freq[i] == 7:
                 mapping[i] = 'd' if i in four else 'g'
-            elif c[i] == 8:
+            elif freq[i] == 8:
                 mapping[i] = 'c' if i in four else 'a'
 
-        val = '' 
+        val = ''
         for pat in p[1].split(' '):
-            v = [mapping[ch] for ch in pat]
-            v.sort()
-            v = ''.join(v)
-            
+            v = ''.join(sorted([mapping[ch] for ch in pat]))
+
             val += str(t.index(v))
 
         total += int(val)
 
     print(total)
-        
 
 
 if __name__ == "__main__":
