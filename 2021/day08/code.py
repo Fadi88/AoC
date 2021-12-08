@@ -1,5 +1,5 @@
 import time
-from collections import Counter, defaultdict
+from collections import defaultdict
 
 
 def profiler(method):
@@ -26,13 +26,6 @@ def part1():
 @profiler
 def part2():
     seg = set(['a', 'b', 'c', 'd', 'e', 'f', 'g'])
-
-    # 2 : 1
-    # 3 : 7
-    # 4 : 4,
-    # 5 : 2,3,5
-    # 6 : 0,6,9
-    # 7 : 8
 
     total = 0
 
@@ -93,7 +86,10 @@ def part2_segment():
 
         p = l.strip().split(' | ')
 
-        freq = Counter(''.join(p[0].split(' ')))
+        freq = {}
+
+        for i in set(''.join(p[0].split(' '))):
+            freq[i] = ''.join(p[0]).count(i)
 
         mapping = {}
 
