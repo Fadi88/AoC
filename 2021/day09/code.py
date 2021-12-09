@@ -26,7 +26,7 @@ def part1():
             if all([heightmap[x][y] < 9 for dx, dy in deltas if 0 <= x+dx < len(heightmap) and 0 <= y+dy < len(heightmap[x])]):
                 total += 1 + heightmap[x][y]
 
-    print(total)
+    print("part 1 : ", total)
 
 
 def discover_point(x, y, heightmap, visited):
@@ -69,7 +69,7 @@ def part2():
 
     total = sorted(sinks_size)[-3:]
 
-    print(total[0]* total[1]* total[2])
+    print("part 2 : ", total[0] * total[1] * total[2])
 
 
 if __name__ == "__main__":
