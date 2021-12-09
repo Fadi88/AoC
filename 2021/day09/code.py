@@ -14,16 +14,14 @@ def profiler(method):
 
 @profiler
 def part1():
-    heightmap = []
     deltas = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-    for l in open("day09/input.txt"):
-        l = list(l.strip())
-        heightmap.append(list(map(int, l)))
+
+    heightmap = [list(map(int,list(l.strip()))) for l in open("day09/input.txt")]
 
     total = 0
     for x in range(len(heightmap)):
         for y in range(len(heightmap[x])):
-            if all([heightmap[x][y] < 9 for dx, dy in deltas if 0 <= x+dx < len(heightmap) and 0 <= y+dy < len(heightmap[x])]):
+            if all([heightmap[x][y] < heightmap[x+dx][y+dy] for dx, dy in deltas if 0 <= x+dx < len(heightmap) and 0 <= y+dy < len(heightmap[x])]):
                 total += 1 + heightmap[x][y]
 
     print("part 1 : ", total)
@@ -51,10 +49,8 @@ def discover_point(x, y, heightmap, visited):
 def part2():
     heightmap = []
     deltas = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-
-    for l in open("day09/input.txt"):
-        l = list(l.strip())
-        heightmap.append(list(map(int, l)))
+    
+    heightmap = [list(map(int,list(l.strip()))) for l in open("day09/input.txt")]
 
     sinks_size = []
     visited = set()
