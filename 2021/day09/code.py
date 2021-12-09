@@ -1,4 +1,5 @@
 import time
+from collections import deque
 
 
 def profiler(method):
@@ -13,12 +14,63 @@ def profiler(method):
 
 @profiler
 def part1():
-    pass
+    heightmap = []
+    deltas = [(0, 1), (0, -1), (1, 0), (1, 1),
+              (1, -1), (-1, 0), (-1, 1), (-1, -1)]
+    for l in open("day09/input.txt"):
+        l = list(l.strip())
+        heightmap.append(list(map(int, l)))
+
+    total = 0
+    for x in range(len(heightmap)):
+        for y in range(len(heightmap[x])):
+            if all([heightmap[x][y] < heightmap[x+dx][y+dy] for dx, dy in deltas if 0 <= x+dx < len(heightmap) and 0 <= y+dy < len(heightmap[x])]):
+                total += 1 + heightmap[x][y]
+
+    print(total)
+
+
+def discover_point(x, y, heightmap, visited):
+    deltas = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+    to_visit = deque(((x, y),))
+    ret = set()
+    while to_visit:
+        cx, cy = to_visit.popleft()
+        visited.add((cx, cy))
+        if any([heightmap[cx][cy] < heightmap[cx+dx][cy+dy] for dx, dy in deltas if 0 <= cx+dx < len(heightmap) and 0 <= cy+dy < len(heightmap[cx])]):
+            ret.add((cx, cy))
+            for dx, dy in deltas:
+                if 0 <= cx+dx < len(heightmap) and 0 <= cy+dy < len(heightmap[cx]) and (cx+dx, cy+dy) not in visited:
+                    if any([heightmap[cx+dx][cy+dy] < heightmap[cx+dx+dx2][cy+dy+dy2] for dx2, dy2 in deltas if 0 <= cx+dx+dx2 < len(heightmap) and 0 <= cy+dy+dy2 < len(heightmap[cx])]):
+                        to_visit.append((cx+dx, cy+dy))
+
+    return len(ret)
 
 
 @profiler
 def part2():
-    pass
+    heightmap = []
+    deltas = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+    for l in open("day09/input.txt"):
+        l = list(l.strip())
+        heightmap.append(list(map(int, l)))
+
+    sinks_size = []
+    visited = set()
+
+    for x in range(len(heightmap)):
+        for y in range(len(heightmap[x])):
+            if (x, y) not in visited:
+                visited.add((x, y))
+
+                if any([heightmap[x][y] < heightmap[x+dx][y+dy] for dx, dy in deltas if 0 <= x+dx < len(heightmap) and 0 <= y+dy < len(heightmap[x])]):
+                    sinks_size.append(discover_point(x, y, heightmap, visited))
+
+    total = sorted(sinks_size)[-3:]
+
+    print(total[0], total[1], total[2])
 
 
 if __name__ == "__main__":
