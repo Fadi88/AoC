@@ -36,12 +36,11 @@ def discover_point(x, y, heightmap, visited):
     while to_visit:
         cx, cy = to_visit.popleft()
         visited.add((cx, cy))
-        if any([heightmap[cx][cy] < 9 for dx, dy in deltas if 0 <= cx+dx < len(heightmap) and 0 <= cy+dy < len(heightmap[cx])]):
+        if heightmap[cx][cy] < 9:
             ret.add((cx, cy))
             for dx, dy in deltas:
                 if 0 <= cx+dx < len(heightmap) and 0 <= cy+dy < len(heightmap[cx]) and (cx+dx, cy+dy) not in visited:
-                    if any([heightmap[cx+dx][cy+dy] < 9 for dx2, dy2 in deltas if 0 <= cx+dx+dx2 < len(heightmap) and 0 <= cy+dy+dy2 < len(heightmap[cx])]):
-                        to_visit.append((cx+dx, cy+dy))
+                    to_visit.append((cx+dx, cy+dy))
 
     return len(ret)
 
@@ -60,9 +59,7 @@ def part2():
     for x in range(len(heightmap)):
         for y in range(len(heightmap[x])):
             if (x, y) not in visited:
-                if any([heightmap[x][y] < 9 for dx, dy in deltas if 0 <= x+dx < len(heightmap) and 0 <= y+dy < len(heightmap[x])]):
-                    sinks_size.append(discover_point(x, y, heightmap, visited))
-
+                sinks_size.append(discover_point(x, y, heightmap, visited))
                 visited.add((x, y))
 
     total = sorted(sinks_size)[-3:]
