@@ -16,7 +16,8 @@ def profiler(method):
 def part1():
     deltas = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
-    heightmap = [list(map(int,list(l.strip()))) for l in open("day09/input.txt")]
+    heightmap = [list(map(int, list(l.strip())))
+                 for l in open("day09/input.txt")]
 
     total = 0
     for x in range(len(heightmap)):
@@ -49,8 +50,9 @@ def discover_point(x, y, heightmap, visited):
 def part2():
     heightmap = []
     deltas = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-    
-    heightmap = [list(map(int,list(l.strip()))) for l in open("day09/input.txt")]
+
+    heightmap = [list(map(int, list(l.strip())))
+                 for l in open("day09/input.txt")]
 
     sinks_size = []
     visited = set()
