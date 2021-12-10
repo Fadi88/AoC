@@ -51,15 +51,12 @@ def part2():
             for i in l[::-1]:
                 local_tmp *= 5
                 local_tmp += prize[comp[i]]
-            print(o.strip() ,l , local_tmp)
+
             scores.append(local_tmp)
 
-
     scores.sort()
-    print(scores)
     print(scores[len(scores) //2])   
             
-
 
 if __name__ == "__main__":
 
