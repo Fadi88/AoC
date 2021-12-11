@@ -1,5 +1,4 @@
 use std::collections::{HashSet, VecDeque};
-use std::fs;
 use std::time;
 
 fn bench(f: fn()) {
@@ -72,7 +71,7 @@ fn cycle(grid: &mut Vec<Vec<u8>>) -> u16 {
 
 fn part_1() {
     let mut grid: Vec<Vec<u8>> = Vec::new();
-    for l in fs::read_to_string("day11/input.txt").unwrap().lines() {
+    for l in include_str!("input.txt").split("\n") {
         grid.push(l.chars().map(|x| x.to_digit(10).unwrap() as u8).collect());
     }
 
@@ -81,14 +80,13 @@ fn part_1() {
     for _ in 0..100 {
         total += cycle(&mut grid);
     }
-    //print_grid(&grid);
 
     println!("part 1 : {}", total);
 }
 
 fn part_2() {
     let mut grid: Vec<Vec<u8>> = Vec::new();
-    for l in fs::read_to_string("day11/input.txt").unwrap().lines() {
+    for l in include_str!("input.txt").split("\n") {
         grid.push(l.chars().map(|x| x.to_digit(10).unwrap() as u8).collect());
     }
 
