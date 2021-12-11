@@ -1,4 +1,3 @@
-import collections
 import time
 from collections import deque
 
@@ -26,7 +25,7 @@ def print_grid(grid):
 def cycle(grid):
     flashes = 0
 
-    trig = set()
+    visited = set()
     ready = deque()
 
     for x in range(len(grid)):
@@ -34,16 +33,16 @@ def cycle(grid):
             grid[x][y] += 1
             if grid[x][y] > 9:
                 ready.append((x, y))
-                trig.add((x, y))
+                visited.add((x, y))
 
     while ready:
         nx, ny = ready.popleft()
         for dx, dy in get_deltas():
             if 0 <= nx+dx < len(grid) and 0 <= ny+dy < len(grid[0]):
                 grid[nx+dx][ny+dy] += 1
-                if grid[nx+dx][ny+dy] > 9 and (nx+dx, ny+dy) not in trig:
+                if grid[nx+dx][ny+dy] > 9 and (nx+dx, ny+dy) not in visited:
                     ready.append((nx+dx, ny+dy))
-                    trig.add((nx+dx, ny+dy))
+                    visited.add((nx+dx, ny+dy))
 
     for x in range(len(grid)):
         for y in range(len(grid[0])):
