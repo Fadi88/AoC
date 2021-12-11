@@ -9,7 +9,7 @@ fn bench(f: fn()) {
     ret
 }
 
-fn cycle(grid: &mut Vec<Vec<u8>>) -> u16 {
+fn cycle(grid: &mut [[i8; 10]; 10]) -> u16 {
     let mut total = 0;
 
     let deltas: [(i32, i32); 8] = [
@@ -70,11 +70,17 @@ fn cycle(grid: &mut Vec<Vec<u8>>) -> u16 {
 }
 
 fn part_1() {
-    let mut grid: Vec<Vec<u8>> = Vec::new();
-    for l in include_str!("input.txt").split("\n") {
-        grid.push(l.chars().map(|x| x.to_digit(10).unwrap() as u8).collect());
+    let mut grid: [[i8; 10]; 10] = [[0; 10]; 10];
+    for (x, l) in include_str!("input.txt")
+        .split("\n")
+        .collect::<Vec<_>>()
+        .iter()
+        .enumerate()
+    {
+        for y in 0..l.len() {
+            grid[x][y] = l.chars().nth(y).unwrap().to_digit(10).unwrap() as i8;
+        }
     }
-
     let mut total: u16 = 0;
 
     for _ in 0..100 {
@@ -85,9 +91,16 @@ fn part_1() {
 }
 
 fn part_2() {
-    let mut grid: Vec<Vec<u8>> = Vec::new();
-    for l in include_str!("input.txt").split("\n") {
-        grid.push(l.chars().map(|x| x.to_digit(10).unwrap() as u8).collect());
+    let mut grid: [[i8; 10]; 10] = [[0; 10]; 10];
+    for (x, l) in include_str!("input.txt")
+        .split("\n")
+        .collect::<Vec<_>>()
+        .iter()
+        .enumerate()
+    {
+        for y in 0..l.len() {
+            grid[x][y] = l.chars().nth(y).unwrap().to_digit(10).unwrap() as i8;
+        }
     }
 
     let mut cnt = 0;
