@@ -25,10 +25,14 @@ def part1():
     grid = [list(map(int, list(l.strip()))) for l in open("day11/input.txt")]
 
     flashes = 0
+
+    trig = set()
     ready = deque()
 
     for _ in range(100):
-        trig = set()
+
+        trig.clear()
+
         for x in range(len(grid)):
             for y in range(len(grid[0])):
                 grid[x][y] += 1
@@ -65,6 +69,7 @@ def part2():
     while True:
         if all([all([i == 0 for i in l]) for l in grid]):
             break
+
         cnt += 1
         trig = set()
         for x in range(len(grid)):
