@@ -27,14 +27,15 @@ def part1():
             grid[p[0]].append(p[1])
 
     to_visit = deque()
-    visited = set()
+    cnt = 0
+
     for i in grid["start"]:
         to_visit.append([i])
 
     while to_visit:
         current_path = to_visit.popleft()
         if current_path[-1] in grid["end"]:
-            visited.add(str(current_path))
+            cnt += 1
 
         for i in grid[current_path[-1]]:
             tmp = current_path + [i]
@@ -43,7 +44,7 @@ def part1():
             else:
                 to_visit.append(tmp)
 
-    print(len(visited))
+    print(cnt)
 
 
 def lower_pattern(tmp):
@@ -62,7 +63,8 @@ def part2():
         grid[p[0]].append(p[1])
 
     to_visit = deque()
-    visited = set()
+
+    cnt = 0
 
     to_visit.append(["start"])
 
@@ -70,7 +72,7 @@ def part2():
         current_path = to_visit.popleft()
 
         if current_path[-1] == "end":
-            visited.add(str(current_path))
+            cnt += 1
             continue
 
         for i in grid[current_path[-1]]:
@@ -82,7 +84,7 @@ def part2():
             else:
                 to_visit.append(tmp)
 
-    print(len(visited))
+    print(cnt)
 
 
 if __name__ == "__main__":
