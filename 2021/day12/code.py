@@ -1,6 +1,5 @@
 import time
 from collections import defaultdict, deque
-from typing import Deque
 
 
 def profiler(method):
@@ -48,8 +47,8 @@ def part1():
 
 
 def lower_pattern(tmp):
-    lowers =[tmp.count(i) for i in set(tmp[1:]) if i.islower()]
-    cnt = list(filter(lambda x : x > 2 , lowers))
+    lowers = [tmp.count(i) for i in set(tmp[1:]) if i.islower()]
+    cnt = list(filter(lambda x: x > 2, lowers))
     return len(cnt) == 0 and lowers.count(2) < 2
 
 
@@ -69,7 +68,7 @@ def part2():
 
     while to_visit:
         current_path = to_visit.popleft()
-        
+
         if current_path[-1] == "end":
             visited.add(str(current_path))
             continue
