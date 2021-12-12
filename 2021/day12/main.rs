@@ -83,7 +83,6 @@ fn part_2() {
 
             let mut tmp = current_path.clone();
             tmp.push(i);
-            //println!("{:?} {}", tmp, cnt);
             if lower_pattern(&tmp) {
                 to_visit.push_back(tmp);
             }
