@@ -52,12 +52,11 @@ fn part_2() {
     let mut dots: HashSet<(u16, u16)> = HashSet::new();
 
     for l in include_str!("input.txt").split('\n') {
-        let mut new_dots: HashSet<(u16, u16)> = HashSet::new();
-
         if l.contains(',') {
             let mut p = l.split(',').map(|x| x.parse::<u16>().unwrap());
             dots.insert((p.next().unwrap(), p.next().unwrap()));
         } else if l.contains("fold") {
+            let mut new_dots: HashSet<(u16, u16)> = HashSet::new();
             let mut fold = l.split('=');
 
             let axe = fold.next().unwrap();
@@ -88,12 +87,12 @@ fn part_2() {
     let max_x = dots.iter().max_by(|p1, p2| p1.0.cmp(&p2.0)).unwrap().0;
     let max_y = dots.iter().max_by(|p1, p2| p1.1.cmp(&p2.1)).unwrap().1;
 
-    for y in 0..=max_y{
-        for x in 0..=max_x{
-            if dots.contains(&(x,y)){
-                print!("x");
+    for y in 0..=max_y {
+        for x in 0..=max_x {
+            if dots.contains(&(x, y)) {
+                print!("█");
             } else {
-                print!(" "); 
+                print!(" ");
             }
         }
         println!("");

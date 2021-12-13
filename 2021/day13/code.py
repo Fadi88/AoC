@@ -5,10 +5,36 @@ def profiler(method):
     def wrapper_method(*arg, **kw):
         t = time.time()
         ret = method(*arg, **kw)
-        print('Method ' + method.__name__ + ' took : ' +
-              "{:2.5f}".format(time.time()-t) + ' sec')
+        print(
+            "Method "
+            + method.__name__
+            + " took : "
+            + "{:2.5f}".format(time.time() - t)
+            + " sec"
+        )
         return ret
+
     return wrapper_method
+
+
+def fold_grid(dots, fold):
+
+    new_dots = set()
+    axe, loc = fold
+    if axe == "x":
+        for p in dots:
+            if p[0] > loc:
+                new_dots.add((loc - (p[0] - loc), p[1]))
+            else:
+                new_dots.add(p)
+    else:
+        for p in dots:
+            if p[1] > loc:
+                new_dots.add((p[0], loc - (p[1] - loc)))
+            else:
+                new_dots.add(p)
+
+    return new_dots
 
 
 @profiler
@@ -17,30 +43,14 @@ def part1():
     fold = []
     for l in open("day13/input.txt"):
         if "," in l:
-            dots.add(tuple(map(int, l.strip().split(','))))
-        elif 'fold' in l:
-            p = l.split('=')
+            dots.add(tuple(map(int, l.strip().split(","))))
+        elif "fold" in l:
+            p = l.split("=")
             fold.append(tuple((p[0][-1], int(p[1]))))
 
-    for axe, loc in fold:
-        new_dots = set()
-        if axe == 'x':
-            for p in dots:
-                if p[0] > loc:
-                    new_dots.add((loc - (p[0] - loc), p[1]))
-                else:
-                    new_dots.add(p)
-        else:
-            for p in dots:
-                if p[1] > loc:
-                    new_dots.add((p[0], loc - (p[1] - loc)))
-                else:
-                    new_dots.add(p)
+    dots = fold_grid(dots, fold[0])
 
-        dots = new_dots
-
-        print(len(dots))
-        break
+    print(len(dots))
 
 
 @profiler
@@ -49,27 +59,13 @@ def part2():
     fold = []
     for l in open("day13/input.txt"):
         if "," in l:
-            dots.add(tuple(map(int, l.strip().split(','))))
-        elif 'fold' in l:
-            p = l.split('=')
+            dots.add(tuple(map(int, l.strip().split(","))))
+        elif "fold" in l:
+            p = l.split("=")
             fold.append(tuple((p[0][-1], int(p[1]))))
 
-    for axe, loc in fold:
-        new_dots = set()
-        if axe == 'x':
-            for p in dots:
-                if p[0] > loc:
-                    new_dots.add((loc - (p[0] - loc), p[1]))
-                else:
-                    new_dots.add(p)
-        else:
-            for p in dots:
-                if p[1] > loc:
-                    new_dots.add((p[0], loc - (p[1] - loc)))
-                else:
-                    new_dots.add(p)
-
-        dots = new_dots
+    for f in fold:
+        dots = fold_grid(dots, f)
 
     max_x = max([p[0] for p in dots])
     max_y = max([p[1] for p in dots])
