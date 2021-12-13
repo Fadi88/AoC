@@ -1,3 +1,4 @@
+use std::fs;
 use std::time;
 
 fn bench(f: fn()) {
