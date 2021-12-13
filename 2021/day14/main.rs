@@ -1,4 +1,3 @@
-use std::fs;
 use std::time;
 
 fn bench(f: fn()) {
@@ -10,7 +9,7 @@ fn bench(f: fn()) {
 }
 
 fn part_1() {
-    for _l in include_str!("template/input.txt") {}
+    for _l in include_str!("input.txt").split("\n") {}
 }
 
 fn part_2() {}
