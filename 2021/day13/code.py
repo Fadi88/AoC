@@ -19,22 +19,11 @@ def profiler(method):
 
 def fold_grid(dots, fold):
 
-    new_dots = set()
     axe, loc = fold
     if axe == "x":
-        for p in dots:
-            if p[0] > loc:
-                new_dots.add((loc - (p[0] - loc), p[1]))
-            else:
-                new_dots.add(p)
+        return {(loc - (p[0] - loc), p[1]) if p[0] > loc else p for p in dots}
     else:
-        for p in dots:
-            if p[1] > loc:
-                new_dots.add((p[0], loc - (p[1] - loc)))
-            else:
-                new_dots.add(p)
-
-    return new_dots
+        return {(p[0], loc - (p[1] - loc)) if p[1] > loc else p for p in dots}
 
 
 @profiler
@@ -73,7 +62,7 @@ def part2():
     for y in range(max_y + 1):
         for x in range(max_x + 1):
             if (x, y) in dots:
-                print("x", end="")
+                print("#", end="")
             else:
                 print(" ", end="")
         print()
