@@ -107,13 +107,6 @@ fn part_2() {
         "{:?}",
         (freq.values().max().unwrap() - freq.values().min().unwrap()) / 2
     );
-
-    println!("{:?}", freq);
-    println!(
-        "{} {}",
-        freq.values().max().unwrap(),
-        freq.values().min().unwrap()
-    )
 }
 
 fn main() {
