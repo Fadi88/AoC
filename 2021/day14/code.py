@@ -44,13 +44,12 @@ def part2():
 
     trans = {l.split(" -> ")[0]: l.split(" -> ")[1] for l in input[1].split("\n")}
 
-    pairs = {p: 0 for p in trans}
-
-    for i in range(len(input[0]) - 1):
-        pairs["".join([input[0][i], input[0][i + 1]])] += 1
+    pairs = Counter(
+        ["".join([input[0][i], input[0][i + 1]]) for i in range(len(input[0]) - 1)]
+    )
 
     for _ in range(40):
-        new_pairs = {p: 0 for p in trans}
+        new_pairs = Counter()
         for p in pairs:
             new_pairs[p[0] + trans[p]] += pairs[p]
             new_pairs[trans[p] + p[1]] += pairs[p]
