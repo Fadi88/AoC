@@ -1,5 +1,28 @@
-use std::collections::VecDeque;
+use std::cmp::Ordering;
+use std::collections::BinaryHeap;
+use std::collections::HashMap;
 use std::time;
+
+#[derive(Copy, Clone, Eq, PartialEq)]
+struct Point {
+    cost: u16,
+    pos: (u16, u16),
+}
+
+impl Ord for Point {
+    fn cmp(&self, other: &Self) -> Ordering {
+        other
+            .cost
+            .cmp(&self.cost)
+            .then_with(|| self.pos.cmp(&other.pos))
+    }
+}
+
+impl PartialOrd for Point {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
 
 fn bench(f: fn()) {
     let t0 = time::Instant::now();
@@ -11,7 +34,7 @@ fn bench(f: fn()) {
 
 fn part_1() {
     let mut grid: Vec<Vec<u8>> = Vec::new();
-    for l in include_str!("test.txt").split('\n') {
+    for l in include_str!("input.txt").split('\n') {
         grid.push(
             l.chars()
                 .map(|x| x.to_digit(10).unwrap() as u8)
@@ -19,41 +42,47 @@ fn part_1() {
         );
     }
 
-    let deltas : [(i16,i16);4]= [(0, 1), (0, -1), (1, 0), (-1, 0)];
+    let deltas: [(i16, i16); 4] = [(0, 1), (0, -1), (1, 0), (-1, 0)];
 
-    let mut to_visit: VecDeque<Vec<(i16, i16)>> = VecDeque::new();
-    to_visit.push_back(vec![(0, 0)]);
+    let mut visit: BinaryHeap<Point> = BinaryHeap::new();
 
-    let mut score: Vec<u32> = Vec::new();
-    while !to_visit.is_empty() {
-        let path = to_visit.pop_front().unwrap();
-        let (x, y) = path.last().unwrap();
-        if *x == grid.len() as i16 && *y == grid.last().unwrap().len() as i16 {
-            let tmp = path
-                .iter()
-                .skip(1)
-                .map(|p| grid[p.0 as usize][p.1 as usize] as u32)
-                .collect::<Vec<u32>>()
-                .iter()
-                .sum::<u32>();
-            score.push(tmp);
-            continue;
-        }
- 
+    visit.push(Point {
+        cost: 0,
+        pos: (0, 0),
+    });
+
+    let mut risk: HashMap<(i16, i16), u16> = HashMap::new();
+    risk.insert((0, 0), 0);
+
+    while let Some(Point { cost, pos }) = visit.pop() {
         for (dx, dy) in deltas {
-            if *x + dx >= 0
-                && x + dx < grid.len() as i16
-                && y + dy >= 0
-                && y + dy < grid[0].len() as i16
+            if pos.0 as i16 + dx >= 0
+                && pos.0 as i16 + dx < grid.len() as i16
+                && pos.1 as i16 + dy >= 0
+                && pos.1 as i16 + dy < grid[0].len() as i16
             {
-                let mut tmp = path.clone();
-                tmp.push((x+dx,y+dy));
-                to_visit.push_back(tmp); 
+                let new_risk =
+                    cost + grid[(pos.0 as i16 + dx) as usize][(pos.1 as i16 + dy) as usize] as u16;
+                if *risk
+                    .entry(((pos.0 as i16 + dx), (pos.1 as i16 + dy)))
+                    .or_insert(u16::MAX)
+                    > new_risk
+                {
+                    risk.insert(((pos.0 as i16 + dx), (pos.1 as i16 + dy)), new_risk);
+                    visit.push(Point {
+                        cost: new_risk,
+                        pos: ((pos.0 as i16 + dx) as u16, (pos.1 as i16 + dy) as u16),
+                    });
+                }
             }
         }
     }
 
-    println!("{}" , score.iter().min().unwrap());
+    println!(
+        "{}",
+        risk.get(&((grid.len() - 1) as i16, (grid[0].len() - 1) as i16))
+            .unwrap()
+    );
 }
 
 fn part_2() {}
