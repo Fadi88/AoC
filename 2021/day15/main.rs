@@ -34,7 +34,10 @@ fn bench(f: fn()) {
 
 fn part_1() {
     let mut grid: Vec<Vec<u8>> = Vec::new();
-    for l in include_str!("input.txt").split('\n') {
+    for l in include_str!("input.txt").split("\n") {
+        if l.len() < 3 {
+            continue;
+        }
         grid.push(
             l.chars()
                 .map(|x| x.to_digit(10).unwrap() as u8)
@@ -94,7 +97,10 @@ fn get_risk(grid: &Vec<Vec<u8>>, x: u16, y: u16) -> u8 {
 
 fn part_2() {
     let mut grid: Vec<Vec<u8>> = Vec::new();
-    for l in include_str!("input.txt").split('\n') {
+    for l in include_str!("input.txt").split('\n').take(100) {
+        if l.len() < 3 {
+            continue;
+        }
         grid.push(
             l.chars()
                 .map(|x| x.to_digit(10).unwrap() as u8)
