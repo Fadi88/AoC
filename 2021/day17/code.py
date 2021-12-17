@@ -35,7 +35,7 @@ def will_intersect(v, u, l):
     tmin = math.floor(v[1] + math.sqrt(v[1] * v[1] - 2 * u[1]))
     tmax = math.floor(v[1] + math.sqrt(v[1] * v[1] - 2 * l[1]))
 
-    for t in range(tmin , tmax + 1):
+    for t in range(tmin, tmax + 2):
         x, y = get_pos(v[0], v[1], t)
         if u[0] <= x <= l[0] and l[1] <= y <= u[1]:
             return True
