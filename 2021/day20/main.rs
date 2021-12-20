@@ -35,21 +35,30 @@ fn sim_cycle(cycles: u8) -> u16 {
 
         for x in (x_l - 1)..(x_u + 2) {
             for y in (y_l - 1)..(y_u + 2) {
-                let mut idx : String = String::from("");
+                let mut idx: String = String::from("");
 
-                for t in 0..9{
-                    let nx = x + t%3 -1;
-                    let ny = y + t/3 -1;
+                for t in 0..9 {
+                    let nx = x + t % 3 - 1;
+                    let ny = y + t / 3 - 1;
 
-                    if (x_l..=x_u).contains(&&nx) && (y_l..=y_u).contains(&&ny){
-                        idx += if lit_pix.contains(&(nx,ny)) {"1"} else {"0"};
+                    if (x_l..=x_u).contains(&&nx) && (y_l..=y_u).contains(&&ny) {
+                        idx += if lit_pix.contains(&(nx, ny)) {
+                            "1"
+                        } else {
+                            "0"
+                        };
                     } else {
-                        idx += if iter%2 == 1 {"1"} else {"0"};
+                        idx += if iter % 2 == 1 { "1" } else { "0" };
                     }
                 }
 
-                if algo.chars().nth(usize::from_str_radix(&idx,2).unwrap()).unwrap() == '#'{
-                    new_pix.insert((x,y));
+                if algo
+                    .chars()
+                    .nth(usize::from_str_radix(&idx, 2).unwrap())
+                    .unwrap()
+                    == '#'
+                {
+                    new_pix.insert((x, y));
                 }
             }
         }
