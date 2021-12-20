@@ -1,7 +1,7 @@
 import time
 from collections import defaultdict
 from math import sqrt
-from itertools import combinations, permutations
+from itertools import combinations
 
 
 def profiler(method):
@@ -36,14 +36,24 @@ def distance_taxi(p1, p2):
     return abs(dx) + abs(dy) + abs(dz)
 
 
-def get_common_pt_num(config, s0, s1):
+def get_common_pt_num(config_1, config_2):
     return max(
         [
-            len(config[s0][p0].intersection(config[s1][p1]))
-            for p0 in config[s0]
-            for p1 in config[s1]
+            len(config_1[p0].intersection(config_2[p1]))
+            for p0 in config_1
+            for p1 in config_2
         ]
     )
+
+
+def get_config(sensor_data):
+    config = defaultdict(set)
+    for p1 in sensor_data:
+        for p2 in sensor_data:
+            config[p1].add(distance(p1, p2))
+        config[p1].remove(0)
+
+    return config
 
 
 def allign(config1, config2):
@@ -78,9 +88,18 @@ def allign(config1, config2):
 
     translation = []
     for i in range(3):
-        translation.append(p2_rot[i] -  p1[i])
+        translation.append(p2_rot[i] - p1[i])
 
-    return rot,translation
+    return rot, translation
+
+
+def transform_points(rot, trans, points):
+    new_points = set()
+
+    for p in points:
+        new_points.add(tuple(p[rot[i][0]] * rot[i][1] - trans[i] for i in range(3)))
+
+    return new_points
 
 
 @profiler
@@ -91,35 +110,33 @@ def part1():
         for s in input
     ]
 
-    config = []
+    grid = set(scanners.pop(0))
 
-    for s in range(len(scanners)):
-        dist = defaultdict(set)
-        for p1 in scanners[s]:
-            for p2 in scanners[s]:
-                dist[p1].add(distance(p1, p2))
-            dist[p1].remove(0)
-        config.append(dist)
+    scanner_pos = []
+    while len(scanners) > 0:
+        grid_config = get_config(grid)
+        scaners_common = [
+            get_common_pt_num(grid_config, get_config(s)) for s in scanners
+        ]
 
-    common = []
-    for s0 in range(len(scanners)):
-        tmp = []
-        for s1 in range(len(scanners)):
-            if s0 == s1:
-                tmp.append(-1)
-            else:
-                tmp.append(get_common_pt_num(config, s0, s1))
-        common.append(tmp)
+        s = scaners_common.index(max(scaners_common))
 
-    allign(config[0], config[7])
+        rot, trams = allign(grid_config, get_config(scanners[s]))
+        grid.update(transform_points(rot, trams, scanners[s]))
+
+        del scanners[s]
+        scanner_pos.append(trams)
+
+    print(len(grid))
+    return scanner_pos
 
 
 @profiler
-def part2():
-    pass
+def part2(scanner_pos):
+    print(max([distance_taxi(c[0],c[1]) for c in combinations(scanner_pos,2)]))
 
 
 if __name__ == "__main__":
 
-    part1()
-    part2()
+    scanner_pos = part1()
+    part2(scanner_pos)
