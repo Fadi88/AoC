@@ -12,7 +12,7 @@ fn bench(f: fn()) {
 fn sim_cycle(cycles: u8) -> u16 {
     let mut input = include_str!("input.txt").split("\n\n");
 
-    let algo = input.next().unwrap();
+    let algo = input.next().unwrap().chars().collect::<Vec<_>>();
 
     let img: Vec<_> = input.next().unwrap().split("\n").collect();
 
@@ -52,12 +52,7 @@ fn sim_cycle(cycles: u8) -> u16 {
                     }
                 }
 
-                if algo
-                    .chars()
-                    .nth(usize::from_str_radix(&idx, 2).unwrap())
-                    .unwrap()
-                    == '#'
-                {
+                if algo[usize::from_str_radix(&idx, 2).unwrap()] == '#' {
                     new_pix.insert((x, y));
                 }
             }
