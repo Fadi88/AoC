@@ -20,16 +20,13 @@ def profiler(method):
 
 @profiler
 def part1():
-    pos = []
-    scores = [0] * 2
-    for l in open("day21/input.txt"):
-        p = l.strip().split(" ")
-        pos.append(int(p[-1]))
+    pos = [4,2]
 
+    scores = [0] * 2
     dice = 0
     while True:
-        p1 = 3 * dice + 1 + 2 + 3
-        p2 = 3 * dice + 4 + 5 + 6
+        p1 = 3 * dice + 6
+        p2 = 3 * dice + 15
 
         dice += 3
         pos[0] = (pos[0] + p1 - 1) % 10 + 1
