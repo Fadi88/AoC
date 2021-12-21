@@ -84,6 +84,7 @@ fn play_dirac(
         }
     }
     cache.insert((p1, p2, s1, s2, player), wins);
+    cache.insert((p2, p1, s2, s1, if player == 1 { 0 } else { 1 }), [wins[1] , wins[0]]);
     wins
 }
 
