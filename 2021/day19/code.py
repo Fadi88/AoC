@@ -106,22 +106,24 @@ def transform_points(rot, trans, points):
 def part1():
     input = open("day19/input.txt").read().split("\n\n")
     scanners = [
-        list(map(lambda x: tuple(map(int, x.split(","))), s.split("\n")[1:]))
+        tuple(map(lambda x: tuple(map(int, x.split(","))), s.split("\n")[1:]))
         for s in input
     ]
 
     grid = set(scanners.pop(0))
 
+    scanners_config = {s : get_config(s) for s in scanners}
+    
     scanner_pos = []
     while len(scanners) > 0:
         grid_config = get_config(grid)
         scaners_common = [
-            get_common_pt_num(grid_config, get_config(s)) for s in scanners
+            get_common_pt_num(grid_config, scanners_config[s]) for s in scanners
         ]
 
         s = scaners_common.index(max(scaners_common))
 
-        rot, trams = allign(grid_config, get_config(scanners[s]))
+        rot, trams = allign(grid_config, scanners_config[scanners[s]])
         grid.update(transform_points(rot, trams, scanners[s]))
 
         del scanners[s]
@@ -133,7 +135,7 @@ def part1():
 
 @profiler
 def part2(scanner_pos):
-    print(max([distance_taxi(c[0],c[1]) for c in combinations(scanner_pos,2)]))
+    print(max([distance_taxi(c[0], c[1]) for c in combinations(scanner_pos, 2)]))
 
 
 if __name__ == "__main__":
