@@ -51,7 +51,7 @@ def part1():
 
 
 def does_line_intersect(x0, x1, ox0, ox1):
-    return x0 < ox0 < x1 or x0 < ox1 < x1 or ox0 < x0 < ox1 or ox0 < x1 < ox1
+    return x0 <= ox0 <= x1 or x0 <= ox1 <= x1 or ox0 <= x0 <= ox1 or ox0 <= x1 <= ox1
 
 
 def get_line_intersection(p0, p1, op0, op1):
