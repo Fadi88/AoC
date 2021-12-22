@@ -51,7 +51,7 @@ def part1():
 
 
 def does_line_intersect(x0, x1, ox0, ox1):
-    return x0 < ox0 < x1 or x0 < ox1 < x1 or ox0 < x0 < ox1 or  ox0 < x1 < ox1
+    return x0 < ox0 < x1 or x0 < ox1 < x1 or ox0 < x0 < ox1 or ox0 < x1 < ox1
 
 
 def get_line_intersection(p0, p1, op0, op1):
@@ -92,10 +92,9 @@ class cubiod:
             self.off.append(cubiod(x[0], x[1], y[0], y[1], z[0], z[1]))
 
     def volume(self):
-        return (
-            (self.x1 - self.x0 + 1) * (self.y1 - self.y0 + 1) * (self.z1 - self.z0 + 1)
-            - sum([c.volume() for c in self.off])
-        )
+        return (self.x1 - self.x0 + 1) * (self.y1 - self.y0 + 1) * (
+            self.z1 - self.z0 + 1
+        ) - sum([c.volume() for c in self.off])
 
     def __str__(self) -> str:
         ret = "" + str(self.x0) + ", " + str(self.x1) + ", " + str(self.y0) + ", "
@@ -116,7 +115,6 @@ def part2():
             c.substraction(n_cube)
         if "on" in l:
             cubiods.append(n_cube)
-
 
     print(sum([c.volume() for c in cubiods]))
 
