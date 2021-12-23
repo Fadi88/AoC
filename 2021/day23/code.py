@@ -4,6 +4,7 @@ from queue import PriorityQueue as pq
 from collections import defaultdict
 import math
 from copy import deepcopy
+from functools import lru_cache
 
 
 def profiler(method):
@@ -70,13 +71,13 @@ def part1():
     prev = {}
 
     while not visit.empty():
-        _, c_state = visit.get()
+        c, c_state = visit.get()
 
         visited.add(str(c_state))
 
         for n_c, n_state in get_possible_states(c_state):
             if n_c < cost[str(n_state)]:
-                cost[str(n_state)] = n_c
+                cost[str(n_state)] = n_c + c
                 prev[str(n_state)] = str(c_state)
             if str(n_state) not in visited:
                 visit.put((cost[str(n_state)], n_state))
@@ -88,7 +89,7 @@ def part2():
     state = state[:3] + [list("  #D#C#B#A#")] + [list("  #D#B#A#C#")] + state[3:]
 
     f_str = (
-          "#############\n"
+        "#############\n"
         + "#...........#\n"
         + "###A#B#C#D###\n"
         + "  #A#B#C#D#\n"
@@ -107,17 +108,16 @@ def part2():
     prev = {}
 
     while not visit.empty():
-        _, c_state = visit.get()
+        c, c_state = visit.get()
 
         visited.add(str(c_state))
 
         for n_c, n_state in get_possible_states(c_state):
             if n_c < cost[str(n_state)]:
-                cost[str(n_state)] = n_c
+                cost[str(n_state)] = n_c + c
                 prev[str(n_state)] = str(c_state)
             if str(n_state) not in visited:
                 visit.put((cost[str(n_state)], n_state))
-
 
     print(cost[str(f_state)])
 
