@@ -19,7 +19,7 @@ def profiler(method):
 
 @profiler
 def part1():
-    grid = [list(l.strip())for l in open("day25/input.txt")]
+    grid = [list(l.strip()) for l in open("day25/input.txt")]
 
     east = set()
     south = set()
@@ -28,11 +28,11 @@ def part1():
     max_y = len(grid)
 
     for y, l in enumerate(grid):
-        for x,c in enumerate(l):
+        for x, c in enumerate(l):
             if c == ">":
-                east.add((x,y))
+                east.add((x, y))
             elif c == "v":
-                south.add((x,y))
+                south.add((x, y))
 
     cnt = 0
     while True:
@@ -40,14 +40,14 @@ def part1():
         new_south = set()
 
         for e in east:
-            n_p = ((e[0]+1)%max_x , e[1])
+            n_p = ((e[0] + 1) % max_x, e[1])
             if n_p not in east and n_p not in south:
                 new_east.add(n_p)
             else:
                 new_east.add(e)
 
         for s in south:
-            n_p = (s[0] , (s[1]+1)%max_y)
+            n_p = (s[0], (s[1] + 1) % max_y)
             if n_p not in south and n_p not in new_east:
                 new_south.add(n_p)
             else:
@@ -61,7 +61,6 @@ def part1():
         east = new_east
 
     print(cnt)
-
 
 
 if __name__ == "__main__":
