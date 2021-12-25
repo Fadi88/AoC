@@ -21,7 +21,7 @@ fn part_1() {
         for (x, c) in l.chars().enumerate() {
             if c == 'v' {
                 south.insert((x as u8, y as u8));
-            } else if c == '>'{
+            } else if c == '>' {
                 east.insert((x as u8, y as u8));
             }
         }
@@ -62,9 +62,6 @@ fn part_1() {
     println!("{}", cnt);
 }
 
-fn part_2() {}
-
 fn main() {
     bench(part_1);
-    bench(part_2);
 }
