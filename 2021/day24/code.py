@@ -80,11 +80,10 @@ def part2():
         # target
         # z[mapping[p][0]]  + mapping[p][1] + p[1] == z[p[0]]
         if delta < 0:
-            z[mapping[p][0]]  = 1 - delta
+            z[mapping[p][0]] = 1 - delta
         else:
             z[p[0]] = 1 + delta
 
-    print(mapping)
     print("".join(map(str, z)))
 
 
