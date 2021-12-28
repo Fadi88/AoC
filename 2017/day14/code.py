@@ -1,4 +1,3 @@
-from os import altsep
 import time
 from functools import reduce
 
@@ -15,6 +14,7 @@ def profiler(method):
             + " sec"
         )
         return ret
+
     return wrapper_method
 
 
@@ -36,9 +36,7 @@ def get_hash(st):
     for _ in range(64):
         for n in inp:
             reverse_section(circle, pos, n)
-
             pos = (pos + n + skip) % len(circle)
-
             skip += 1
 
     dense_hash = [
@@ -48,7 +46,7 @@ def get_hash(st):
     return "".join(map(lambda d: hex(d)[2:].zfill(2), dense_hash))
 
 input = "nbysizxe"
-#input = "flqrgnkx"
+# input = "flqrgnkx"
 
 @profiler
 def part1():
@@ -56,42 +54,42 @@ def part1():
     sum = 0
     ret = []
     for i in range(128):
-        ret.append(bin(int(get_hash(input + "-" + str(i)),16))[2:].zfill(128))
-        sum += ret[-1].count('1')
+        ret.append(bin(int(get_hash(input + "-" + str(i)), 16))[2:].zfill(128))
+        sum += ret[-1].count("1")
 
     print(sum)
 
     return ret
 
+
 @profiler
 def part2(grid):
 
-
     visited = set()
 
-    deltas = [(0,1) , (0,-1) , (1,0) , (-1,0)]
+    deltas = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
     clusters = 0
-    
-    reg = []
 
-    for y,l in enumerate(grid):
-        for x,c in enumerate(l):
-            if c == "1" and (x,y) not in visited:
-                to_visit = [(x,y)]
+    for y, l in enumerate(grid):
+        for x, c in enumerate(l):
+            if c == "1" and (x, y) not in visited:
+                to_visit = [(x, y)]
 
                 while len(to_visit) > 0:
-                    c_x,c_y = to_visit.pop()
+                    c_x, c_y = to_visit.pop()
 
-                    visited.add((c_x,c_y))
+                    visited.add((c_x, c_y))
 
-                    for dx,dy in deltas:
-                        if 0 <= c_x+dx < len(grid[0]) and 0 <= c_y+dy < len(grid):
-                            if grid[c_y+dy][c_x+dx] == '1' and (c_x+dx,c_y+dy) not in visited:
-                                to_visit.append((c_x+dx,c_y+dy))
+                    for dx, dy in deltas:
+                        if 0 <= c_x + dx < len(grid[0]) and 0 <= c_y + dy < len(grid):
+                            if (
+                                grid[c_y + dy][c_x + dx] == "1"
+                                and (c_x + dx, c_y + dy) not in visited
+                            ):
+                                to_visit.append((c_x + dx, c_y + dy))
 
                 clusters += 1
-
 
     print(clusters)
 
