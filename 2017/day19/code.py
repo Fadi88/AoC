@@ -31,72 +31,42 @@ def part1():
 
     cp = (grid[0].index("|"), 0)
 
-    deltas = {
-        "|": [(0, 1), (0, -1)],
-        "-": [(1, 0), (-1, 0)],
-        "+": [(1, 0), (-1, 0), (0, 1), (0, -1)],
-    }
+    # CCW starting down
+    directions = [(0, 1), (-1, 0), (0, -1), (1, 0)]
+    dir_i = 0
 
-    path = set()
-    path.add(cp)
-
+    path = []
     collected = ""
-    cnt = 1
 
     while len(collected) < len(chars):
         cx, cy = cp
-        cnt += 1
-        for dx, dy in deltas[grid[cy][cx]]:
-            if 0 <= cx + dx < len(grid[0]) and 0 <= cy + dy < len(grid):
-                if grid[cy][cx] == "+":
-                    if (
-                        dx != 0
-                        and grid[cy + dy][cx + dx] == "-"
-                        and (cx + dx, cy + dy) not in path
-                    ):
-                        cp = (cx + dx, cy + dy)
-                        path.add((cx + dx, cy + dy))
-                        break
-                    elif (
-                        dy != 0
-                        and grid[cy + dy][cx + dx] == "|"
-                        and (cx + dx, cy + dy) not in path
-                    ):
-                        cp = (cx + dx, cy + dy)
-                        path.add((cx + dx, cy + dy))
-                        break
-                else:
-                    if (
-                        grid[cy + dy][cx + dx] == grid[cy][cx]
-                        or grid[cy + dy][cx + dx] == "+"
-                    ) and (cx + dx, cy + dy) not in path:
-                        cp = (cx + dx, cy + dy)
-                        path.add((cx + dx, cy + dy))
+        if grid[cy][cx] in ["|", "-"] or grid[cy][cx] in chars:
+            path.append(cp)
+            if grid[cy][cx] in chars:
+                collected += grid[cy][cx]
+            dx, dy = directions[dir_i]
+            cp = (cx + dx, cy + dy)
+        elif grid[cy][cx] == "+":
+            dx_90, dy_90 = directions[(dir_i + 1) % len(directions)]
+            dx_270, dy_270 = directions[(dir_i + 3) % len(directions)]
+            if grid[cy + dy_90][cx + dx_90] in ["|", "-"]:
+                dir_i = (dir_i + 1) % len(directions)
+                dx, dy = directions[dir_i]
+                cp = (cx + dx, cy + dy)
+                path.append(cp)
+            elif grid[cy + dy_270][cx + dx_270] in ["|", "-"]:
+                dir_i = (dir_i + 3) % len(directions)
+                dx, dy = directions[dir_i]
+                cp = (cx + dx, cy + dy)
+                path.append(cp)
+            else:
+                assert False
 
-                    elif grid[cy + dy][cx + dx] in chars:
-                        collected += grid[cy + dy][cx + dx]
-                        grid[cy + dy][cx + dx] = grid[cy][cx]
-                        cp = (cx + dx, cy + dy)
-                        path.add((cx + dx, cy + dy))
-
-                    else:
-                        if 0 <= cx + 2 * dx < len(grid[0]) and 0 <= cy + 2 * dy < len(
-                            grid
-                        ):
-                            if (
-                                grid[cy + 2 * dy][cx + 2 * dx] == grid[cy][cx]
-                                or grid[cy + 2 * dy][cx + 2 * dx] == "+"
-                                or grid[cy + 2 * dy][cx + 2 * dx] in chars
-                            ) and (cx + 2 * dx, cy + 2 * dy) not in path:
-                                cp = (cx + 2 * dx, cy + 2 * dy)
-                                path.add((cx + 2 * dx, cy + 2 * dy))
-                                cnt += 1
-                            if grid[cy + 2 * dy][cx + 2 * dx] in chars:
-                                collected += grid[cy + 2 * dy][cx + 2 * dx]
-                                grid[cy + 2 * dy][cx + 2 * dx] = grid[cy][cx]
+        else:
+            assert False
 
     print("part 1 : ", collected)
-    print("part 2 : ", cnt)
+    print("part 2 : ", len(path))
 
 
 if __name__ == "__main__":
