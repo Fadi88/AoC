@@ -35,13 +35,13 @@ def part1():
     directions = [(0, 1), (-1, 0), (0, -1), (1, 0)]
     dir_i = 0
 
-    path = []
+    cnt = 0
     collected = ""
 
     while len(collected) < len(chars):
         cx, cy = cp
         if grid[cy][cx] in ["|", "-"] or grid[cy][cx] in chars:
-            path.append(cp)
+            cnt += 1
             if grid[cy][cx] in chars:
                 collected += grid[cy][cx]
             dx, dy = directions[dir_i]
@@ -53,12 +53,12 @@ def part1():
                 dir_i = (dir_i + 1) % len(directions)
                 dx, dy = directions[dir_i]
                 cp = (cx + dx, cy + dy)
-                path.append(cp)
+                cnt += 1
             elif grid[cy + dy_270][cx + dx_270] in ["|", "-"]:
                 dir_i = (dir_i + 3) % len(directions)
                 dx, dy = directions[dir_i]
                 cp = (cx + dx, cy + dy)
-                path.append(cp)
+                cnt += 1
             else:
                 assert False
 
@@ -66,7 +66,7 @@ def part1():
             assert False
 
     print("part 1 : ", collected)
-    print("part 2 : ", len(path))
+    print("part 2 : ", cnt)
 
 
 if __name__ == "__main__":
