@@ -9,7 +9,7 @@ fn bench(f: fn()) {
 }
 
 fn part_1() {
-    for _l in include_str!("input.txt") {}
+    include_str!("input.txt");
 }
 
 fn part_2() {}

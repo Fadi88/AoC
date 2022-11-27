@@ -38,7 +38,7 @@ fn part_1() {
         boards.push(b);
     }
     for num in nums{
-        for board in boards{
+        for board in &boards{
             for l in board{
                 if l.contains(&num){
                     
