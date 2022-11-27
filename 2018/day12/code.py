@@ -1,6 +1,4 @@
 import time
-import re
-import math
 from collections import defaultdict
 
 
@@ -28,19 +26,20 @@ def sim(p, t):
 def part_1():
     p = open("day12/input.txt").read().split("\n\n")
 
-    offset = 50
-    state = "." * offset + p[0].split(":")[1].strip() + "." * offset * 10
+    offset = 0
+    state =  p[0].split(":")[1].strip()
 
-    mapping = defaultdict(lambda: ".")
+    mapping = {}
     for t in p[1].split("\n"):
         ps = t.split(" => ")
         mapping[ps[0]] = ps[1]
 
     for _ in range(20):
         n_state = ""
-        for i in range(2, len(state) - 2):
-            n_state += mapping[state[i - 4 : i + 1]]
-        state = n_state
+        for i in range(2,len(state) - 5):
+            n_state += mapping[state[i-2 : i + 3]]
+        state = "....." + n_state + "....."
+        offset += 5
 
     s = sum([i - offset for i in range(len(state)) if state[i] == "#"])
     print(s)
