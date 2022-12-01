@@ -9,10 +9,26 @@ fn bench(f: fn()) {
 }
 
 fn part_1() {
-    include_str!("input.txt");
+    let mut cals : Vec<u32> =Vec::new();
+    for l in include_str!("input.txt").split("\n\n"){
+        let temp = l.split("\n").map(|x| x.parse::<u32>().unwrap()).sum();
+        cals.push(temp);
+    }
+    cals.sort();
+
+    println!("{}" , cals.iter().last().unwrap());
 }
 
-fn part_2() {}
+fn part_2() {
+    let mut cals : Vec<u32> =Vec::new();
+    for l in include_str!("input.txt").split("\n\n"){
+        let temp = l.split("\n").map(|x| x.parse::<u32>().unwrap()).sum();
+        cals.push(temp);
+    }
+    cals.sort();
+
+    println!("{}" , cals.iter().rev().take(3).sum::<u32>());
+}
 
 fn main() {
     bench(part_1);
