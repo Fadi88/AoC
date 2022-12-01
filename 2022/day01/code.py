@@ -13,12 +13,16 @@ def profiler(method):
 
 @profiler
 def part1():
-    pass
+    cals = [sum([int(c) for c in l.split()])
+            for l in open("input.txt").read().split("\n\n")]
+    print(max(cals))
 
 
 @profiler
 def part2():
-    pass
+    cals = [sum([int(c) for c in l.split()])
+            for l in open("input.txt").read().split("\n\n")]
+    print(sum(cals[-3:]))
 
 
 if __name__ == "__main__":
