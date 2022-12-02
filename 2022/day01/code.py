@@ -22,6 +22,7 @@ def part1():
 def part2():
     cals = [sum([int(c) for c in l.split()])
             for l in open("input.txt").read().split("\n\n")]
+    cals.sort()
     print(sum(cals[-3:]))
 
 
