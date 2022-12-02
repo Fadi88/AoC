@@ -21,11 +21,11 @@ def part1():
     for g in freq:
         hands = g.split()
 
-        g_score = ord(hands[1]) - ord('X') + 1
-        g_score += 3 * int(ord(hands[0]) - ord('A') == ord(hands[1]) - ord('X'))
-        g_score += 6 * int((ord(hands[0]) - ord('A') + 1) % 3 == ord(hands[1]) - ord('X'))
+        h0 = ord(hands[0]) - ord('A')
+        h1 = ord(hands[1]) - ord('X')
 
-
+        # game score = value of hand(R1,P2,S3) + 3*(L0,T1,W2) 
+        g_score = (h1 + 1) + 3 * ((h1 - h0 + 1) % 3)
         score += g_score * freq[g]
 
     print(score)
