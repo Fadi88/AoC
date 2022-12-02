@@ -1,6 +1,6 @@
 import time
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 
 def profiler(method):
@@ -15,9 +15,7 @@ def profiler(method):
 
 @profiler
 def part1():
-    freq = defaultdict(int)
-    for l in open("input.txt"):
-        freq[l.strip()] += 1
+    freq = Counter(open("input.txt").read().splitlines())
 
     score = 0
     for g in freq:
@@ -37,23 +35,16 @@ def part1():
 
 @profiler
 def part2():
-    freq = defaultdict(int)
-    for l in open("input.txt"):
-        g = l.split()
-        freq[l.strip()] += 1
+    freq = Counter(open("input.txt").read().splitlines())
 
     score = 0
     for g in freq:
         hands = g.split()
 
-        g_score = 0
-        if 'X' == hands[1]:  # loses
-            g_score = 0 + (ord(hands[0]) - ord('A') - 1) % 3 + 1
-        elif 'Y' == hands[1]:  # draw
-            g_score = 3 + ord(hands[0]) - ord('A') + 1
+        second_hand_shift = ord(hands[1]) - ord('X')
 
-        elif 'Z' == hands[1]:  # wins
-            g_score = 6 + (ord(hands[0]) - ord('A') + 1) % 3 + 1
+        g_score = second_hand_shift * 3 + \
+            (ord(hands[0]) - ord('A') + second_hand_shift - 1) % 3 + 1
 
         score += g_score * freq[g]
 
