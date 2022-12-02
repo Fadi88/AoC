@@ -17,18 +17,17 @@ def profiler(method):
 def part1():
     freq = defaultdict(int)
     for l in open("input.txt"):
-        g = l.split()
         freq[l.strip()] += 1
 
     score = 0
-    wins = {(0, 1), (1, 2), (2, 0)}
     for g in freq:
         hands = g.split()
 
         g_score = ord(hands[1]) - ord('X') + 1
+
         if ord(hands[0]) - ord('A') == ord(hands[1]) - ord('X'):
             g_score += 3
-        elif (ord(hands[0]) - ord('A'), ord(hands[1]) - ord('X')) in wins:
+        elif (ord(hands[0]) - ord('A') + 1) % 3 == ord(hands[1]) - ord('X'):
             g_score += 6
 
         score += g_score * freq[g]
@@ -44,15 +43,19 @@ def part2():
         freq[l.strip()] += 1
 
     score = 0
-
-    val = {
-        'A': {'X': 3, 'Y': 1 + 3, 'Z': 2 + 6},
-        'B': {'X': 1, 'Y': 2 + 3, 'Z': 3 + 6},
-        'C': {'X': 2, 'Y': 3 + 3, 'Z': 1 + 6},
-    }
     for g in freq:
         hands = g.split()
-        score += val[hands[0]][hands[1]] * freq[g]
+
+        g_score = 0
+        if 'X' == hands[1]:  # loses
+            g_score = 0 + (ord(hands[0]) - ord('A') - 1) % 3 + 1
+        elif 'Y' == hands[1]:  # draw
+            g_score = 3 + ord(hands[0]) - ord('A') + 1
+
+        elif 'Z' == hands[1]:  # wins
+            g_score = 6 + (ord(hands[0]) - ord('A') + 1) % 3 + 1
+
+        score += g_score * freq[g]
 
     print(score)
 
