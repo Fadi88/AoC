@@ -39,10 +39,10 @@ def part2():
     for g in freq:
         hands = g.split()
 
-        second_hand_shift = ord(hands[1]) - ord('X')
+        h0 = ord(hands[0]) - ord('A')
+        h1 = ord(hands[1]) - ord('X')
 
-        g_score = second_hand_shift * 3 + \
-            (ord(hands[0]) - ord('A') + second_hand_shift - 1) % 3 + 1
+        g_score = h1 * 3 + (h0 + h1 - 1) % 3 + 1
 
         score += g_score * freq[g]
 
