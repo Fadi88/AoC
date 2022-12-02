@@ -21,17 +21,19 @@ def part1():
         freq[l.strip()] += 1
 
     score = 0
-    wins = {'A': 'Y', 'B': 'Z', 'C': 'X'}
+    wins = {(0, 1), (1, 2), (2, 0)}
     for g in freq:
         hands = g.split()
 
         g_score = ord(hands[1]) - ord('X') + 1
         if ord(hands[0]) - ord('A') == ord(hands[1]) - ord('X'):
             g_score += 3
-        elif hands[1] == wins[hands[0]]:
+        elif (ord(hands[0]) - ord('A'), ord(hands[1]) - ord('X')) in wins:
             g_score += 6
 
         score += g_score * freq[g]
+
+    print(score)
 
 
 @profiler
