@@ -22,11 +22,9 @@ def part1():
         hands = g.split()
 
         g_score = ord(hands[1]) - ord('X') + 1
+        g_score += 3 * int(ord(hands[0]) - ord('A') == ord(hands[1]) - ord('X'))
+        g_score += 6 * int((ord(hands[0]) - ord('A') + 1) % 3 == ord(hands[1]) - ord('X'))
 
-        if ord(hands[0]) - ord('A') == ord(hands[1]) - ord('X'):
-            g_score += 3
-        elif (ord(hands[0]) - ord('A') + 1) % 3 == ord(hands[1]) - ord('X'):
-            g_score += 6
 
         score += g_score * freq[g]
 
