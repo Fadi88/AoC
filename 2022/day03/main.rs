@@ -22,8 +22,7 @@ fn part_1() {
     let input = BufReader::new(File::open("day03/input.txt").unwrap()).lines();
 
     let mut total: u16 = 0;
-    for read_result in input {
-        let l = read_result.unwrap();
+    for l in input.map(|x| x.unwrap()) {
         let h1: HashSet<char> = l[..l.len() / 2].chars().collect();
         let h2: HashSet<char> = l[l.len() / 2..].chars().collect();
 
