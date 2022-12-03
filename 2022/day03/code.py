@@ -20,33 +20,30 @@ def getvalue(c):
 
 @profiler
 def part1():
-    prio = 0
+    total = 0
 
     for l in open("input.txt").read().splitlines():
-
-        h1 = l[:len(l)//2]
-        h2 = l[len(l)//2:]
-        for c in h1:
-            if c in h2:
-                prio += getvalue(c)
+        for c in l[:len(l)//2]:
+            if c in l[len(l)//2:]:
+                total += getvalue(c)
                 break
 
-    print(prio)
+    print(total)
 
 
 @profiler
 def part2():
-    prio = 0
+    total = 0
 
     items = open("input.txt").read().splitlines()
 
     for i in range(0, len(items), 3):
         for c in items[i]:
-            if items[i+1].count(c) > 0 and items[i+2].count(c) > 0:
-                prio += getvalue(c)
+            if c in items[i+1] and c in items[i+2]:
+                total += getvalue(c)
                 break
 
-    print(prio)
+    print(total)
 
 
 if __name__ == "__main__":
