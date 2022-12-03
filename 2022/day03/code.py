@@ -23,10 +23,10 @@ def part1():
     total = 0
 
     for l in open("input.txt").read().splitlines():
-        for c in l[:len(l)//2]:
-            if c in l[len(l)//2:]:
-                total += getvalue(c)
-                break
+        h1 = set(l[:len(l)//2])
+        h2 = set(l[len(l)//2:])
+
+        total += getvalue(h1.intersection(h2).pop())
 
     print(total)
 
@@ -38,10 +38,11 @@ def part2():
     items = open("input.txt").read().splitlines()
 
     for i in range(0, len(items), 3):
-        for c in items[i]:
-            if c in items[i+1] and c in items[i+2]:
-                total += getvalue(c)
-                break
+        h1 = set(items[i])
+        h2 = set(items[i+1])
+        h3 = set(items[i+2])
+
+        total += getvalue(h1.intersection(h2).intersection(h3).pop())
 
     print(total)
 
