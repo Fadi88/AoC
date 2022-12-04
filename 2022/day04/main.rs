@@ -1,4 +1,3 @@
-use regex::Regex;
 use std::time;
 
 fn bench(f: fn()) {
@@ -9,11 +8,12 @@ fn bench(f: fn()) {
     ret
 }
 
-fn is_fully_contained(re: &Regex, s: &str) -> bool {
-    let ds = re
-        .captures_iter(s)
-        .map(|x| x.get(0).unwrap().as_str().parse::<u8>().unwrap())
-        .collect::<Vec<u8>>();
+fn is_fully_contained(s: &str) -> bool {
+    let ds: Vec<_> = s
+        .replace("-", ",")
+        .split(',')
+        .map(|x| x.parse::<u8>().unwrap())
+        .collect();
     if (ds[0] <= ds[2] && ds[1] >= ds[3]) || (ds[2] <= ds[0] && ds[3] >= ds[1]) {
         true
     } else {
@@ -22,22 +22,21 @@ fn is_fully_contained(re: &Regex, s: &str) -> bool {
 }
 
 fn part_1() {
-    let re = Regex::new(r"\d+").unwrap();
-
     println!(
         "{}",
         include_str!("input.txt")
-            .split("\n")
-            .filter(|x| is_fully_contained(&re, x))
+            .lines()
+            .filter(|x| is_fully_contained(x))
             .count()
     );
 }
 
-fn is_overlapping(re: &Regex, s: &str) -> bool {
-    let ds = re
-        .captures_iter(s)
-        .map(|x| x.get(0).unwrap().as_str().parse::<u8>().unwrap())
-        .collect::<Vec<u8>>();
+fn is_overlapping(s: &str) -> bool {
+    let ds: Vec<_> = s
+        .replace("-", ",")
+        .split(',')
+        .map(|x| x.parse::<u8>().unwrap())
+        .collect();
     if (ds[2] >= ds[0] && ds[2] <= ds[1])
         || (ds[3] >= ds[0] && ds[3] <= ds[1])
         || (ds[0] >= ds[2] && ds[0] <= ds[3])
@@ -50,13 +49,11 @@ fn is_overlapping(re: &Regex, s: &str) -> bool {
 }
 
 fn part_2() {
-    let re = Regex::new(r"\d+").unwrap();
-
     println!(
         "{}",
         include_str!("input.txt")
-            .split("\n")
-            .filter(|x| is_overlapping(&re, x))
+            .lines()
+            .filter(|x| is_overlapping(x))
             .count()
     );
 }
