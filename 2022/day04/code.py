@@ -1,4 +1,5 @@
 import time
+import re
 
 
 def profiler(method):
@@ -13,12 +14,36 @@ def profiler(method):
 
 @profiler
 def part1():
-    pass
+    total = 0
+    for l in open("input.txt"):
+        (d1,d2,d3,d4) = list(map(int,re.findall(r"\d+" ,l)))
+       
+        e1 = range(d1,d2+1)
+        e2 = range(d3,d4+1)
+
+        intersection = len(set(e1).intersection(e2))
+
+        if intersection in [len(e1) , len(e2)]:
+            total += 1
+
+    print(total)
 
 
 @profiler
 def part2():
-    pass
+    total = 0
+    for l in open("input.txt"):
+        (d1,d2,d3,d4) = list(map(int,re.findall(r"\d+" ,l)))
+       
+        e1 = range(d1,d2+1)
+        e2 = range(d3,d4+1)
+
+        intersection = len(set(e1).intersection(e2))
+
+        if intersection > 0:
+            total += 1
+
+    print(total)
 
 
 if __name__ == "__main__":
