@@ -16,14 +16,9 @@ def profiler(method):
 def part1():
     total = 0
     for l in open("input.txt"):
-        (d1,d2,d3,d4) = list(map(int,re.findall(r"\d+" ,l)))
-       
-        e1 = range(d1,d2+1)
-        e2 = range(d3,d4+1)
+        (d1, d2, d3, d4) = list(map(int, re.findall(r"\d+", l)))
 
-        intersection = len(set(e1).intersection(e2))
-
-        if intersection in [len(e1) , len(e2)]:
+        if (d1 <= d3 and d2 >= d4) or (d3 <= d1 and d4 >= d2):
             total += 1
 
     print(total)
@@ -31,19 +26,14 @@ def part1():
 
 @profiler
 def part2():
-    total = 0
+    total_ = 0
     for l in open("input.txt"):
-        (d1,d2,d3,d4) = list(map(int,re.findall(r"\d+" ,l)))
-       
-        e1 = range(d1,d2+1)
-        e2 = range(d3,d4+1)
+        (d1, d2, d3, d4) = list(map(int, re.findall(r"\d+", l)))
 
-        intersection = len(set(e1).intersection(e2))
+        if d1 <= d3 <= d2 or d1 <= d4 <= d2 or d3 <= d1 <= d4 or d3 <= d2 <= d4:
+            total_ += 1
 
-        if intersection > 0:
-            total += 1
-
-    print(total)
+    print(total_)
 
 
 if __name__ == "__main__":
