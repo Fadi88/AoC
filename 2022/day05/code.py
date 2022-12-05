@@ -30,10 +30,7 @@ def part1():
         cargo[move[2]] += cargo[move[1]][-int(move[0]):][::-1]
         del cargo[move[1]][-int(move[0]):]
 
-    res = ""
-    for i in range(1, 10):
-        res += cargo[str(i)][-1]
-    print(res)
+    print("".join([cargo[str(i)][-1] for i in range(1, 10)]))
 
 
 @profiler
@@ -54,10 +51,7 @@ def part2():
         cargo[move[2]] += cargo[move[1]][-int(move[0]):]
         del cargo[move[1]][-int(move[0]):]
 
-    res = ""
-    for i in range(1, 10):
-        res += cargo[str(i)][-1]
-    print(res)
+    print("".join([cargo[str(i)][-1] for i in range(1, 10)]))
 
 
 if __name__ == "__main__":
