@@ -1,5 +1,5 @@
-use std::time;
 use std::collections::HashSet;
+use std::time;
 
 fn bench(f: fn()) {
     let t0 = time::Instant::now();
@@ -14,19 +14,13 @@ fn part_1() {
 
     let target_len = 4;
 
-    for i in target_len-1..l.len(){
+    for i in target_len..l.len() {
+        let message: HashSet<&char> = HashSet::from_iter(l[(i - target_len)..i].iter());
 
-        let mut message :HashSet<char> = HashSet::new();
-
-        for c in 0..target_len{
-            message.insert(l[i-c]);
-        }
-
-        if message.len() == target_len{
-            println!("{}" , i+1);
+        if message.len() == target_len {
+            println!("{}", i);
             break
         }
-
     }
 }
 
@@ -35,19 +29,13 @@ fn part_2() {
 
     let target_len = 14;
 
-    for i in target_len-1..l.len(){
+    for i in target_len..l.len() {
+        let message: HashSet<&char> = HashSet::from_iter(l[(i - target_len)..i].iter());
 
-        let mut message :HashSet<char> = HashSet::new();
-
-        for c in 0..target_len{
-            message.insert(l[i-c]);
-        }
-
-        if message.len() == target_len{
-            println!("{}" , i+1);
+        if message.len() == target_len {
+            println!("{}", i);
             break
         }
-
     }
 }
 
