@@ -13,13 +13,22 @@ def profiler(method):
 
 @profiler
 def part1():
-    pass
+    l = open("input.txt").read()
+    target_len = 4
+    for i in range(target_len-1,len(l)):
+        if len(set([l[i-c]for c in range(target_len)])) == target_len:
+            print(i+1)
+            break
 
 
 @profiler
 def part2():
-    pass
-
+    l = open("input.txt").read()
+    target_len = 14
+    for i in range(target_len-1,len(l)):
+        if len(set([l[i-c]for c in range(target_len)])) == target_len:
+            print(i+1)
+            break
 
 if __name__ == "__main__":
 
