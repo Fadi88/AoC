@@ -30,7 +30,6 @@ def part2():
             print(i)
             break
 
-
 if __name__ == "__main__":
 
     part1()
