@@ -15,9 +15,9 @@ def profiler(method):
 def part1():
     l = open("input.txt").read()
     target_len = 4
-    for i in range(target_len-1,len(l)):
-        if len(set([l[i-c]for c in range(target_len)])) == target_len:
-            print(i+1)
+    for i in range(target_len-1, len(l)):
+        if len(set(l[i-target_len:i])) == target_len:
+            print(i)
             break
 
 
@@ -25,10 +25,11 @@ def part1():
 def part2():
     l = open("input.txt").read()
     target_len = 14
-    for i in range(target_len-1,len(l)):
-        if len(set([l[i-c]for c in range(target_len)])) == target_len:
-            print(i+1)
+    for i in range(target_len-1, len(l)):
+        if len(set(l[i-target_len:i])) == target_len:
+            print(i)
             break
+
 
 if __name__ == "__main__":
 
