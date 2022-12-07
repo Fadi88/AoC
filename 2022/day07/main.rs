@@ -9,8 +9,7 @@ fn bench(f: fn()) {
 
     ret
 }
-
-fn part_1() {
+fn get_folder_size() -> HashMap<PathBuf, u32> {
     let mut file_size: HashMap<PathBuf, u32> = HashMap::new();
     let root = PathBuf::from("/");
     let mut pwd = PathBuf::new();
@@ -39,6 +38,11 @@ fn part_1() {
             *folder_size.entry(folder.to_path_buf()).or_insert(0) += f.1;
         }
     }
+    folder_size
+}
+
+fn part_1() {
+    let folder_size = get_folder_size();
 
     println!(
         "{}",
@@ -47,39 +51,13 @@ fn part_1() {
 }
 
 fn part_2() {
-    let mut file_size: HashMap<PathBuf, u32> = HashMap::new();
+    let folder_size = get_folder_size();
     let root = PathBuf::from("/");
-    let mut pwd = PathBuf::new();
 
-    for l in include_str!("input.txt").split("\n") {
-        if l.contains("$") {
-            if l.contains(" cd ") {
-                if l.contains("/") {
-                    pwd = root.clone();
-                } else if l.contains("..") {
-                    pwd.pop();
-                } else {
-                    pwd = pwd.join(l.split(" ").last().unwrap());
-                }
-            }
-        } else if !l.contains("dir") {
-            let p = l.split(" ").collect::<Vec<_>>();
-            file_size.insert(pwd.join(p[1]), p[0].parse::<u32>().unwrap());
-        }
-    }
+    let total_space = 70000000u32;
+    let needed_space = 30000000u32;
 
-    let mut folder_size: HashMap<PathBuf, u32> = HashMap::new();
-
-    for f in file_size {
-        for folder in f.0.parent().unwrap().ancestors() {
-            *folder_size.entry(folder.to_path_buf()).or_insert(0) += f.1;
-        }
-    }
-
-    let total_sapce = 70000000;
-    let needed_space = 30000000;
-
-    let least_del = needed_space - (total_sapce - folder_size.get(&root).unwrap());
+    let least_del = needed_space - (total_space - folder_size.get(&root).unwrap());
 
     let mut sorted_size = folder_size.into_iter().map(|x| x.1).collect::<Vec<_>>();
 
