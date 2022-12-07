@@ -52,12 +52,11 @@ fn part_1() {
 
 fn part_2() {
     let folder_size = get_folder_size();
-    let root = PathBuf::from("/");
 
     let total_space = 70000000u32;
     let needed_space = 30000000u32;
 
-    let least_del = needed_space - (total_space - folder_size.get(&root).unwrap());
+    let least_del = needed_space - (total_space - folder_size.get(&PathBuf::from("/")).unwrap());
 
     let mut sorted_size = folder_size.into_iter().map(|x| x.1).collect::<Vec<_>>();
 
