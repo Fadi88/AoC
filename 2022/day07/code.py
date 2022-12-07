@@ -18,7 +18,7 @@ def part1():
     current_path = ""
     file_size = {}
 
-    for l in open("input.txt").readlines():
+    for l in open("test.txt").readlines():
         if "$" in l:
             if " cd " in l:
 
