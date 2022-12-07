@@ -19,7 +19,7 @@ fn part_1() {
 
         if message.len() == target_len {
             println!("{}", i);
-            break
+            break;
         }
     }
 }
@@ -34,7 +34,7 @@ fn part_2() {
 
         if message.len() == target_len {
             println!("{}", i);
-            break
+            break;
         }
     }
 }
