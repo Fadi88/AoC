@@ -1,5 +1,8 @@
 
 FROM ubuntu:latest
 
-RUN sudo apt update && \
-    sudo apt install -y git python python3 pypy pypy3 cmake
+RUN apt update && \
+    apt install -y git python3 cmake curl
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+ENV TZ="Europe/Berlin"
