@@ -1,7 +1,4 @@
-from collections import defaultdict
-import sys
 from time import perf_counter
-
 
 def profiler(method):
     def wrapper_method(*arg, **kw):
