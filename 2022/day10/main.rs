@@ -53,17 +53,17 @@ fn part_2() {
         }
     }
 
-    let mut screen : [[char ; 40] ; 6] = [[' ' ; 40] ; 6];
+    let mut screen: [[char; 40]; 6] = [[' '; 40]; 6];
 
-    for cycle in xs{
+    for cycle in xs {
         let x = cycle.1;
 
-        if [x-1,x,x+1].contains(&((cycle.0 - 1) % 40)){
-            screen[((cycle.0 - 1) / 40) as usize][((cycle.0-1)%40) as usize] = '0';
-        }        
+        if [x - 1, x, x + 1].contains(&((cycle.0 - 1) % 40)) {
+            screen[((cycle.0 - 1) / 40) as usize][((cycle.0 - 1) % 40) as usize] = '0';
+        }
     }
-    for l in screen{
-        println!("{}",l.iter().collect::<String>());
+    for l in screen {
+        println!("{}", l.iter().collect::<String>());
     }
 }
 
