@@ -17,6 +17,7 @@ def part1():
     cycle = 0
     strength = {}
 
+
     for l in open("input.txt").read().splitlines():
         if "addx" in l:
             cycle += 1
@@ -28,8 +29,7 @@ def part1():
             cycle += 1
             strength[cycle] = (x, x * cycle)
 
-    print(strength[20][1] + strength[60][1] +
-          strength[100][1] + strength[140][1] + strength[180][1] + strength[220][1])
+    print(sum([strength[cycle][1] for cycle in [20,60,100,140,180,220]]))
 
 
 @profiler
@@ -54,7 +54,7 @@ def part2():
     for cycle in strength:
         x = strength[cycle][0]
         if (cycle-1)%40 in [x-1,x,x+1]:
-            screen[(cycle-1)//40][(cycle-1)%40] = "O"
+            screen[(cycle-1)//40][(cycle-1)%40] = "0"
 
     for l in screen:
         print("".join(l))
