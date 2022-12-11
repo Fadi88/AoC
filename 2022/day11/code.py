@@ -1,4 +1,5 @@
 from time import perf_counter
+import math
 
 
 def profiler(method):
@@ -12,12 +13,21 @@ def profiler(method):
 
 
 class Monkey:
-    def __init__(self) -> None:
-        self.items = []
-        self.operation = tuple()
-        self.test = 0
-        self.if_true = 0
-        self.if_false = 0
+    def __init__(self, m):
+        for l in m.splitlines():
+            if "Starting items:" in l:
+                self.items = list(map(int, l.strip().replace(
+                    "Starting items: ", "").replace(",", "").split(" ")))
+            elif "Operation:" in l:
+                p = l.split()
+                self.operation = (p[-2], p[-1])
+            elif "Test:" in l:
+                self.test = int(l.split()[-1])
+            elif "If true:" in l:
+                self.if_true = int(l.split()[-1])
+            elif "If false:" in l:
+                self.if_false = int(l.split()[-1])
+
         self.activity = 0
 
     def round(self):
@@ -44,42 +54,22 @@ class Monkey:
 
         return ret
 
-    def append_item(self,val):
-        self.items
-
 
 @profiler
 def part1():
     monkeys = []
 
     for m in open("input.txt").read().split("\n\n"):
-        tmp_monkey = Monkey()
-        for l in m.splitlines():
-            if "Starting items:" in l:
-                tmp_monkey.items += list(map(int, l.strip().replace(
-                    "Starting items: ", "").replace(",", "").split(" ")))
-            elif "Operation:" in l:
-                p = l.split()
-                tmp_monkey.operation = (p[-2], p[-1])
-            elif "Test:" in l:
-                tmp_monkey.test = int(l.split()[-1])
-            elif "If true:" in l:
-                tmp_monkey.if_true = int(l.split()[-1])
-            elif "If false:" in l:
-                tmp_monkey.if_false = int(l.split()[-1])
-
-        monkeys.append(tmp_monkey)
+        monkeys.append(Monkey(m))
 
     for _ in range(20):
         for m in range(len(monkeys)):
             tmp = monkeys[m].round()
             for i in tmp:
                 monkeys[i[0]].items.append(i[1])
-    monkeys.sort(key=lambda x : x.activity)
+    monkeys.sort(key=lambda x: x.activity, reverse=True)
 
-
-    print(monkeys[-1].activity * monkeys[-2].activity )
-    
+    print(monkeys[0].activity * monkeys[1].activity)
 
 
 @profiler
@@ -87,26 +77,9 @@ def part2():
     monkeys = []
 
     for m in open("input.txt").read().split("\n\n"):
-        tmp_monkey = Monkey()
-        for l in m.splitlines():
-            if "Starting items:" in l:
-                tmp_monkey.items += list(map(int, l.strip().replace(
-                    "Starting items: ", "").replace(",", "").split(" ")))
-            elif "Operation:" in l:
-                p = l.split()
-                tmp_monkey.operation = (p[-2], p[-1])
-            elif "Test:" in l:
-                tmp_monkey.test = int(l.split()[-1])
-            elif "If true:" in l:
-                tmp_monkey.if_true = int(l.split()[-1])
-            elif "If false:" in l:
-                tmp_monkey.if_false = int(l.split()[-1])
+        monkeys.append(Monkey(m))
 
-        monkeys.append(tmp_monkey)
-
-    divisor = 1
-    for m in monkeys:
-        divisor *= m.test
+    divisor = math.prod([m.test for m in monkeys])
 
     for _ in range(10000):
         for m in range(len(monkeys)):
@@ -114,10 +87,9 @@ def part2():
             for i in tmp:
                 monkeys[i[0]].items.append(i[1] % divisor)
 
-    monkeys.sort(key=lambda x : x.activity)
+    monkeys.sort(key=lambda x: x.activity, reverse=True)
 
-
-    print(monkeys[-1].activity * monkeys[-2].activity )
+    print(monkeys[0].activity * monkeys[1].activity)
 
 
 if __name__ == "__main__":
