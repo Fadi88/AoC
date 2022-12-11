@@ -1,4 +1,5 @@
 use std::time;
+use std::fs;
 
 fn bench(f: fn()) {
     let t0 = time::Instant::now();
@@ -9,10 +10,12 @@ fn bench(f: fn()) {
 }
 
 fn part_1() {
-    include_str!("input.txt");
+    fs::read_to_string("input.txt").unwrap().split("\n");
 }
 
-fn part_2() {}
+fn part_2() {
+    fs::read_to_string("input.txt").unwrap().split("\n");
+}
 
 fn main() {
     bench(part_1);
