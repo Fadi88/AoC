@@ -15,11 +15,11 @@ def profiler(method):
 
 def is_in_order(p1, p2):
     for i in range(min(len(p1), len(p2))):
-        if isinstance(p1[i], int) and isinstance(p2[i], int):
+        if isinstance(p1[i], int) and isinstance(p2[i], int):  # both integers
             if p1[i] == p2[i]:
                 continue
             return p1[i] < p2[i]
-        elif isinstance(p1[i], int) or isinstance(p2[i], int):
+        elif isinstance(p1[i], int) or isinstance(p2[i], int):  # one integers one list
             if isinstance(p1[i], int):
                 ret = is_in_order([p1[i]], p2[i])
             else:
@@ -33,7 +33,7 @@ def is_in_order(p1, p2):
                 continue
             return ret
 
-    if len(p1) != len(p2):
+    if len(p1) != len(p2):  # if for ends while one of them had more elements
         return len(p1) < len(p2)
 
 
@@ -63,12 +63,17 @@ def part2():
     input.append(p1)
     input.append(p2)
 
-    for i in range(len(input) - 1):
-        for j in range(0, len(input) - i - 1):
-            if not is_in_order(input[j], input[j+1]):
-                input[j], input[j+1] = input[j + 1], input[j]
+    # packet indexing starts at 1
+    less_than_p1 = 1
+    less_than_p2 = 1
 
-    print((input.index(p1) + 1) * (input.index(p2) + 1))
+    for p in input:
+        if is_in_order(p, p1):
+            less_than_p1 += 1
+        if is_in_order(p, p2):
+            less_than_p2 += 1
+
+    print(less_than_p1 * less_than_p2)
 
 
 if __name__ == "__main__":
