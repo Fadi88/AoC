@@ -60,9 +60,6 @@ def part2():
     p1 = json.loads("[[2]]")
     p2 = json.loads("[[6]]")
 
-    input.append(p1)
-    input.append(p2)
-
     # packet indexing starts at 1
     less_than_p1 = 1
     less_than_p2 = 1
@@ -72,6 +69,13 @@ def part2():
             less_than_p1 += 1
         if is_in_order(p, p2):
             less_than_p2 += 1
+
+    # the smaller packet is coming before the other but not in the list
+    # add 1 to the other index to compensate for that shift
+    if is_in_order(p1, p2):
+        less_than_p2 += 1
+    else:
+        less_than_p1 += 1
 
     print(less_than_p1 * less_than_p2)
 
