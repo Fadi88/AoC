@@ -60,14 +60,10 @@ def part1():
             else:  # cant fall anymore
                 particles[pos] = '0'
                 break
+
             if pos[1] > max_y:
-                fallen_sand -= 1
-                break
-
-        if pos[1] > max_y:
-            break
-
-    print(fallen_sand)
+                print(fallen_sand - 1)
+                return
 
 
 @profiler
