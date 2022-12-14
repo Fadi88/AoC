@@ -1,5 +1,3 @@
-from itertools import pairwise
-import pathlib
 from time import perf_counter
 
 
