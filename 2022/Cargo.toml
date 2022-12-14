@@ -59,3 +59,7 @@ path="day12/main.rs"
 [[bin]]
 name="day13"
 path="day13/main.rs"
+
+[[bin]]
+name="day14"
+path="day14/main.rs"
