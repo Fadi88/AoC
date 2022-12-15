@@ -56,8 +56,7 @@ fn part_1() {
         if r.0 > to_check.1 {
             combined_ranges.push(r);
         } else {
-            *combined_ranges.last_mut().unwrap() =
-                (to_check.0, [r.1, to_check.1].iter().max().unwrap().clone());
+            *combined_ranges.last_mut().unwrap() = (to_check.0, r.1.max(to_check.1));
         }
     }
 
@@ -97,10 +96,7 @@ fn part_2() {
 
             if dy < b_s_dst {
                 let dx = (b_s_dst - dy) as i32;
-                free_xs.push((
-                    [sensor.0 - dx, 0].iter().max().unwrap().clone(),
-                    [sensor.0 + dx, 4000000].iter().min().unwrap().clone(),
-                ));
+                free_xs.push(((sensor.0 - dx).max(0), (sensor.0 + dx).min(4000000)));
             }
         }
 
