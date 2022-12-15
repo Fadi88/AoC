@@ -24,22 +24,22 @@ def part1():
         ps = list(map(int, re.findall(r"-?\d+", l)))
         grid.append(((ps[0], ps[1]), (ps[2], ps[3])))
 
-    ranges = []
+    confirmed_free = []
     target_y = 2000000
 
-    for s, b in grid:
-        d = get_taxi_distance(s, b)
+    for sensor, beacon in grid:
+        b_s_dst = get_taxi_distance(sensor, beacon)
 
-        dy = abs(s[1] - target_y)
-        if dy <= d:
-            dx = d - dy
-            ranges.append((s[0] - dx, s[0] + dx))
+        dy = abs(sensor[1] - target_y)
+        if dy <= b_s_dst:
+            dx = b_s_dst - dy
+            confirmed_free.append((sensor[0] - dx, sensor[0] + dx))
 
-    ranges.sort()
+    confirmed_free.sort()
 
-    combined_ranges = [ranges[0]]
+    combined_ranges = [confirmed_free[0]]
 
-    for r in ranges[1:]:
+    for r in confirmed_free[1:]:
         if r[0] > combined_ranges[-1][1]:
             combined_ranges.append(r)
         else:
@@ -63,31 +63,38 @@ def part2():
 
     for y in range(0, 4000000):
         free_xs = []
-        for s, b in grid:
+        for sensor, beacon in grid:
 
-            d = get_taxi_distance(s, b)
-            dy = abs(s[1] - y)
-            if dy <= d:
-                dx = d - dy
+            b_s_dst = get_taxi_distance(sensor, beacon)
+            dy = abs(sensor[1] - y)
+            if dy <= b_s_dst:
+                dx = b_s_dst - dy
                 free_xs.append(
-                    (max([s[0] - dx, 0]), min([s[0] + dx, 4000000])))
+                    (max([sensor[0] - dx, 0]), min([sensor[0] + dx, 4000000])))
 
         free_xs.sort()
         combined_ranges = [free_xs[0]]
 
         for r in free_xs[1:]:
-            if r[0] > combined_ranges[-1][1]:
+            to_check = combined_ranges[-1]
+            if r[0] > to_check[1]:
                 combined_ranges.append(r)
             else:
-                combined_ranges[-1] = (combined_ranges[-1][0],
-                                       max([combined_ranges[-1][1], r[1]]))
+                combined_ranges[-1] = (to_check[0], max([to_check[1], r[1]]))
+
         if len(combined_ranges) > 1 or (combined_ranges[0][0] > 0 and combined_ranges[0][1] > 4000000):
+            # a gap exists in the range
             if len(combined_ranges) == 1:
+                # the gap is at one of the extremities 
                 x = 0 if combined_ranges[0][0] > 0 else 4000000
+                
                 # assert that only one slot exist
-                assert(combined_ranges[0][0] == 0 != combined_ranges[0][1] == 4000000)
+                assert(combined_ranges[0][0] == 0 !=
+                       combined_ranges[0][1] == 4000000)
             else:
+                # the gap is in the middle
                 x = combined_ranges[0][1] + 1
+                
                 # assert that only one slot exist
                 assert(x == combined_ranges[1][0] - 1)
 
