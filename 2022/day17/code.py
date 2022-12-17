@@ -165,12 +165,15 @@ def part2():
 
     pt, heights = g.find_pattern()
 
-    cycles = (1000000000000 - max(pt)) // (max(pt) - min(pt))
+    extra_rocks = (1000000000000 - max(pt)) % (max(pt) - min(pt))
+    extra_height = heights[min(pt) + extra_rocks] - heights[min(pt)]
 
+    cycles = (1000000000000 - min(pt)) // (max(pt) - min(pt))
     cycle_height = heights[max(pt)] - heights[min(pt)]
 
-    print(heights[max(pt)] + int(cycles * cycle_height) +
-          heights[min(pt) + (1000000000000 - max(pt)) % (max(pt) - min(pt))] - heights[min(pt)])
+    initial_height = heights[min(pt)]
+
+    print(initial_height + cycles * cycle_height + extra_height)
 
 
 if __name__ == "__main__":
