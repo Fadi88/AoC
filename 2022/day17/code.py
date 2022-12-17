@@ -1,4 +1,7 @@
-from time import perf_counter
+#from time import perf_counter
+import math
+from time import time as perf_counter
+from collections import defaultdict
 
 
 def profiler(method):
@@ -39,7 +42,7 @@ shapes = [minus, plus, l, eye, square]
 
 
 class grid:
-    def __init__(self, pattern) -> None:
+    def __init__(self, pattern):
         self.data = set()
         self.top = 0
         self.current_shape_idx = 0
@@ -49,7 +52,7 @@ class grid:
         self.pattern = pattern
         self.pat_idx = 0
 
-    def can_move_horizontal(self, direction) -> bool:
+    def can_move_horizontal(self, direction):
         if direction == "<":
             nx = self.shape_x - 1
         else:
@@ -65,7 +68,7 @@ class grid:
                         return False
         return True
 
-    def can_move_down(self) -> bool:
+    def can_move_down(self):
         ny = self.shape_y - 1
 
         if ny < 0:
@@ -102,9 +105,8 @@ class grid:
                 break
 
         self.draw()
-        self.settled += 1
 
-    def get_top(self) -> int:
+    def get_top(self):
         return max(c[1] for c in self.data)
 
     def draw(self):
@@ -131,7 +133,20 @@ class grid:
             print(l)
 
     def find_pattern(self):
-        pass
+        states = defaultdict(list)
+        heights = {}
+
+        while True:
+            self.drop()
+            top = self.get_top()
+
+            heights[self.settled] = top + 1
+
+            if all((x, top) in self.data for x in range(7)):
+                s = (self.pat_idx % len(self.pattern), self.current_shape_idx)
+                states[s].append(self.settled)
+                if len(states[s]) == 2:
+                    return states[s], heights
 
 
 @profiler
@@ -146,7 +161,16 @@ def part1():
 
 @profiler
 def part2():
-    pass
+    g = grid(open("day17/input.txt").read())
+
+    pt, heights = g.find_pattern()
+
+    cycles = (1000000000000 - max(pt)) // (max(pt) - min(pt))
+
+    cycle_height = heights[max(pt)] - heights[min(pt)]
+
+    print(heights[max(pt)] + int(cycles * cycle_height) +
+          heights[min(pt) + (1000000000000 - max(pt)) % (max(pt) - min(pt))] - heights[min(pt)])
 
 
 if __name__ == "__main__":
