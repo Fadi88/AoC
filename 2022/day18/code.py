@@ -71,7 +71,7 @@ def fill(air):
                 if new_p[2] < -1 or new_p[2] > max(zs) + 1:
                     continue
 
-                if new_p not in current_path and new_p not in visited and new_p not in air:
+                if new_p not in current_path and new_p not in visited:
                     new_path = current_path + [new_p]
                     visited.add(new_p)
                     to_visit.append(new_path)
