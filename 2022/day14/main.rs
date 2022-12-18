@@ -39,14 +39,14 @@ fn part_1() {
             let (p1, p2) = (&segments[i - 1], &segments[i]);
 
             if p1[0] == p2[0] {
-                let min = *[p1[1], p2[1]].iter().min().unwrap() as usize;
-                let max = *[p1[1], p2[1]].iter().max().unwrap() as usize;
+                let min = p1[1].min(p2[1]);
+                let max = p1[1].max(p2[1]);
                 for y in min..=max {
                     particles.insert((p1[0], y as i32), '#');
                 }
             } else if p1[1] == p2[1] {
-                let min = *[p1[0], p2[0]].iter().min().unwrap() as usize;
-                let max = *[p1[0], p2[0]].iter().max().unwrap() as usize;
+                let min = p1[0].min(p2[0]);
+                let max = p1[0].max(p2[0]);
                 for x in min..=max {
                     particles.insert((x as i32, p1[1]), '#');
                 }
@@ -100,14 +100,14 @@ fn part_2() {
             let (p1, p2) = (&segments[i - 1], &segments[i]);
 
             if p1[0] == p2[0] {
-                let min = *[p1[1], p2[1]].iter().min().unwrap() as usize;
-                let max = *[p1[1], p2[1]].iter().max().unwrap() as usize;
+                let min = p1[1].min(p2[1]);
+                let max = p1[1].max(p2[1]);
                 for y in min..=max {
                     particles.insert((p1[0], y as i32), '#');
                 }
             } else if p1[1] == p2[1] {
-                let min = *[p1[0], p2[0]].iter().min().unwrap() as usize;
-                let max = *[p1[0], p2[0]].iter().max().unwrap() as usize;
+                let min = p1[0].min(p2[0]);
+                let max = p1[0].max(p2[0]);
                 for x in min..=max {
                     particles.insert((x as i32, p1[1]), '#');
                 }
