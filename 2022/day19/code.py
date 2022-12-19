@@ -1,5 +1,5 @@
 from time import time as perf_counter
-from collections import deque,defaultdict
+from collections import deque, defaultdict
 from copy import deepcopy
 import re
 
@@ -36,7 +36,6 @@ class state:
 
         return ret
 
-
 def get_max_geode(blue_print, limit=24):
 
     init_state = state()
@@ -49,6 +48,8 @@ def get_max_geode(blue_print, limit=24):
     seen = set()
 
     best_geode = defaultdict(int)
+
+    global cycles
 
     while to_visit:
         current_state = to_visit.popleft()
@@ -84,7 +85,8 @@ def get_max_geode(blue_print, limit=24):
         current_state.obsidian += current_state.obsidian_bot
 
         # hack 1 dont explore paths with less geode than previously found at the same time step
-        delta = 1 if limit != 24  and current_state.time > 21 else 0
+        delta = 1 if limit != 24 and current_state.time in [
+            22, 23, 24, 25, 26] else 0
         if current_state.geode + delta < best_geode[current_state.time]:
             continue
         elif current_state.geode > best_geode[current_state.time]:
