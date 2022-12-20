@@ -1,4 +1,4 @@
-from time import perf_counter
+from time import time as perf_counter
 
 
 def profiler(method):
@@ -13,12 +13,40 @@ def profiler(method):
 
 @profiler
 def part1():
-    pass
+    input = [int(l) for l in open("input.txt")]
+
+    buffer = [(idx, i) for idx, i in enumerate(input)]
+
+    for idx, i in enumerate(input):
+        old_idx = buffer.index((idx, i))
+
+        buffer.remove((idx, i))
+        buffer.insert((old_idx + i + len(input) - 1) %
+                      (len(input) - 1), (-1, i))
+
+    zero_idx = buffer.index((-1, 0))
+
+    print(sum(buffer[(zero_idx + (i+1) * 1000) % len(buffer)][1]
+          for i in range(3)))
 
 
 @profiler
 def part2():
-    pass
+    input = [int(l) * 811589153 for l in open("input.txt")]
+
+    buffer = [(idx, i) for idx, i in enumerate(input)]
+
+    for _ in range(10):
+        for idx, i in enumerate(input):
+            old_idx = buffer.index((idx, i))
+
+            buffer.remove((idx, i))
+            buffer.insert((old_idx + i + len(input) - 1) %
+                          (len(input) - 1), (idx, i))
+
+    zero_idx = buffer.index((input.index(0), 0))
+    print(sum(buffer[(zero_idx + (i+1) * 1000) % len(buffer)][1]
+          for i in range(3)))
 
 
 if __name__ == "__main__":
