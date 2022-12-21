@@ -77,21 +77,22 @@ def part2():
         rhs = eq[1]
         lhs = eq[0]
 
-    rhs = simplify(rhs).replace("/", "//")
-    lhs = lhs[1:-2]
+    rhs = simplify(rhs)
+    lhs = int(lhs[1:-2])
 
     r = [0, 1e15]
 
     while True:
         mid = sum(r)//2
 
-        if eval(rhs.replace("humn", str(int(mid)))) < int(lhs):
+        if eval(rhs.replace("humn", str(mid))) < lhs:
             r[1] = mid
-        elif eval(rhs.replace("humn", str(int(mid)))) > int(lhs):
+        elif eval(rhs.replace("humn", str(mid))) > lhs:
             r[0] = mid
         else:
             print(int(mid))
             break
+
 
 if __name__ == "__main__":
 
