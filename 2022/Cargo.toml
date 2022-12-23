@@ -7,6 +7,8 @@ edition = "2021"
 regex = "1"
 json = "*"
 serde_json = "1.0.89"
+itertools = "0.10"
+
 
 [[bin]]
 name="day01"
@@ -75,3 +77,19 @@ path="day18/main.rs"
 [[bin]]
 name="day19"
 path="day19/main.rs"
+
+[[bin]]
+name="day20"
+path="day20/main.rs"
+
+[[bin]]
+name="day21"
+path="day21/main.rs"
+
+[[bin]]
+name="day22"
+path="day22/main.rs"
+
+[[bin]]
+name="day23"
+path="day23/main.rs"
