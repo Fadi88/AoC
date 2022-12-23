@@ -1,5 +1,5 @@
 from time import time as perf_counter
-from collections import defaultdict, deque
+from collections import Counter, defaultdict, deque
 
 
 def profiler(method):
@@ -12,10 +12,21 @@ def profiler(method):
     return wrapper_method
 
 
+def is_isolated(grid, e):
+    for dx in [-1, 0, 1]:
+        for dy in [-1, 0, 1]:
+            if dx == dy == 0:
+                continue
+            if (e[0] + dx, e[1] + dy) in grid:
+                return False
+
+    return True
+
+
 @profiler
 def part1():
     grid = set()
-    for y, l in enumerate(open("day23/test.txt").read().splitlines()):
+    for y, l in enumerate(open("input.txt").read().splitlines()):
         for x, c in enumerate(l):
             if c == "#":
                 grid.add((x, y))
@@ -30,31 +41,28 @@ def part1():
     }
 
     for _ in range(10):
-        proposal = defaultdict(list)
+        proposal = {}
+        counts = Counter()
 
         for e in grid:
-            if sum((e[0] + dx , e[1] + dy) in grid for dx in [-1,1,0] for dy in [-1,1,0]) == 1:
+            if is_isolated(grid, e):
                 continue
-
+        
             for d in directions:
                 if all((e[0]+delta[0], e[1]+delta[1]) not in grid for delta in neighbors[d]):
-                    proposal[e].append(
-                        (e[0]+neighbors[d][0][0], e[1]+neighbors[d][0][1]))
+                    proposal[e] = (e[0]+neighbors[d][0][0],
+                                   e[1]+neighbors[d][0][1])
+                    counts[(e[0]+neighbors[d][0][0],
+                            e[1]+neighbors[d][0][1])] += 1
                     break
+
         new_grid = set()
         for e in grid:
-            if len(proposal[e]) == 0:
-                new_grid.add(e)
+            if e in proposal and counts[proposal[e]] == 1:
+                new_grid.add(proposal[e])
             else:
-                moved = False
-                for p in proposal[e]:
-                    if not any(p in proposal[e2] for e2 in proposal if e2 != e):
-                        new_grid.add(p)
-                        moved = True
-                        break
+                new_grid.add(e)
 
-                if not moved:
-                    new_grid.add(e)
         assert(len(grid) == len(new_grid))
         grid = new_grid
         directions.rotate(-1)
@@ -67,7 +75,7 @@ def part1():
 @profiler
 def part2():
     grid = set()
-    for y, l in enumerate(open("day23/input.txt").read().splitlines()):
+    for y, l in enumerate(open("input.txt").read().splitlines()):
         for x, c in enumerate(l):
             if c == "#":
                 grid.add((x, y))
@@ -84,31 +92,28 @@ def part2():
     cycle = 0
 
     while True:
-        proposal = defaultdict(list)
+        proposal = {}
+        counts = Counter()
 
         for e in grid:
-            if sum((e[0] + dx , e[1] + dy) in grid for dx in [-1,1,0] for dy in [-1,1,0]) == 1:
+            if is_isolated(grid, e):
                 continue
-    
+        
             for d in directions:
                 if all((e[0]+delta[0], e[1]+delta[1]) not in grid for delta in neighbors[d]):
-                    proposal[e].append(
-                        (e[0]+neighbors[d][0][0], e[1]+neighbors[d][0][1]))
+                    proposal[e] = (e[0]+neighbors[d][0][0],
+                                   e[1]+neighbors[d][0][1])
+                    counts[(e[0]+neighbors[d][0][0],
+                            e[1]+neighbors[d][0][1])] += 1
                     break
+
         new_grid = set()
         for e in grid:
-            if len(proposal[e]) == 0:
-                new_grid.add(e)
+            if e in proposal and counts[proposal[e]] == 1:
+                new_grid.add(proposal[e])
             else:
-                moved = False
-                for p in proposal[e]:
-                    if not any(p in proposal[e2] for e2 in proposal if e2 != e):
-                        new_grid.add(p)
-                        moved = True
-                        break
+                new_grid.add(e)
 
-                if not moved:
-                    new_grid.add(e)
         assert(len(grid) == len(new_grid))
         cycle += 1
         if grid == new_grid:
@@ -117,10 +122,13 @@ def part2():
         directions.rotate(-1)
 
     print(cycle)
-        
-       
-  
+
+
 if __name__ == "__main__":
 
     part1()
     part2()
+
+import cProfile
+
+#cProfile.run("part2()")
