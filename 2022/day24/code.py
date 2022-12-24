@@ -126,7 +126,7 @@ def part2():
 
     seen = set()
 
-    found = False
+    times = []
 
     while to_visit:
         current_pos, current_step = to_visit.popleft()
@@ -150,80 +150,20 @@ def part2():
             nx, ny = current_pos[0] + d[0], current_pos[1] + d[1]
 
             if (nx, ny) == target:
-                s1 = current_step+1
-                found = True
+                if len(times) == 0:
+                    times.append(current_step+1)
+                    to_visit.clear()
+                    to_visit.append((target, current_step+1))
+                    break
+                if len(times) == 2:
+                    print(current_step+1)
+                    return
+
+            if (nx, ny) == start and len(times) == 1:
+                times.append(current_step+1)
+                to_visit.clear()
+                to_visit.append((start, current_step+1))
                 break
-
-            if 0 < nx < max_x and 0 < ny < max_y:
-                if (nx, ny) not in occupied[current_step + 1]:
-                    to_visit.append(((nx, ny), current_step + 1))
-
-        if found:
-            break
-
-    to_visit = deque([(target, s1)])
-    found = False
-
-    while to_visit:
-        current_pos, current_step = to_visit.popleft()
-
-        if (current_pos, current_step) in seen:
-            continue
-
-        seen.add((current_pos, current_step))
-
-        if (current_step + 1) not in history:
-            history[current_step +
-                    1] = cycle_grid(history[current_step], max_x, max_y)
-            occupied[current_step +
-                     1] = set(b.pos for b in history[current_step + 1])
-
-        if current_pos not in occupied[current_step + 1]:
-            # wait for one minute if the place is blizzard free the next step
-            to_visit.append((current_pos, current_step + 1))
-
-        for d in deltas:
-            nx, ny = current_pos[0] + d[0], current_pos[1] + d[1]
-
-            if (nx, ny) == start:
-                s2 = current_step+1
-                found = True
-                break
-
-            if 0 < nx < max_x and 0 < ny < max_y:
-                if (nx, ny) not in occupied[current_step + 1]:
-                    to_visit.append(((nx, ny), current_step + 1))
-
-        if found:
-            break
-
-    to_visit = deque([(start, s2)])
-    found = False
-
-    while to_visit:
-        current_pos, current_step = to_visit.popleft()
-
-        if (current_pos, current_step) in seen:
-            continue
-
-        seen.add((current_pos, current_step))
-
-        if (current_step + 1) not in history:
-            history[current_step +
-                    1] = cycle_grid(history[current_step], max_x, max_y)
-            occupied[current_step +
-                     1] = set(b.pos for b in history[current_step + 1])
-
-        if current_pos not in occupied[current_step + 1]:
-            # wait for one minute if the place is blizzard free the next step
-            to_visit.append((current_pos, current_step + 1))
-
-        for d in deltas:
-            nx, ny = current_pos[0] + d[0], current_pos[1] + d[1]
-
-            if (nx, ny) == target:
-                print(current_step+1)
-                return
 
             if 0 < nx < max_x and 0 < ny < max_y:
                 if (nx, ny) not in occupied[current_step + 1]:
