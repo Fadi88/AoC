@@ -28,19 +28,19 @@ def cycle_grid(grid, max_x, max_y):
     for b in grid:
         x, y = b.pos
         if b.direction == ">":
-            x = b.pos[0] + 1
+            x += 1
             if x >= max_x:
                 x = 1
         elif b.direction == "<":
-            x = b.pos[0] - 1
+            x -= 1
             if x == 0:
                 x = max_x - 1
         elif b.direction == "^":
-            y = b.pos[1] - 1
+            y -= 1
             if y == 0:
                 y = max_y - 1
         elif b.direction == "v":
-            y = b.pos[1] + 1
+            y += 1
             if y >= max_y:
                 y = 1
 
