@@ -176,6 +176,7 @@ fn part_2() {
     let mut seen: HashSet<((u8, u8), u16)> = HashSet::new();
 
     let mut times: Vec<u16> = Vec::new();
+    let cycle = 700;
 
     while !to_visit.is_empty() {
         let (current_pos, current_step) = to_visit.pop_front().unwrap();
@@ -186,15 +187,18 @@ fn part_2() {
 
         seen.insert((current_pos, current_step));
 
-        if !history.contains_key(&(current_step + 1)) {
-            let n_grid = cycle_grid(&history.get(&current_step).unwrap(), max_x, max_y);
-            occupied.insert(current_step + 1, n_grid.iter().map(|x| x.pos).collect());
-            history.insert(current_step + 1, n_grid);
+        if !history.contains_key(&((current_step + 1) % cycle)) {
+            let n_grid = cycle_grid(&history.get(&(current_step % cycle)).unwrap(), max_x, max_y);
+            occupied.insert(
+                (current_step + 1) % cycle,
+                n_grid.iter().map(|x| x.pos).collect(),
+            );
+            history.insert((current_step + 1) % cycle, n_grid);
         }
 
         // option 1 to wait for 1 minute
         if !occupied
-            .get(&(current_step + 1))
+            .get(&((current_step + 1) % cycle))
             .unwrap()
             .contains(&current_pos)
         {
@@ -229,7 +233,7 @@ fn part_2() {
             }
             if nx > 0 && nx < max_x && ny > 0 && ny < max_y {
                 if !occupied
-                    .get(&(current_step + 1))
+                    .get(&((current_step + 1) % 700))
                     .unwrap()
                     .contains(&(nx, ny))
                 {
