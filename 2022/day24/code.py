@@ -1,6 +1,7 @@
 import cProfile
 from collections import deque
 from time import time as perf_counter
+#from math import lcm
 
 
 def profiler(method):
@@ -114,6 +115,9 @@ def part2():
     max_x = x
     max_y = y
 
+    # cycle = lcm(max_x-1,max_y-1) # not in pypy
+    cycle = 700
+
     target = (x-1, y)
 
     start = (1, 0)
@@ -136,13 +140,13 @@ def part2():
 
         seen.add((current_pos, current_step))
 
-        if (current_step + 1) not in history:
-            history[current_step +
-                    1] = cycle_grid(history[current_step], max_x, max_y)
-            occupied[current_step +
-                     1] = set(b.pos for b in history[current_step + 1])
+        if (current_step + 1) % cycle not in history:
+            history[(current_step + 1) %
+                    cycle] = cycle_grid(history[current_step % cycle], max_x, max_y)
+            occupied[(current_step + 1) %
+                     cycle] = set(b.pos for b in history[(current_step + 1) % cycle])
 
-        if current_pos not in occupied[current_step + 1]:
+        if current_pos not in occupied[(current_step + 1) % cycle]:
             # wait for one minute if the place is blizzard free the next step
             to_visit.append((current_pos, current_step + 1))
 
@@ -166,7 +170,7 @@ def part2():
                 break
 
             if 0 < nx < max_x and 0 < ny < max_y:
-                if (nx, ny) not in occupied[current_step + 1]:
+                if (nx, ny) not in occupied[(current_step + 1) % cycle]:
                     to_visit.append(((nx, ny), current_step + 1))
 
 
