@@ -13,14 +13,20 @@ fn get_decimal(snafu: &str) -> i64 {
     let mut ret: i64 = 0;
 
     for (idx, c) in snafu.chars().rev().enumerate() {
-        if c.is_numeric() {
-            ret += c.to_digit(10).unwrap() as i64 * 5i64.pow(idx.try_into().unwrap());
-        } else if c == '-' {
-            ret -= 5i64.pow(idx.try_into().unwrap());
-        } else if c == '=' {
-            ret -= 2 * 5i64.pow(idx.try_into().unwrap());
+        match c {
+            c if c.is_numeric() => {
+                ret += c.to_digit(10).unwrap() as i64 * 5i64.pow(idx.try_into().unwrap());
+            }
+            '-' => {
+                ret -= 5i64.pow(idx.try_into().unwrap());
+            }
+            '=' => {
+                ret -= 2 * 5i64.pow(idx.try_into().unwrap());
+            }
+            _ => panic!(),
         }
     }
+
     ret
 }
 fn get_snafu(mut n: i64) -> String {
@@ -32,14 +38,16 @@ fn get_snafu(mut n: i64) -> String {
             0..=2 => ret.push(char::from_digit(current_digit as u32, 10).unwrap()),
             3 => {
                 ret.push('=');
+                n += 1;
             }
             4 => {
                 ret.push('-');
+                n += 1;
             }
             _ => unreachable!(),
         }
     }
-    ret
+    ret.chars().rev().collect()
 }
 fn part_1() {
     println!(

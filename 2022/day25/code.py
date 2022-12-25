@@ -34,16 +34,17 @@ def get_snafu(n):
             ret += str(current_digit)
         elif current_digit == 3:
             ret += "="
+            n += 1
         elif current_digit == 4:
             ret += "-"
+            n += 1
 
     return ret[::-1]
 
 
 @profiler
 def part1():
-    print(get_snafu(sum(map(get_decimal, open("test.txt").read().splitlines()))))
-
+    print(get_snafu(sum(map(get_decimal, open("input.txt").read().splitlines()))))
 
 if __name__ == "__main__":
 
