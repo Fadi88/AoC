@@ -29,17 +29,14 @@ def get_snafu(n):
     ret = ""
 
     while n != 0:
-        current_digit = n % 5
+        n, current_digit = divmod(n,5)
         if current_digit in [0, 1, 2]:
             ret += str(current_digit)
-            n -= current_digit
         elif current_digit == 3:
             ret += "="
-            n += 2
         elif current_digit == 4:
             ret += "-"
-            n += 1
-        n = n // 5
+        
 
     return ret[::-1]
 
