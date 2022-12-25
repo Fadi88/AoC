@@ -29,21 +29,20 @@ def get_snafu(n):
     ret = ""
 
     while n != 0:
-        n, current_digit = divmod(n,5)
+        n, current_digit = divmod(n, 5)
         if current_digit in [0, 1, 2]:
             ret += str(current_digit)
         elif current_digit == 3:
             ret += "="
         elif current_digit == 4:
             ret += "-"
-        
 
     return ret[::-1]
 
 
 @profiler
 def part1():
-    print(get_snafu(sum(map(get_decimal, open("input.txt").read().splitlines()))))
+    print(get_snafu(sum(map(get_decimal, open("test.txt").read().splitlines()))))
 
 
 if __name__ == "__main__":
