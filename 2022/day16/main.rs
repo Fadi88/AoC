@@ -90,10 +90,7 @@ fn part_1() {
 
         let p = re2.find_iter(l).map(|x| x.as_str()).collect::<Vec<_>>();
 
-        grid.insert(
-            p[0],
-            p[1..].iter().map(|x| *x).collect(),
-        );
+        grid.insert(p[0], p[1..].iter().map(|x| *x).collect());
 
         let flow = re1.find(l).unwrap().as_str().parse::<u8>().unwrap();
 
@@ -139,7 +136,86 @@ fn part_1() {
 }
 
 fn part_2() {
-    fs::read_to_string("input.txt").unwrap().split("\n");
+    let mut grid: HashMap<&str, Vec<&str>> = HashMap::new();
+    let mut flow_rate: HashMap<&str, u8> = HashMap::new();
+
+    let binding = fs::read_to_string("input.txt").unwrap();
+    for l in binding.lines() {
+        let re1 = Regex::new(r"\d+").unwrap();
+        let re2 = Regex::new(r"[A-Z]{2}").unwrap();
+
+        let p = re2.find_iter(l).map(|x| x.as_str()).collect::<Vec<_>>();
+
+        grid.insert(p[0], p[1..].iter().map(|x| *x).collect());
+
+        let flow = re1.find(l).unwrap().as_str().parse::<u8>().unwrap();
+
+        if flow > 0 {
+            flow_rate.insert(p[0], flow);
+        }
+    }
+
+    let mut key_valves = flow_rate.keys().map(|y| *y).collect::<Vec<&str>>();
+    key_valves.insert(0, "AA");
+
+    let mut reduced_grid: HashMap<&str, HashMap<&str, u8>> = HashMap::new();
+
+    for v in &key_valves {
+        reduced_grid.insert(v.clone(), explore(&grid, &key_valves, v));
+    }
+
+    let mut to_visit: VecDeque<Vec<&str>> = VecDeque::new();
+    to_visit.push_back(vec!["AA"]);
+
+    let mut pressure: HashMap<Vec<&str>, u16> = HashMap::new();
+
+    while !to_visit.is_empty() {
+        let current_path = to_visit.pop_front().unwrap();
+
+        if get_time_elapsed(&reduced_grid, &current_path) > 26
+            || current_path.len() > key_valves.len() / 2
+        {
+            let mut k = current_path.clone();
+            k.remove(0); // remove "AA"
+            k.sort();
+
+            let tmp = *pressure.get(&k).or(Some(&0)).unwrap();
+            pressure.insert(
+                k,
+                tmp.max(get_pressure(&reduced_grid, &flow_rate, &current_path, 26)),
+            );
+            continue;
+        }
+
+        for v in &key_valves {
+            if !current_path.contains(v) {
+                let mut new_path = current_path.clone();
+                new_path.push(v);
+
+                to_visit.push_back(new_path);
+            }
+        }
+    }
+    let threshold = (*pressure.values().max().unwrap() as f64 * 0.75) as u16;
+    let mut max_pressure = 0;
+    for s1 in pressure.keys() {
+        if *pressure.get(s1).unwrap() < threshold {
+            continue;
+        }
+        let t1 = s1.iter().collect::<HashSet<_>>();
+        for s2 in pressure.keys() {
+            if *pressure.get(s2).unwrap() < threshold {
+                continue;
+            }
+            let t2 = s2.iter().collect::<HashSet<_>>();
+
+            if t1.is_disjoint(&t2) {
+                max_pressure =
+                    max_pressure.max(*pressure.get(s1).unwrap() + *pressure.get(s2).unwrap());
+            }
+        }
+    }
+    println!("{}" , max_pressure);
 }
 
 fn main() {
