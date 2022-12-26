@@ -125,7 +125,7 @@ def part2():
     while to_visit:
         current_path = to_visit.popleft()
 
-        if get_time_elapsed(reduced_grid, current_path) > 26 or len(current_path) + 1  == len(key_valves) // 2:
+        if get_time_elapsed(reduced_grid, current_path) > 26 or len(current_path) >= len(key_valves) // 2:
             t = get_pressure(reduced_grid, flow_rate, current_path, 26)
             k = frozenset(set(current_path) - set(["AA"]))
             pressure[k] = max(t, pressure[k])
