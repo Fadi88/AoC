@@ -87,7 +87,7 @@ def part1():
     while to_visit:
         current_path = to_visit.popleft()
 
-        if get_time_elapsed(reduced_grid, current_path) > 30 or len(current_path) - 1 == len(key_valves):
+        if get_time_elapsed(reduced_grid, current_path) > 30 or len(current_path) == len(key_valves):
             pressure.add(get_pressure(reduced_grid, flow_rate, current_path))
             continue
 
@@ -125,7 +125,7 @@ def part2():
     while to_visit:
         current_path = to_visit.popleft()
 
-        if get_time_elapsed(reduced_grid, current_path) > 26 or len(current_path) - 1 == len(key_valves):
+        if get_time_elapsed(reduced_grid, current_path) > 26 or len(current_path) + 1  == len(key_valves) // 2:
             t = get_pressure(reduced_grid, flow_rate, current_path, 26)
             k = frozenset(set(current_path) - set(["AA"]))
             pressure[k] = max(t, pressure[k])
@@ -138,7 +138,7 @@ def part2():
                 to_visit.append(n_path)
 
     max_pressure = 0
-    threshold = max(pressure.values()) // 2
+    threshold = max(pressure.values()) * 0.75 
 
     for p1 in pressure:
         if pressure[p1] < threshold:
