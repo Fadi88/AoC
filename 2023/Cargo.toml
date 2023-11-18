@@ -1,0 +1,12 @@
+[package]
+name = "advent_of_code"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+regex = "1"
+
+[[bin]]
+name="template"
+path="template/main.rs"
+
