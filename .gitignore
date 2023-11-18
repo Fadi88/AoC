@@ -2,3 +2,4 @@
 build/
 CMakeSettings.json
 out/
+*/target/*
