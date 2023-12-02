@@ -39,8 +39,6 @@ def part2():
         green_cnt =  max(map(int,re.findall(r"(\d+) green",l)))
         blue_cnt =  max(map(int,re.findall(r"(\d+) blue",l)))
 
-        id =  int(re.findall(r"Game (\d+)",l)[0])
-
         total += red_cnt * green_cnt * blue_cnt
 
     print(total)
