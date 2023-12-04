@@ -31,12 +31,13 @@ def part1():
 @profiler
 def part2():
 
-    ticket_count = defaultdict(lambda : 1)
+    ticket_count = defaultdict(int)
 
     for card,l in enumerate(open("day04/input.txt")):
         ticket = l.split(":")[1].split("|")
 
-        ticket_count[card+1] # to create entry in the list if the card doesnt have any matches and doesnt win from previous round
+        ticket_count[card+1] += 1
+
         winning = set(map(int,ticket[0].split()))
         nums = set(map(int,ticket[1].split()))
 
@@ -44,7 +45,7 @@ def part2():
             ticket_count[card + 2 + n] += ticket_count[card+1]
 
     print(sum(ticket_count.values()))
-    
+
 
 if __name__ == "__main__":
 
