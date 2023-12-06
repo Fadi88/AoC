@@ -54,20 +54,10 @@ fn part_2() {
     let tt = input.get(0).unwrap().clone();
     let d: u64 = input.get(1).unwrap().clone();
 
-    for t in 0..=tt {
-        if (tt - t) * t > d {
-            wins_t = t;
-            break;
-        }
-    }
-    for t in (0..=tt).rev() {
-        if (tt - t) * t > d {
-            loss_t = t;
-            break;
-        }
-    }
+    let wins = ((tt as f32 - ((tt*tt - 4 *d ) as f32).sqrt()) / 2.0).ceil() as u32;
+    let loss = ((tt as f32 + ((tt*tt - 4 *d ) as f32).sqrt()) / 2.0).floor() as u32;
 
-    dbg!(loss_t - wins_t);
+    dbg!(loss - wins);
 }
 
 fn main() {

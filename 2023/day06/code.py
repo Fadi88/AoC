@@ -1,5 +1,5 @@
 from time import perf_counter
-
+from math import ceil,floor
 
 def profiler(method):
     def wrapper_method(*arg, **kw):
@@ -32,20 +32,13 @@ def part2():
     for l in open("day06/input.txt"):
         input.append(int("".join(l.split()[1:])))
 
-
     tt = input[0]
     d = input[1]
 
-    for t in range(tt+1):
-        if (tt-t)*t > d:
-            wins_t = t
-            break
-    for t in range(tt+1)[::-1]:
-        if (tt-t)*t > d:
-            loss_t = t
-            break
-    print(loss_t - wins_t)
+    wins_t = ceil((tt - (tt*tt - 4 *d )**0.5)/2)
+    loss_t = floor((tt + (tt*tt - 4 *d )**0.5)/2)
 
+    print(loss_t - wins_t)
 
 if __name__ == "__main__":
 
