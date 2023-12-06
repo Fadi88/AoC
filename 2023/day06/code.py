@@ -32,13 +32,19 @@ def part2():
     for l in open("day06/input.txt"):
         input.append(int("".join(l.split()[1:])))
 
-    wins = 0
+
     tt = input[0]
     d = input[1]
+
     for t in range(tt+1):
         if (tt-t)*t > d:
-            wins += 1
-    print(wins)
+            wins_t = t
+            break
+    for t in range(tt+1)[::-1]:
+        if (tt-t)*t > d:
+            loss_t = t
+            break
+    print(loss_t - wins_t)
 
 
 if __name__ == "__main__":
