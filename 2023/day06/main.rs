@@ -67,7 +67,7 @@ fn part_2() {
         }
     }
 
-    dbg!(tt - wins_t - (tt - loss_t));
+    dbg!(loss_t - wins_t);
 }
 
 fn main() {
