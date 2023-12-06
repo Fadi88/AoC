@@ -48,18 +48,26 @@ fn part_2() {
         input.push(t.parse::<u64>().unwrap());
     }
 
-    let mut wins = 0u64;
+    let mut wins_t = 0u64;
+    let mut loss_t = 0u64;
 
     let tt = input.get(0).unwrap().clone();
     let d: u64 = input.get(1).unwrap().clone();
 
     for t in 0..=tt {
         if (tt - t) * t > d {
-            wins += 1;
+            wins_t = t;
+            break;
+        }
+    }
+    for t in (0..=tt).rev() {
+        if (tt - t) * t > d {
+            loss_t = t;
+            break;
         }
     }
 
-    dbg!(wins);
+    dbg!(tt - wins_t - (tt - loss_t));
 }
 
 fn main() {
