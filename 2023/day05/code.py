@@ -1,13 +1,20 @@
 from time import perf_counter
 
+# pylint: disable=C0209,C0206,C0201,C0103,C0116,W1514
 
 def profiler(method):
     def wrapper_method(*arg, **kw):
         t = perf_counter()
         ret = method(*arg, **kw)
-        print('Method ' + method.__name__ + ' took : ' +
-              "{:2.5f}".format(perf_counter()-t) + ' sec')
+        print(
+            "Method "
+            + method.__name__
+            + " took : "
+            + "{:2.5f}".format(perf_counter() - t)
+            + " sec"
+        )
         return ret
+
     return wrapper_method
 
 
@@ -15,7 +22,7 @@ def profiler(method):
 def part1():
     Ts = open("day05/input.txt").read().split("\n\n")
 
-    seeds = list(map(int,Ts[0].split(":")[1].strip().split()))
+    seeds = list(map(int, Ts[0].split(":")[1].strip().split()))
     T = {}
 
     for t in Ts[1:]:
@@ -24,7 +31,7 @@ def part1():
         T[k] = []
 
         for m in p[1:]:
-            T[k].append(list(map(int,m.split())))
+            T[k].append(list(map(int, m.split())))
 
     current_state = "seed"
 
@@ -34,7 +41,7 @@ def part1():
                 current_state = state[1]
                 ms = T[state]
                 break
- 
+
         mapped = {}
         for s in seeds:
             for m in ms:
@@ -44,7 +51,7 @@ def part1():
             if s not in mapped:
                 mapped[s] = s
         seeds = list(mapped.values())
-     
+
     print(min(seeds))
 
 
@@ -52,7 +59,7 @@ def part1():
 def part2():
     Ts = open("day05/input.txt").read().split("\n\n")
 
-    seeds = list(map(int,Ts[0].split(":")[1].strip().split()))
+    seeds = list(map(int, Ts[0].split(":")[1].strip().split()))
     T = {}
 
     for t in Ts[1:]:
@@ -60,8 +67,8 @@ def part2():
         k = tuple(p[0].split()[0].split("-to-"))
         T[k] = []
 
-        for m in p[1:]:
-            T[k].append(list(map(int,m.split())))
+        for c_map in p[1:]:
+            T[k].append(list(map(int, c_map.split())))
 
     current_state = "seed"
 
@@ -69,38 +76,46 @@ def part2():
         for state in T.keys():
             if state[0] == current_state:
                 current_state = state[1]
-                ms = T[state]
+                mappings = T[state]
                 break
 
         to_map = []
-        for i in range(len(seeds)//2):
-            l = seeds[2*i]
-            r = seeds[2*i +1]
-            to_map.append((l,r))
+        for i in range(len(seeds) // 2):
+            loc = seeds[2 * i]
+            rng = seeds[2 * i + 1]
+            to_map.append((loc, rng))
 
         new_seeds = []
         while to_map:
-            l,r = to_map.pop(0)
+            loc, rng = to_map.pop(0)
             mapped = False
-            for m in ms:
-                if m[1] <= l <= m[1] + m[2] or m[1] <= l+r <= m[1] + m[2] or l <= m[1] <= l+r or l <= m[1] + m[2] <= l+r:
-                    n_l = max(l,m[1])
-                    n_e = min(l+r,m[1] + m[2])
-                    new_seeds += [m[0]+(n_l - m[1]), n_e - n_l]
-                    if l < m[1]:
-                        to_map.append((l,m[1]-l-1))
-                    if l+r > m[1] + m[2]:
-                        to_map.append((m[1] + m[2] +1, (l+r) - (m[1] + m[2])))
+            for c_map in mappings:
+                c_src_beg = c_map[1]
+                c_src_end = c_map[1] + c_map[2]
+                c_dst_ref = c_map[0]
+
+                if (
+                    c_src_beg <= loc <= c_src_end
+                    or c_src_beg <= loc + rng <= c_src_end
+                    or loc <= c_src_beg <= loc + rng
+                    or loc <= c_src_end <= loc + rng
+                ):
+                    n_l = max(loc, c_src_beg)
+                    n_e = min(loc + rng, c_src_end)
+                    new_seeds += [c_dst_ref + (n_l - c_src_beg), n_e - n_l]
+                    if loc < c_src_beg:
+                        to_map.append((loc, c_src_beg - loc - 1))
+                    if loc + rng > c_src_end:
+                        to_map.append((c_src_end + 1, (loc + rng) - c_src_end))
                     mapped = True
                     break
             if not mapped:
-                new_seeds += [l,r]
-            
+                new_seeds += [loc, rng]
+
         seeds = new_seeds
-    print(min([seeds[2*i] for i in range(len(seeds)//2)]))
+    print(min([seeds[2 * i] for i in range(len(seeds) // 2)]))
 
 
 if __name__ == "__main__":
-
     part1()
     part2()
