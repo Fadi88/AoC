@@ -3,4 +3,4 @@ build/
 CMakeSettings.json
 out/
 */target/*
-*/Cargo.lock
+*Cargo.lock
