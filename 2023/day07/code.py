@@ -66,12 +66,12 @@ class Hand2:
     def __init__(self,h):
         self.h = h
         self.c = Counter(h)
-        self.rank = min([get_rank(Counter(h.replace("J",test))) for test in "AKQT98765432J"])
+        self.rank = min([get_rank(Counter(h.replace("J",test))) for test in "AKQT98765432"])
     
     def __repr__(self) -> str:
         return self.h
 
-    def __gt__(self,other) :
+    def __lt__(self,other) :
         if self.rank != other.rank:
             return self.rank > other.rank
         for c_h,o_h in zip(self.h,other.h):
@@ -92,7 +92,7 @@ def part2():
     l.sort()
 
     total = 0
-    for i,h in enumerate(l[::-1]):
+    for i,h in enumerate(l):
         total += (i+1) * bids[h]
     print(total)
 
