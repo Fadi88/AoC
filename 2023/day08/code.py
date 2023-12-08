@@ -1,6 +1,6 @@
 from time import perf_counter
 import re
-from math import lcm
+from math import prod
 
 
 def profiler(method):
@@ -70,9 +70,9 @@ def part2():
         if p[0][2] == "A":
             As.append(p[0])
 
-    dist = [get_distance(maze, directions, a) for a in As]
+    dist = [get_distance(maze, directions, a) // len(directions) for a in As]
 
-    print(lcm(*dist))
+    print(prod(dist) * len(directions))
 
 
 if __name__ == "__main__":
