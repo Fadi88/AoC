@@ -2,17 +2,12 @@ from time import perf_counter
 
 # pylint: disable=C0209,C0206,C0201,C0103,C0116,W1514
 
+
 def profiler(method):
     def wrapper_method(*arg, **kw):
         t = perf_counter()
         ret = method(*arg, **kw)
-        print(
-            "Method "
-            + method.__name__
-            + " took : "
-            + "{:2.5f}".format(perf_counter() - t)
-            + " sec"
-        )
+        print("Method " + method.__name__ + " took : " + "{:2.5f}".format(perf_counter() - t) + " sec")
         return ret
 
     return wrapper_method
