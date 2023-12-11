@@ -17,8 +17,8 @@ def profiler(method):
 def augment_by_n(galaxies, empty_x, empty_y, n):
     new_galaxies = set()
     for g in galaxies:
-        n_x = g.real + (n - 1) * sum(list(map(lambda x: x < g.real, empty_x)))
-        n_y = g.imag + (n - 1) * sum(list(map(lambda x: x < g.imag, empty_y)))
+        n_x = g.real + (n - 1) * len(list(filter(lambda x: x < g.real, empty_x)))
+        n_y = g.imag + (n - 1) * len(list(filter(lambda x: x < g.imag, empty_y)))
 
         new_galaxies.add(n_x + n_y * 1j)
     return new_galaxies
