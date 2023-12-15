@@ -49,12 +49,7 @@ def part2():
             case "=":
                 boxes[box][label] = int(op[-1])
 
-    total = 0
-    for i in range(256):
-        for l, b in enumerate((boxes[i])):
-            total += (i + 1) * (l + 1) * (boxes[i][b])
-
-    print(total)
+    print(sum((i + 1) * (l + 1) * (boxes[i][b]) for i in range(256) for l, b in enumerate((boxes[i]))))
 
 
 if __name__ == "__main__":
