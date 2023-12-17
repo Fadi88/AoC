@@ -24,7 +24,6 @@ def part1():
     dirs = {">": (1, 0), "v": (0, 1), "^": (0, -1), "<": (-1, 0)}
     opposite = {"<": ">", ">": "<", "v": "^", "^": "v"}
 
-    to_visit = [(grid[0][0], ">", s), (grid[0][0], "v", s)]
     to_visit = [(0, ">", s), (0, "v", s)]
 
     seen = set()
@@ -37,10 +36,10 @@ def part1():
         for d in dirs:
             n_p = (cp[0] + dirs[d][0], cp[1] + dirs[d][1])
             if (
-                not 0 <= n_p[0] < len(grid[0]) # out of grid range
+                not 0 <= n_p[0] < len(grid[0])  # out of grid range
                 or not 0 <= n_p[1] < len(grid)
-                or (d == cd[-1] and len(cd) == 3) # path longer than 3 blocks
-                or cd[-1] == opposite[d] # turning back
+                or (d == cd[-1] and len(cd) == 3)  # path longer than 3 blocks
+                or cd[-1] == opposite[d]  # turning back
             ):
                 continue
             if d == cd[-1]:
@@ -57,7 +56,10 @@ def part1():
 
 @profiler
 def part2():
-    grid = [list(map(int, l.strip())) for l in open("day17/input.txt")]
+    grid = [list(map(int, l.strip())) for l in open("day17/test.txt")]
+
+    max_x = len(grid[0])
+    max_y = len(grid)
 
     s = (0, 0)
     e = (len(grid[0]) - 1, len(grid) - 1)
@@ -65,8 +67,7 @@ def part2():
     dirs = {">": (1, 0), "v": (0, 1), "^": (0, -1), "<": (-1, 0)}
     opposite = {"<": ">", ">": "<", "v": "^", "^": "v"}
 
-    to_visit = [(grid[0][0], ">", s), (grid[0][0], "v", s)]
-    to_visit = [(0, ">", s), (0, "v", s)]
+    to_visit = [(0, "v", s), (0, ">", s)]
 
     seen = set()
 
@@ -75,14 +76,17 @@ def part2():
         if (cp, cd) in seen:
             continue
         seen.add((cp, cd))
+
+        path_len = len(cd)
+
         for d in dirs:
             n_p = (cp[0] + dirs[d][0], cp[1] + dirs[d][1])
             if (
-                not 0 <= n_p[0] < len(grid[0]) # out of grid range
-                or not 0 <= n_p[1] < len(grid)
-                or (d == cd[-1] and len(cd) == 10) # path longer than 10 blocks
-                or (d != cd[-1] and len(cd) < 4) # path shorter than 4 blocks
-                or cd[-1] == opposite[d] # turning back
+                not 0 <= n_p[0] < max_x  # out of grid range
+                or not 0 <= n_p[1] < max_y
+                or (d == cd[-1] and path_len == 10)  # path longer than 10 blocks
+                or (d != cd[-1] and path_len < 4)  # path shorter than 4 blocks
+                or cd[-1] == opposite[d]  # turning back
             ):
                 continue
             if d == cd[-1]:
@@ -91,7 +95,7 @@ def part2():
                 nd = d
             if (n_p, nd) in seen:
                 continue
-            if n_p == e:
+            if n_p == e and len(nd) > 3:
                 print(cl + grid[n_p[1]][n_p[0]])
                 return
             heapq.heappush(to_visit, (cl + grid[n_p[1]][n_p[0]], nd, n_p))
