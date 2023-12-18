@@ -12,12 +12,10 @@ def profiler(method):
 
     return wrapper_method
 
+
 def shoe_lace(points):
-    res = sum(
-        points[i - 1][0] * points[i][1] - points[i][1] * points[i][0]
-        for i in range(len(points))
-    )
-    return abs(res)
+    res = sum(points[i - 1][0] * points[i][1] - points[i - 1][1] * points[i][0] for i in range(len(points)))
+    return res // 2
 
 
 @profiler
@@ -64,7 +62,7 @@ def part2():
         p_cnt += steps
         polygon.append((lp[0] + d[0] * steps, lp[1] + d[1] * steps))
 
-    print(shoe_lace(polygon) + p_cnt // 2 + 1)
+    print(shoe_lace(polygon) + (p_cnt + 1) // 2 + 1)
 
 
 if __name__ == "__main__":
