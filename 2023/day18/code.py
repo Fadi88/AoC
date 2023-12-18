@@ -12,25 +12,12 @@ def profiler(method):
 
     return wrapper_method
 
-
-# https://www.tutorialspoint.com/program-to-find-area-of-a-polygon-in-python
-def getInfo(x1, y1, x2, y2):
-    return x1 * y2 - y1 * x2
-
-
-def solve(points):
-    N = len(points)
-    firstx, firsty = points[0]
-    prevx, prevy = firstx, firsty
-    res = 0
-
-    for i in range(1, N):
-        nextx, nexty = points[i]
-        res = res + getInfo(prevx, prevy, nextx, nexty)
-        prevx = nextx
-        prevy = nexty
-    res = res + getInfo(prevx, prevy, firstx, firsty)
-    return abs(res) // 2
+def shoe_lace(points):
+    res = sum(
+        points[i - 1][0] * points[i][1] - points[i][1] * points[i][0]
+        for i in range(len(points))
+    )
+    return abs(res)
 
 
 @profiler
@@ -41,7 +28,7 @@ def part1():
 
     p_cnt = 0
 
-    for l in open("day18/test.txt"):
+    for l in open("day18/input.txt"):
         ps = l.split()
         d = deltas[ps[0]]
         lp = polygon[-1]
@@ -49,7 +36,7 @@ def part1():
         p_cnt += steps
         polygon.append((lp[0] + d[0] * steps, lp[1] + d[1] * steps))
 
-    print(solve(polygon) + p_cnt // 2 + 1)
+    print(shoe_lace(polygon) + p_cnt // 2 + 1)
 
 
 @profiler
@@ -77,7 +64,7 @@ def part2():
         p_cnt += steps
         polygon.append((lp[0] + d[0] * steps, lp[1] + d[1] * steps))
 
-    print(solve(polygon) + p_cnt // 2 + 1)
+    print(shoe_lace(polygon) + p_cnt // 2 + 1)
 
 
 if __name__ == "__main__":
