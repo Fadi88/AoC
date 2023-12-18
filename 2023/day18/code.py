@@ -41,21 +41,14 @@ def part1():
 def part2():
     polygon = [(0, 0)]
 
-    deltas = {"R": (1, 0), "L": (-1, 0), "U": (0, -1), "D": (0, 1)}
-
-    hex2d = {
-        "0": "R",
-        "1": "D",
-        "2": "L",
-        "3": "U",
-    }
+    deltas = {"0": (1, 0), "2": (-1, 0), "3": (0, -1), "1": (0, 1)}
 
     p_cnt = 0
 
     for l in open("day18/input.txt"):
         ps = l.split()
 
-        d = deltas[hex2d[ps[2][-2]]]
+        d = deltas[ps[2][-2]]
         lp = polygon[-1]
         steps = int(ps[2][2:-2], 16)
 
