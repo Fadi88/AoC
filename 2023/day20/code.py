@@ -99,13 +99,8 @@ def part2():
     cycles = {m:0 for m in modules[main_module].input}
 
     cycle_cnt = 0
-    cache = {}
-    while (not all(cycles.values())) or cycle_cnt < 3739*3911 + 200:
+    while not all(cycles.values()):
         cycle_cnt += 1
-        h = int("".join([str(int(m.state)) for m in modules.values()]) , 2)
-        if h in cache:
-            break
-        cache[h] = cycle_cnt
         to_send = [("broadcaster", False)]
 
         while to_send:
@@ -134,7 +129,7 @@ def part2():
                 if m in modules and modules[m].type == "&":
                     modules[m].input[src] = output
 
-    print(prod(cycles.values()) , cycles.values())
+    print(prod(cycles.values()))
 
 if __name__ == "__main__":
     part1()
