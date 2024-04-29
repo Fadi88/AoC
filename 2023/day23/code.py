@@ -1,10 +1,6 @@
 # pylint: disable=C0114,C0116,C0301,C0209,W1514
 
 from time import perf_counter
-from cProfile import run
-import networkx as nx
-import matplotlib.pyplot as plt
-from collections import defaultdict
 
 def profiler(method):
     def wrapper_method(*arg, **kw):
@@ -54,13 +50,6 @@ def part1():
                 if ny == ly - 1:
                     pathes_len.append(len(path)-1)
     print(max(pathes_len)-1)
-
-def print_junctions(maze,junctions):
-    for y,l in enumerate(maze):
-        for x,c in enumerate(l):
-            p = c if (x,y) not in junctions else "X"
-            print(p,end="")
-        print()
 
 def explore_pt(maze,junctions,pt):
     ret = {}
