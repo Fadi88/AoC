@@ -20,8 +20,8 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        files= $(git diff --name-only HEAD HEAD~ | grep py$)
+        files= $(git diff --name-only HEAD HEAD^ | grep py$)
         if [$files -gt 0]
         then
-          pylint $(git diff --name-only HEAD HEAD~ | grep py$)
+          pylint $files
         fi
