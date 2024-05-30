@@ -20,7 +20,7 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        fs=$(git diff --name-only HEAD HEAD^ | grep py$)
+        fs=$(git diff --name-only HEAD HEAD~| grep py$)
         if [$fs -gt 0]
         then
           pylint $fs
