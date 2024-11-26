@@ -6,3 +6,4 @@ out/
 *Cargo.lock
 **input.txt
 **.vscode/*
+*DS_STORE
