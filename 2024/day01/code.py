@@ -3,11 +3,18 @@
 from time import perf_counter
 from collections import Counter
 
+
 def profiler(method):
     def wrapper_method(*arg, **kw):
         t = perf_counter()
         ret = method(*arg, **kw)
-        print("Method " + method.__name__ + " took : " + "{:2.5f}".format(perf_counter() - t) + " sec")
+        print(
+            "Method "
+            + method.__name__
+            + " took : "
+            + "{:2.5f}".format(perf_counter() - t)
+            + " sec"
+        )
         return ret
 
     return wrapper_method
@@ -15,7 +22,7 @@ def profiler(method):
 
 @profiler
 def part1():
-    l1,l2 = list(),list()
+    l1, l2 = list(), list()
     for l in open("day01/input.txt"):
         p = l.strip().split()
         l1.append(int(p[0]))
@@ -26,12 +33,13 @@ def part1():
 
     sum = 0
     for i in range(len(l1)):
-        sum += abs(l1[i] - l2[i])   
+        sum += abs(l1[i] - l2[i])
     print(sum)
+
 
 @profiler
 def part2():
-    l1,l2 = list(),list()
+    l1, l2 = list(), list()
     for l in open("day01/input.txt"):
         p = l.strip().split()
         l1.append(int(p[0]))
@@ -39,7 +47,9 @@ def part2():
 
     c = Counter(l2)
 
-    print( sum(l * c[l] for l in l1))
+    print(sum(l * c[l] for l in l1))
+
+
 if __name__ == "__main__":
     part1()
     part2()
