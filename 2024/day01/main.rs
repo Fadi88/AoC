@@ -26,9 +26,13 @@ fn part_1() {
     l1.sort();
     l2.sort();
 
-    let sum: i32 = l1.iter().zip(l2.iter()).map(|(a, b)| (a - b).abs()).sum();
-
-    println!("{}", sum);
+    println!(
+        "{}",
+        l1.iter()
+            .zip(l2.iter())
+            .map(|(a, b)| (a - b).abs())
+            .sum::<i32>()
+    );
 }
 
 fn part_2() {
