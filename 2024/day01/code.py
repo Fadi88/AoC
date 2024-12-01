@@ -1,7 +1,7 @@
 # pylint: disable=C0114,C0116,C0301,C0209,W1514
 
 from time import perf_counter
-
+from collections import Counter
 
 def profiler(method):
     def wrapper_method(*arg, **kw):
@@ -15,14 +15,31 @@ def profiler(method):
 
 @profiler
 def part1():
-    pass
+    l1,l2 = list(),list()
+    for l in open("day01/input.txt"):
+        p = l.strip().split()
+        l1.append(int(p[0]))
+        l2.append(int(p[1]))
 
+    l1.sort()
+    l2.sort()
+
+    sum = 0
+    for i in range(len(l1)):
+        sum += abs(l1[i] - l2[i])   
+    print(sum)
 
 @profiler
 def part2():
-    pass
+    l1,l2 = list(),list()
+    for l in open("day01/input.txt"):
+        p = l.strip().split()
+        l1.append(int(p[0]))
+        l2.append(int(p[1]))
 
+    c = Counter(l2)
 
+    print( sum(l * c[l] for l in l1))
 if __name__ == "__main__":
     part1()
     part2()
