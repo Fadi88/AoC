@@ -1,5 +1,5 @@
-use std::time;
 use std::collections::HashMap;
+use std::time;
 
 fn bench(f: fn()) {
     let t0 = time::Instant::now();
@@ -26,9 +26,7 @@ fn part_1() {
     l1.sort();
     l2.sort();
 
-    let sum: i32 = l1.iter().zip(l2.iter())
-        .map(|(a, b)| (a - b).abs())
-        .sum();
+    let sum: i32 = l1.iter().zip(l2.iter()).map(|(a, b)| (a - b).abs()).sum();
 
     println!("{}", sum);
 }
@@ -52,9 +50,12 @@ fn part_2() {
         *count_map.entry(value).or_insert(0) += 1;
     }
 
-    //let sum: i32 = l1.iter().map(|&l| l * count_map.get(&l).unwrap_or(&0)).sum();
-
-    println!("{}", l1.iter().map(|&l| l * count_map.get(&l).unwrap_or(&0)).sum::<i32>());
+    println!(
+        "{}",
+        l1.iter()
+            .map(|&l| l * count_map.get(&l).unwrap_or(&0))
+            .sum::<i32>()
+    );
 }
 
 fn main() {
