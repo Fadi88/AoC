@@ -31,11 +31,7 @@ def part1():
     l1.sort()
     l2.sort()
 
-    sum = 0
-    for i in range(len(l1)):
-        sum += abs(l1[i] - l2[i])
-    print(sum)
-
+    print(sum(abs(a - b) for a, b in zip(l1, l2)))
 
 @profiler
 def part2():
