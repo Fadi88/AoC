@@ -43,6 +43,9 @@ fn part_1() {
 }
 
 fn is_safe_tolerate(l: &Vec<i32>) -> bool {
+    if is_safe(&l) {
+        return true;
+    }
     for i in 0..l.len() {
         let mut modified = l.clone();
         modified.remove(i);
