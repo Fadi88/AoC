@@ -19,33 +19,21 @@ def profiler(method):
 
     return wrapper_method
 
+def get_sum(input):
+    pairs = re.findall(r"mul\((\d+),(\d+)\)", input)
+    return sum(int(p[0]) * int(p[1]) for p in pairs)
 
 @profiler
 def part1():
-    input = open("day03/input.txt").read()
-    pairs = re.findall(r"mul\((\d+),(\d+)\)", input)
-    print(sum(int(p[0]) * int(p[1]) for p in pairs))
-
-
-def get_sum(e):
-    if "do()" in e:
-        pairs = re.findall(r"mul\((\d+),(\d+)\)", e.split("do()", maxsplit=1)[1])
-        return sum(int(p[0]) * int(p[1]) for p in pairs)
-
-    return 0
-
+    print(get_sum(open("day03/input.txt").read()))
 
 @profiler
 def part2():
     input = open("day03/input.txt").read()
 
-    #input = "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
+    new_input = re.sub(r"don't\(\)[\s\S]*?do\(\)", "", input)
 
-    enables = input.split("don't()")
-
-    enables[0] = "do()" + enables[0]
-
-    print(sum(get_sum(e) for e in enables))
+    print(get_sum(new_input))
 
 
 if __name__ == "__main__":
