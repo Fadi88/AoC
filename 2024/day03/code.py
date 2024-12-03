@@ -3,6 +3,7 @@
 from time import perf_counter
 import re
 
+
 def profiler(method):
     def wrapper_method(*arg, **kw):
         t = perf_counter()
@@ -23,9 +24,15 @@ def profiler(method):
 def part1():
     input = open("day03/input.txt").read()
     pairs = re.findall(r"mul\((\d+),(\d+)\)", input)
-    print(sum( int(p[0]) * int(p[1]) for p in pairs))
+    print(sum(int(p[0]) * int(p[1]) for p in pairs))
 
 
+def get_sum(e):
+    if "do()" in e:
+        pairs = re.findall(r"mul\((\d+),(\d+)\)", e.split("do()", maxsplit=1)[1])
+        return sum(int(p[0]) * int(p[1]) for p in pairs)
+
+    return 0
 
 
 @profiler
@@ -36,20 +43,11 @@ def part2():
 
     enables = input.split("don't()")
 
-    s = 0
-    for e in enables:
-        if "do()" in e:
-            pairs = re.findall(r"mul\((\d+),(\d+)\)", e.split("do()",maxsplit=1)[1])
-            s += sum( int(p[0]) * int(p[1]) for p in pairs)
-        if enables.index(e) == 0:
-            pairs = re.findall(r"mul\((\d+),(\d+)\)", e)
-            s += sum( int(p[0]) * int(p[1]) for p in pairs)
+    enables[0] = "do()" + enables[0]
 
-    print(s)
-   
+    print(sum(get_sum(e) for e in enables))
+
 
 if __name__ == "__main__":
     part1()
     part2()
-
-
