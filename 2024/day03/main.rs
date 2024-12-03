@@ -1,5 +1,5 @@
+use regex::Regex;
 use std::time;
-use std::fs;
 
 fn bench(f: fn()) {
     let t0 = time::Instant::now();
@@ -8,13 +8,25 @@ fn bench(f: fn()) {
 
     ret
 }
+fn get_sum(input: &str) -> i32 {
+    let re = Regex::new(r"mul\((\d+),(\d+)\)").unwrap();
+    re.captures_iter(input)
+        .map(|cap| {
+            let num1 = cap[1].parse::<i32>().unwrap();
+            let num2 = cap[2].parse::<i32>().unwrap();
+            num1 * num2
+        })
+        .sum()
+}
 
 fn part_1() {
-    fs::read_to_string("template/input.txt").unwrap().split("\n");
+    println!("{}", get_sum(include_str!("input.txt")));
 }
 
 fn part_2() {
-    fs::read_to_string("template/input.txt").unwrap().split("\n");
+    let re = Regex::new(r"don't\(\)[\s\S]*?do\(\)").unwrap();
+    let input = re.replace_all(include_str!("input.txt"), "");
+    println!("{}", get_sum(&input));
 }
 
 fn main() {
