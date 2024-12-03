@@ -35,6 +35,8 @@ def part1():
 
 
 def is_safe_tolerate(l):
+    if is_safe(l):
+        return True
     return any(is_safe(l[:i] + l[i + 1 :]) for i in range(len(l)))
 
 
@@ -47,3 +49,4 @@ def part2():
 if __name__ == "__main__":
     part1()
     part2()
+    

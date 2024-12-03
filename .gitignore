@@ -2,7 +2,7 @@
 build/
 CMakeSettings.json
 out/
-*/target/*
+**/target/*
 *Cargo.lock
 **input.txt
 **.vscode/*
