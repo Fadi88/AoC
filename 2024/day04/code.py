@@ -40,11 +40,11 @@ def part1():
     s = 0
     for y in range(len(grid)):
         for x in range(len(grid[0])):
-            for dx in [-1, 0, 1]:
-                for dy in [-1, 0, 1]:
-                    if dx == dy == 0:
-                        continue
-                    if grid[y][x] == "X":
+            if grid[y][x] == "X":
+                for dx in [-1, 0, 1]:
+                    for dy in [-1, 0, 1]:
+                        if dx == dy == 0:
+                            continue
                         s += check_xmas(grid, (x, y), (dx, dy))
     print(s)
 
