@@ -68,6 +68,26 @@ fn check_xmas_2(grid: &Vec<Vec<char>>, x: i32, y: i32) -> bool {
         && chars[0] != chars[1]
 }
 
+fn check_xmas_3(grid: &Vec<Vec<char>>, x: i32, y: i32) -> bool {
+    let offsets = [-1, 1];
+    
+    let diagonals: Vec<(i32, i32)> = offsets
+        .iter()
+        .flat_map(|&dy| offsets.iter().map(move |&dx| (y + dy, x + dx)))
+        .collect();
+
+    let mut chars = Vec::new();
+    for &(new_y, new_x) in &diagonals {
+        if is_valid(grid, new_y, new_x) {
+            chars.push(grid[new_y as usize][new_x as usize]);
+        } else {
+            return false;
+        }
+    }
+
+     chars.iter().filter(|&&c| c == 'S').count() == 2 && chars.iter().filter(|&&c| c == 'M').count() == 2 && chars[0] != chars[1]
+}
+
 fn part_2() {
     let contents = include_str!("input.txt");
     let grid: Vec<Vec<char>> = contents
