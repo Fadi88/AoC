@@ -15,14 +15,11 @@ fn check_xmas(grid: &Vec<Vec<char>>, pos: (i32, i32), d: (i32, i32)) -> bool {
     let (px, py) = pos;
     let (dx, dy) = d;
 
-    let m = is_valid(grid, py + dy * 1, px + dx * 1)
-        && grid[(py + dy * 1) as usize][(px + dx * 1) as usize] == 'M';
-    let a = is_valid(grid, py + dy * 2, px + dx * 2)
-        && grid[(py + dy * 2) as usize][(px + dx * 2) as usize] == 'A';
-    let s = is_valid(grid, py + dy * 3, px + dx * 3)
-        && grid[(py + dy * 3) as usize][(px + dx * 3) as usize] == 'S';
-
-    m && a && s
+    "MAS".chars().enumerate().all(|(i, c)| {
+        let i = i as i32;
+        is_valid(grid, py + dy * (1 + i), px + dx * (1 + i))
+            && grid[(py + dy * (1 + i)) as usize][(px + dx * (1 + i)) as usize] == c
+    })
 }
 
 fn part_1() {
