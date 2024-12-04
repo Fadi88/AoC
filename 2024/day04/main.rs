@@ -32,12 +32,12 @@ fn part_1() {
     let mut s = 0;
     for y in 0..grid.len() {
         for x in 0..grid[0].len() {
-            for dx in -1..=1 {
-                for dy in -1..=1 {
-                    if dx == 0 && dy == 0 {
-                        continue;
-                    }
-                    if grid[y][x] == 'X' {
+            if grid[y][x] == 'X' {
+                for dx in -1..=1 {
+                    for dy in -1..=1 {
+                        if dx == 0 && dy == 0 {
+                            continue;
+                        }
                         s += check_xmas(&grid, (x as i32, y as i32), (dx, dy)) as i32;
                     }
                 }
