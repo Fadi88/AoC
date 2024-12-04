@@ -48,21 +48,20 @@ fn part_1() {
 }
 
 fn check_xmas_2(grid: &Vec<Vec<char>>, x: i32, y: i32) -> bool {
-    let offsets = [-1, 1];
-
-    let diagonals: Vec<(i32, i32)> = offsets
-        .iter()
-        .flat_map(|&dy| offsets.iter().map(move |&dx| (y + dy, x + dx)))
-        .collect();
-
-    let mut chars = Vec::new();
-    for &(new_y, new_x) in &diagonals {
-        if is_valid(grid, new_y, new_x) {
-            chars.push(grid[new_y as usize][new_x as usize]);
-        } else {
-            return false;
-        }
+    if !((-1..=1)
+        .flat_map(|dx| (-1..=1).map(move |dy| (dx, dy)))
+        .filter(|(dx, dy)| *dx != 0 && *dy != 0)
+        .all(|(dx, dy)| is_valid(grid, y + dy, x + dx)))
+    {
+        return false;
     }
+
+    let chars = [
+        grid[(y + 1) as usize][(x + 1) as usize],
+        grid[(y - 1) as usize][(x - 1) as usize],
+        grid[(y - 1) as usize][(x + 1) as usize],
+        grid[(y + 1) as usize][(x - 1) as usize],
+    ];
 
     chars.iter().filter(|&&c| c == 'S').count() == 2
         && chars.iter().filter(|&&c| c == 'M').count() == 2
