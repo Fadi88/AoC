@@ -28,12 +28,11 @@ def check_xmas(grid, pos, d):
     px, py = pos[0], pos[1]
     dx, dy = d[0], d[1]
 
-    x = is_valid(grid, py+dy*0, px+dx*0) and grid[py+dy*0][px+dx*0] == "X"
     m = is_valid(grid, py+dy*1, px+dx*1) and grid[py+dy*1][px+dx*1] == "M"
     a = is_valid(grid, py+dy*2, px+dx*2) and grid[py+dy*2][px+dx*2] == "A"
     s = is_valid(grid, py+dy*3, px+dx*3) and grid[py+dy*3][px+dx*3] == "S"
 
-    return x and m and a and s
+    return m and a and s
 
 
 @profiler
@@ -47,7 +46,8 @@ def part1():
                 for dy in [-1, 0, 1]:
                     if dx == dy == 0:
                         continue
-                    s += check_xmas(grid, (x, y), (dx, dy))
+                    if grid[y][x] == "X":
+                        s += check_xmas(grid, (x, y), (dx, dy))
     print(s)
 
 
