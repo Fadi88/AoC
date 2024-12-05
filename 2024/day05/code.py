@@ -59,24 +59,23 @@ def part2():
     for update_str in ps[1]:
         update = list(map(int, update_str.split(",")))
 
-        if all(
+        if not all(
             page2 in order[page]
             for i, page in enumerate(update)
             for i2, page2 in enumerate(update)
             if i2 > i
         ):
-            continue
 
-        new_list = []
-        to_sort = set(update)
-        while to_sort:
-            for n in to_sort:
-                if all(n2 in order[n] for n2 in to_sort if n2 != n):
-                    new_list.append(n)
-                    to_sort.remove(n)
-                    break
-    
-        s += new_list[len(new_list) // 2]
+            new_list = []
+            to_sort = set(update)
+            while to_sort:
+                for n in to_sort:
+                    if all(n2 in order[n] for n2 in to_sort if n2 != n):
+                        new_list.append(n)
+                        to_sort.remove(n)
+                        break
+
+            s += new_list[len(new_list) // 2]
 
     print(s)
 
