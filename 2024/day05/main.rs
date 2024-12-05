@@ -26,17 +26,12 @@ fn part_1() {
     let mut s = 0;
     for line in sets_lines.lines() {
         let update: Vec<i32> = line.split(',').map(|x| x.parse().unwrap()).collect();
-        let mut ordered = true;
-        for (i, &page) in update.iter().enumerate() {
-            if !update[i + 1..]
+
+        if update.iter().enumerate().all(|(i, &page)| {
+            update[i + 1..]
                 .iter()
                 .all(|&page2| order.get(&page).map_or(false, |set| set.contains(&page2)))
-            {
-                ordered = false;
-                break;
-            }
-        }
-        if ordered {
+        }) {
             s += update[update.len() / 2];
         }
     }
@@ -62,31 +57,28 @@ fn part_2() {
     for line in sets_lines.lines() {
         let update: Vec<i32> = line.split(',').map(|x| x.parse().unwrap()).collect();
 
-        if update.iter().enumerate().all(|(i, &page)| {
+        if !update.iter().enumerate().all(|(i, &page)| {
             update[i + 1..]
                 .iter()
                 .all(|&page2| order.get(&page).map_or(false, |set| set.contains(&page2)))
         }) {
-            continue;
-        }
+            let mut new_list = Vec::new();
+            let mut to_sort: HashSet<i32> = update.iter().cloned().collect();
 
-        let mut new_list = Vec::new();
-        let mut to_sort: HashSet<i32> = update.iter().cloned().collect();
-
-        while !to_sort.is_empty() {
-            for &n in &to_sort {
-                if to_sort
-                    .iter()
-                    .all(|&n2| n == n2 || order.get(&n).map_or(false, |set| set.contains(&n2)))
-                {
-                    new_list.push(n);
-                    to_sort.remove(&n);
-                    break;
+            while !to_sort.is_empty() {
+                for &n in &to_sort {
+                    if to_sort
+                        .iter()
+                        .all(|&n2| n == n2 || order.get(&n).map_or(false, |set| set.contains(&n2)))
+                    {
+                        new_list.push(n);
+                        to_sort.remove(&n);
+                        break;
+                    }
                 }
             }
+            s += new_list[new_list.len() / 2];
         }
-
-        s += new_list[new_list.len() / 2];
     }
 
     println!("{}", s);
