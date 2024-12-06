@@ -22,4 +22,4 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        pylint $(git diff --name-only HEAD^ HEAD --diff-filter=d '*.py') || true
+        pylint $(git diff --name-only HEAD^ HEAD --diff-filter=d '*.py') --rcfile=.pylintrc
