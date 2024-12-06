@@ -44,11 +44,11 @@ def will_collide(d01, v1, a1, d02, v2, a2):
     # d2 = d02 + v2*t + 1/2 * a2 *t*t
     # will collide if there is a +ve t for d1 = d2
     # (a2 - a1) * t * t + 2*(v2 - v1) + 2 (d02 - d01) = 0
-    
+
     a = a2 - a1
     b = 2 * (v2 - v1)
     c = 2 * (d02 - d01)
-    
+
     if a == 0:
         if b == 0:
             return False
@@ -79,13 +79,10 @@ def part2():
     t = 0
     while True:
 
-
-
-
         if len(sim_ps) == len(current_ps):
-            for p1,p2 in combinations(sim_ps)
+            for p1, p2 in combinations(sim_ps):
+                break
         current_ps
-
 
 
 if __name__ == "__main__":
