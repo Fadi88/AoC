@@ -177,7 +177,7 @@ void task_2(std::map<std::string, std::string> p_orbits , std::string p_src, std
 }
 
 int main() {
-    std::ifstream input_fd{ "input\\day6_input.txt" };
+    std::ifstream input_fd{ "input/input.txt" };
 
     std::map<std::string,std::string> orbits;
 

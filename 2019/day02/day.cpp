@@ -70,7 +70,7 @@ uint32_t task_2(std::string& input){
 
 
 int main() {
-	std::ifstream input_fd{"input\\day2_input.txt"};
+	std::ifstream input_fd{"input/input.txt"};
 
 	std::string tmp;
 	input_fd >> tmp;
