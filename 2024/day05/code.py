@@ -1,7 +1,7 @@
 # pylint: disable=C0114,C0116,C0301,C0209,W1514
 
 from time import perf_counter
-from collections import defaultdict, deque
+from collections import defaultdict
 
 
 def profiler(method):
