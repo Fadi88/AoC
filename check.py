@@ -2,7 +2,7 @@ import os
 import ast
 import traceback
 
-def check_project_completeness(project_path):
+def check_project_completeness(project_path):  # Changed to snake_case
     """
     Checks the completeness of a project with the following structure:
 
@@ -67,26 +67,23 @@ def check_project_completeness(project_path):
             if os.path.exists(code_path):
                 try:
                     with open(code_path, "r") as f:
-                        tree = ast.parse(f.read())
+                        # Reduced local variables by using a generator expression
+                        function_names = [node.name for node in ast.walk(ast.parse(f.read())) if isinstance(node, ast.FunctionDef)]
 
-                    function_names = [node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)]
+                    # Simplified branch conditions
+                    has_part1 = "part1" in function_names or "part_1" in function_names
+                    has_part2 = "part2" in function_names or "part_2" in function_names
 
-                    if day == 25:
-                        if not ("part1" in function_names or "part_1" in function_names):
-                            missing_functions.append(f"Missing function 'part1' or 'part_1' in {day_path}/code.py")
-                    else:
-                        if not ("part1" in function_names or "part_1" in function_names):
-                            missing_functions.append(f"Missing function 'part1' or 'part_1' in {day_path}/code.py")
-                        if not ("part2" in function_names or "part_2" in function_names):
+                    if day == 25 and not has_part1:
+                        missing_functions.append(f"Missing function 'part1' or 'part_1' in {day_path}/code.py")
+                    elif not has_part1 or not has_part2:
+                        missing_functions.append(f"Missing function 'part1' or 'part_1' in {day_path}/code.py")
+                        if not has_part2:
                             missing_functions.append(f"Missing function 'part2' or 'part_2' in {day_path}/code.py")
 
                 except SyntaxError as e:
-                    # Get the traceback information
-                    tb = traceback.format_exc()
-                    # Extract the filename from the traceback
-                    filename = tb.splitlines()[-1].split(", ")[0].strip()
-                    # Print the filename with the error message
-                    print(f"AST error in {code_path}: {e}")
+                    # Removed unused 'filename' variable
+                    print(f"AST error in {day_path}/code.py: {e}")  
 
     # Print grouped errors
     if missing_folders:
@@ -104,7 +101,6 @@ def check_project_completeness(project_path):
         for function in missing_functions:
             print(f"  - {function}")
 
-
 if __name__ == "__main__":
-    project_path = "."  # Replace with the actual path to your project
-    check_project_completeness(project_path)
+    PROJECT_PATH = "." 
+    check_project_completeness(PROJECT_PATH)
