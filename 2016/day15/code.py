@@ -1,8 +1,4 @@
 import time
-import re
-import hashlib
-import sys
-
 
 def profiler(method):
     def wrapper_method(*arg, **kw):
@@ -21,24 +17,26 @@ def get_nums(l):
 
 @profiler
 def part_1():
-    inp = [get_nums(l) for l in open('day15/input.txt').readlines()]
+    with open('day15/input.txt') as f:
+        inp = [get_nums(l) for l in f.readlines()]
 
-    time = 0
-    while not all((time + i + disc[1]) % disc[0] == 0 for i, disc in enumerate(inp)):
-        time += 1
+    itter = 0
+    while not all((itter + i + disc[1]) % disc[0] == 0 for i, disc in enumerate(inp)):
+        itter += 1
 
-    print(time-1)
+    print(itter-1)
 
 @profiler
 def part_2():
-    inp = [get_nums(l) for l in open('day15/input.txt').readlines()]
-    inp.append((11, 0)) 
+    with open('day15/input.txt') as f:
+        inp = [get_nums(l) for l in f.readlines()]
+    inp.append((11, 0))
 
-    time = 0
-    while not all((time + i + disc[1]) % disc[0] == 0 for i, disc in enumerate(inp)):
-        time += 1
+    itter = 0
+    while not all((itter + i + disc[1]) % disc[0] == 0 for i, disc in enumerate(inp)):
+        itter += 1
 
-    print(time-1)
+    print(itter-1)
 
 if __name__ == "__main__":
 
