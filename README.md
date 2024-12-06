@@ -54,6 +54,26 @@ cargo run --release --bin day{XY} # XY can be from 01 to 25
 debug mode is useful for error detection, sometimes code just works in release mode
 but in debug mode it is able to detect big issues (like overflow,underflow etc...)
 
+### C++
+
+only 2018 mainly and some days here in there
+
+first we need to create make based on the cmake
+```
+cd 2018
+mkdir build && cd build && cmake ..
+```
+
+to build day{XX} (where XX is from 00 to 25)
+```
+make day{XX} && cmake --install day{XX}
+```
+
+to run day{XX}
+```
+cd install/day{XX} && ./day{XX}
+```
+
 ### TODO
 
 - create a devcontainer with docker that includes all the tools.
