@@ -3,7 +3,7 @@ name: Pylint
 on: [push]
 
 jobs:
-  build:
+  lint:  # Changed job name to 'lint'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -23,7 +23,7 @@ jobs:
     - name: Get changed Python files
       id: changed-files
       run: |
-        echo "::set-output name=files::$(git diff --name-only HEAD^ HEAD --diff-filter=d '*.py')"
+        echo "files=$(git diff --name-only HEAD^ HEAD --diff-filter=d '*.py')" >> $GITHUB_OUTPUT
     - name: Analysing the code with pylint
       if: steps.changed-files.outputs.files != ''
       run: |
