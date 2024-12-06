@@ -239,7 +239,7 @@ void task_2(std::vector<int32_t> p_cmds_vec) {
 }
 
 int main() {
-    std::ifstream input_fd{ "input\\day7_input.txt" };
+    std::ifstream input_fd{ "input/input.txt" };
 
     std::string tmp;
     input_fd >> tmp;

@@ -117,7 +117,7 @@ void task_2(std::string m_input){
 }
 
 int main() {
-    std::ifstream input_fd{ "input\\day8_input.txt" };
+    std::ifstream input_fd{ "input/input.txt" };
 
     std::string tmp;
     input_fd >> tmp;

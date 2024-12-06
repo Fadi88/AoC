@@ -208,7 +208,7 @@ void task_2(std::vector<std::string>& p_seq0, std::vector<std::string>& p_seq1) 
 }
 
 int main() {
-	std::ifstream input_fd{ "input\\day3_input.txt" };
+	std::ifstream input_fd{ "input/input.txt" };
 
 	std::string tmp;
 	input_fd >> tmp;
