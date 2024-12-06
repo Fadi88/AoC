@@ -4,4 +4,3 @@ Disc #3 has 19 positions; at time=0, it is at position 2.
 Disc #4 has 5 positions; at time=0, it is at position 0.
 Disc #5 has 3 positions; at time=0, it is at position 0.
 Disc #6 has 13 positions; at time=0, it is at position 5.
-Disc #7 has 11 positions; at time=0, it is at position 0.
