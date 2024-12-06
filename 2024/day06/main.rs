@@ -1,4 +1,3 @@
-use std::collections::{HashMap, HashSet};
 use std::time;
 
 fn bench(f: fn()) {
