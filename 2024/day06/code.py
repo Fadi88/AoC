@@ -56,24 +56,20 @@ def is_guard_in_loop(
     directions = {"^": (0, -1), ">": (1, 0), "v": (0, 1), "<": (-1, 0)}
     rotation = "^>v<"
 
-    seen = set()
+    seen: set[tuple[str, tuple[int, int]]] = set()
     while guard not in seen:
         seen.add(guard)
-
         new_position = (
             guard[1][0] + directions[guard[0]][0],
             guard[1][1] + directions[guard[0]][1],
         )
         current_direction = guard[0]
-        if new_position in obstacles:
-            for _ in range(len(rotation)):
-                current_direction = rotation[(rotation.index(current_direction) + 1) % len(rotation)]
-                new_position = (
-                    guard[1][0] + directions[current_direction][0],
-                    guard[1][1] + directions[current_direction][1],
-                )
-                if new_position not in obstacles:
-                    break
+
+        # keep rotating until the new position is free space
+        while new_position in obstacles:
+            current_direction = rotation[(rotation.index(current_direction) + 1) % len(rotation)]
+            dx, dy = directions[current_direction]
+            new_position = (guard[1][0] + dx, guard[1][1] + dy)
 
         if not (0 <= new_position[0] < max_x and 0 <= new_position[1] < max_y):
             return False
@@ -86,22 +82,24 @@ def is_guard_in_loop(
 @profiler
 def part2(path: set[tuple[int, int]]) -> None:
     """Second part of the puzzle."""
-    max_x: int
-    max_y: int
-    guard: tuple[str, tuple[int, int]]
+    max_x, max_y = 0, 0
+    guard_direction, guard_position = "", (0, 0)
     obstacles: set[tuple[int, int]] = set()
 
     with open("day06/input.txt") as f:
         for y, line in enumerate(f):
             max_y = y
-            max_x = len(line.strip())
-            for x, c in enumerate(line.strip()):
-                if c == "#":
+            line = line.strip()
+            max_x = len(line)
+            for x, char in enumerate(line):
+                if char == "#":
                     obstacles.add((x, y))
-                elif c == "^":
-                    guard = (c, (x, y))
+                elif char == "^":
+                    guard_direction, guard_position = char, (x, y)
 
-    result = sum(is_guard_in_loop(guard, obstacles | {t}, max_x, max_y) for t in path)
+    result = sum(
+        is_guard_in_loop((guard_direction, guard_position), obstacles | {t}, max_x, max_y) for t in path
+    )
     print(result)
 
 
