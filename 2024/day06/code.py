@@ -1,19 +1,13 @@
 # pylint: disable=C0114,C0116,C0301,C0209,W1514
 
-from time import perf_counter as perf_counter
+from time import time as perf_counter
 
 
 def profiler(method):
     def wrapper_method(*arg, **kw):
         t = perf_counter()
         ret = method(*arg, **kw)
-        print(
-            "Method "
-            + method.__name__
-            + " took : "
-            + "{:2.5f}".format(perf_counter() - t)
-            + " sec"
-        )
+        print("Method " + method.__name__ + " took : " + "{:2.5f}".format(perf_counter() - t) + " sec")
         return ret
 
     return wrapper_method
@@ -77,6 +71,7 @@ def loop(guard, obstacles, max_x, max_y):
 
     return True  # loop
 
+
 @profiler
 def part2(path):
     obstacles = set()
@@ -89,6 +84,7 @@ def part2(path):
                 guard = (c, (x, y))
 
     print(sum(loop(guard, obstacles | {t}, len(l), y) for t in path))
+
 
 if __name__ == "__main__":
     path = part1()
