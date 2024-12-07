@@ -14,20 +14,25 @@ def profiler(method):
     return wrapper_method
 
 
-def eval_right_to_left(l: list[int], target: int) -> bool:
-    """Evaluates a list of integers from left to right using + and * operations to find a target."""
+def eval_right_to_left_ops(l: list[int], target: int, ops) -> bool:
     if len(l) == 1:
         return l[0] == target
+    return any(eval_right_to_left_ops(op(l), target, ops) for op in ops)
 
-    n = l.pop(0)
 
-    l1 = l.copy()
+def op_add(l):
+    nl = list(l)
+    n = nl.pop(0)
 
-    l[0] += n
-    l1[0] *= n
+    nl[0] += n
+    return nl
 
-    return eval_right_to_left(l, target) or eval_right_to_left(l1, target)
+def op_mul(l):
+    nl = list(l)
+    n = nl.pop(0)
 
+    nl[0] *= n
+    return nl
 
 @profiler
 def part1():
@@ -40,36 +45,16 @@ def part1():
             inp[int(ps[0])] = list(map(int, ps[1].split()))
             cals.append((int(ps[0]), list(map(int, ps[1].split()))))
 
-    print(sum(v for v, nums in cals if eval_right_to_left(nums, v)))
+    ops = [op_add, op_mul]
+    print(sum(v for v, nums in cals if eval_right_to_left_ops(nums, v, ops)))
 
 
-def eval_right_to_left_2(numbers: list[int], target: int) -> bool:
-    """
-    Evaluate the list of numbers from right to left.
+def op_cat(l):
+    nl = list(l)
+    n = nl.pop(0)
 
-    The evaluation is done by applying the operators +, * and ``concat``.
-    The ``concat`` operator concatenates the string representation of the
-    two numbers.
-    """
-    if len(numbers) == 1:
-        return numbers[0] == target
-
-    n = numbers.pop(0)
-
-    numbers1 = list(numbers)
-    numbers2 = list(numbers)
-    numbers3 = list(numbers)
-
-    numbers1[0] += n
-    numbers2[0] *= n
-    numbers3[0] = int(str(n) + str(numbers3[0]))
-
-    return (
-        eval_right_to_left_2(numbers1, target)
-        or eval_right_to_left_2(numbers2, target)
-        or eval_right_to_left_2(numbers3, target)
-    )
-
+    nl[0] = int(str(n) + str(nl[0]))
+    return nl
 
 @profiler
 def part2():
@@ -82,7 +67,8 @@ def part2():
             inp[int(ps[0])] = list(map(int, ps[1].split()))
             cals.append((int(ps[0]), list(map(int, ps[1].split()))))
 
-    print(sum(v for v, nums in cals if eval_right_to_left_2(nums, v)))
+    ops = [op_add, op_mul,op_cat]
+    print(sum(v for v, nums in cals if eval_right_to_left_ops(nums, v, ops)))
 
 
 if __name__ == "__main__":
