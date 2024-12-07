@@ -1,6 +1,7 @@
 # pylint: disable=C0114,C0116,C0301,C0209,W1514,C0414
 
-from time import perf_counter as perf_counter
+from time import time as perf_counter
+from itertools import product
 from typing import Any
 import math
 
@@ -15,27 +16,27 @@ def profiler(method):
     return wrapper_method
 
 
-def eval_right_to_left_ops(numbers: list[int], target: int, ops: list[callable]) -> bool:
-    """Evaluate the given numbers with the given operations from right to left."""
-    if len(numbers) == 1:
-        return numbers[0] == target
-    return any(eval_right_to_left_ops(op(numbers), target, ops) for op in ops)
+def eval_right_to_left(nums, target, ops):
+    s = nums[0]
+    for i in range(len(ops)):
+        if ops[i] == "+":
+            s += nums[i+1]
+        elif ops[i] == "*":
+            s *= nums[i+1]
+        elif ops[i] == "||":
+            s = int(s * 10**int(math.log10(nums[i+1]) + 1) + nums[i+1])
+
+        if s > target:
+            return False
+
+    return s == target
 
 
-def op_add(l):
-    nl = list(l)
-    n = nl.pop(0)
-
-    nl[0] += n
-    return nl
-
-
-def op_mul(l):
-    nl = list(l)
-    n = nl.pop(0)
-
-    nl[0] *= n
-    return nl
+def does_match(target, nums, ops):
+    for op in product(ops, repeat=len(nums) - 1):
+        if eval_right_to_left(nums, target, op):
+            return True
+    return False
 
 
 @profiler
@@ -47,16 +48,7 @@ def part1():
             ps = l.strip().split(":")
             cals.append((int(ps[0]), list(map(int, ps[1].split()))))
 
-    ops = [op_add, op_mul]
-    print(sum(v for v, nums in cals if eval_right_to_left_ops(nums, v, ops)))
-
-
-def op_cat(l):
-    nl = list(l)
-    n = nl.pop(0)
-
-    nl[0] = int(n * 10**int(math.log10(nl[0]) + 1) + nl[0])
-    return nl
+    print(sum(v for v, nums in cals if does_match(v, nums, ["+", "*"])))
 
 
 @profiler
@@ -68,8 +60,7 @@ def part2():
             ps = l.strip().split(":")
             cals.append((int(ps[0]), list(map(int, ps[1].split()))))
 
-    ops = [op_add, op_mul, op_cat]
-    print(sum(v for v, nums in cals if eval_right_to_left_ops(nums, v, ops)))
+    print(sum(v for v, nums in cals if does_match(v, nums, ["+", "*", "||"])))
 
 
 if __name__ == "__main__":
