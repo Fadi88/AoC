@@ -2,6 +2,8 @@
 
 from time import perf_counter as perf_counter
 from typing import Any
+import math
+from cProfile import run
 
 
 def profiler(method):
@@ -53,7 +55,7 @@ def op_cat(l):
     nl = list(l)
     n = nl.pop(0)
 
-    nl[0] = int(str(n) + str(nl[0]))
+    nl[0] = int(n * 10**int(math.log10(nl[0]) + 1) + nl[0])
     return nl
 
 @profiler
