@@ -5,6 +5,8 @@ edition = "2021"
 
 [dependencies]
 regex="1.4.2"
+itertools = "0.13.0"
+
 
 [[bin]]
 name="template"
@@ -33,3 +35,7 @@ path="day05/main.rs"
 [[bin]]
 name="day06"
 path="day06/main.rs"
+
+[[bin]]
+name="day07"
+path="day07/main.rs"
