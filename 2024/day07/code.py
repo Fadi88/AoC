@@ -5,6 +5,8 @@ from itertools import product
 from typing import Any
 import math
 
+from cProfile import run
+
 
 def profiler(method):
     def wrapper_method(*args: Any, **kwargs: Any) -> Any:
@@ -25,12 +27,10 @@ def eval_right_to_left(nums, target, ops):
             s *= nums[i+1]
         elif ops[i] == "||":
             s = int(s * 10**int(math.log10(nums[i+1]) + 1) + nums[i+1])
-
         if s > target:
             return False
 
     return s == target
-
 
 def does_match(target, nums, ops):
     for op in product(ops, repeat=len(nums) - 1):
@@ -66,3 +66,4 @@ def part2():
 if __name__ == "__main__":
     part1()
     part2()
+    run("part2()")
