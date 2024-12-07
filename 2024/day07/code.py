@@ -3,7 +3,6 @@
 from time import perf_counter as perf_counter
 from typing import Any
 import math
-from cProfile import run
 
 
 def profiler(method):
@@ -16,10 +15,11 @@ def profiler(method):
     return wrapper_method
 
 
-def eval_right_to_left_ops(l: list[int], target: int, ops) -> bool:
-    if len(l) == 1:
-        return l[0] == target
-    return any(eval_right_to_left_ops(op(l), target, ops) for op in ops)
+def eval_right_to_left_ops(numbers: list[int], target: int, ops: list[callable]) -> bool:
+    """Evaluate the given numbers with the given operations from right to left."""
+    if len(numbers) == 1:
+        return numbers[0] == target
+    return any(eval_right_to_left_ops(op(numbers), target, ops) for op in ops)
 
 
 def op_add(l):
@@ -29,6 +29,7 @@ def op_add(l):
     nl[0] += n
     return nl
 
+
 def op_mul(l):
     nl = list(l)
     n = nl.pop(0)
@@ -36,15 +37,14 @@ def op_mul(l):
     nl[0] *= n
     return nl
 
+
 @profiler
 def part1():
-    inp = {}
 
     cals = []
     with open("day07/input.txt") as f:
         for l in f:
             ps = l.strip().split(":")
-            inp[int(ps[0])] = list(map(int, ps[1].split()))
             cals.append((int(ps[0]), list(map(int, ps[1].split()))))
 
     ops = [op_add, op_mul]
@@ -58,18 +58,17 @@ def op_cat(l):
     nl[0] = int(n * 10**int(math.log10(nl[0]) + 1) + nl[0])
     return nl
 
+
 @profiler
 def part2():
-    inp = {}
 
     cals = []
     with open("day07/input.txt") as f:
         for l in f:
             ps = l.strip().split(":")
-            inp[int(ps[0])] = list(map(int, ps[1].split()))
             cals.append((int(ps[0]), list(map(int, ps[1].split()))))
 
-    ops = [op_add, op_mul,op_cat]
+    ops = [op_add, op_mul, op_cat]
     print(sum(v for v, nums in cals if eval_right_to_left_ops(nums, v, ops)))
 
 
