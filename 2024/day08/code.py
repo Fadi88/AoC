@@ -1,7 +1,5 @@
 # pylint: disable=C0114,C0116,C0301,C0209,W1514,C0414
 
-import itertools
-import numpy as np
 from time import time as perf_counter
 from typing import Any
 from collections import defaultdict
@@ -21,7 +19,7 @@ def is_valid(p,max_x,max_y):
     return 0 <= p[0] < max_x and 0 <= p[1] < max_y
 def generate_antinodes(p1,p2):
     # p1 - (p2 - p1)
-    # p2 - (p1 - p2) 
+    # p2 - (p1 - p2)
 
     np1 = p1[0] - (p2[0] - p1[0]), p1[1] - (p2[1] - p1[1])
     np2 = p2[0] - (p1[0] - p2[0]), p2[1] - (p1[1] - p2[1])
