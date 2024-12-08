@@ -15,16 +15,21 @@ def profiler(method):
 
     return wrapper_method
 
-def is_valid(p,max_x,max_y):
+
+def is_valid(p, max_x, max_y):
     return 0 <= p[0] < max_x and 0 <= p[1] < max_y
-def generate_antinodes(p1,p2):
-    # p1 - (p2 - p1)
-    # p2 - (p1 - p2)
 
-    np1 = p1[0] - (p2[0] - p1[0]), p1[1] - (p2[1] - p1[1])
-    np2 = p2[0] - (p1[0] - p2[0]), p2[1] - (p1[1] - p2[1])
 
-    return np1,np2
+def generate_antinodes(p1, p2):
+
+    dx = p2[0] - p1[0]
+    dy = p2[1] - p1[1]
+
+    np1 = p1[0] - dx, p1[1] - dy
+    np2 = p2[0] + dx, p2[1] + dy
+
+    return np1, np2
+
 
 @profiler
 def part1():
@@ -45,28 +50,29 @@ def part1():
             p1 = p[0]
             p2 = p[1]
 
-            np1,np2 = generate_antinodes(p1,p2)
+            np1, np2 = generate_antinodes(p1, p2)
 
-            if is_valid(np1,max_x,max_y):
+            if is_valid(np1, max_x, max_y):
                 antinodes.add(np1)
-            if is_valid(np2,max_x,max_y):
+            if is_valid(np2, max_x, max_y):
                 antinodes.add(np2)
 
     print(len(antinodes))
 
-def generate_all_antinodes(p1,p2,max_x,max_y):
+
+def generate_all_antinodes(p1, p2, max_x, max_y):
     antinodes = set()
 
-    # return set of any grid position in line with p1 and p2
-    x1,y1 = p1
-    x2,y2 = p2
+    x1, y1 = p1
+    x2, y2 = p2
 
     for y3 in range(max_y):
         for x3 in range(max_x):
             if abs(x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) == 0:
-                antinodes.add((x3,y3))
+                antinodes.add((x3, y3))
 
     return antinodes
+
 
 @profiler
 def part2():
@@ -84,7 +90,7 @@ def part2():
 
     for a in antenas:
         for p in combinations(antenas[a], 2):
-            antinodes |= generate_all_antinodes(p[0], p[1],max_x,max_y)
+            antinodes |= generate_all_antinodes(p[0], p[1], max_x, max_y)
 
     print(len(antinodes))
 
