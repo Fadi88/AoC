@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::time::Instant;
 
 fn bench<F, R>(f: F) -> R
@@ -17,15 +17,19 @@ fn is_valid(p: (i32, i32), max_x: i32, max_y: i32) -> bool {
 }
 
 fn generate_antinodes(p1: (i32, i32), p2: (i32, i32)) -> ((i32, i32), (i32, i32)) {
-    let np1 = (p1.0 - (p2.0 - p1.0), p1.1 - (p2.1 - p1.1));
-    let np2 = (p2.0 - (p1.0 - p2.0), p2.1 - (p1.1 - p2.1));
+
+    let dx = p2.0 - p1.0;
+    let dy = p2.1 - p1.1;
+
+    let np1 = (p1.0 - dx, p1.1 - dy);
+    let np2 = (p2.0 + dx, p2.1 + dy);
+    
     (np1, np2)
 }
 
 fn part_1() {
     let input = include_str!("input.txt");
-    let mut antennas: std::collections::HashMap<char, HashSet<(i32, i32)>> =
-        std::collections::HashMap::new();
+    let mut antennas: HashMap<char, HashSet<(i32, i32)>> = HashMap::new();
     let mut max_x = 0;
     let mut max_y = 0;
 
@@ -85,8 +89,7 @@ fn generate_all_antinodes(
 }
 fn part_2() {
     let input = include_str!("input.txt");
-    let mut antennas: std::collections::HashMap<char, HashSet<(i32, i32)>> =
-        std::collections::HashMap::new();
+    let mut antennas: HashMap<char, HashSet<(i32, i32)>> = HashMap::new();
     let mut max_x = 0;
     let mut max_y = 0;
 
@@ -105,7 +108,7 @@ fn part_2() {
 
     let mut antinodes = HashSet::new();
 
-    for (_a, positions) in antennas.iter() {
+    for (_, positions) in antennas.iter() {
         for p in positions.iter().combinations(2) {
             let p1 = *p[0];
             let p2 = *p[1];
