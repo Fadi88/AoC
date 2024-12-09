@@ -1,20 +1,23 @@
-use std::time;
-use std::fs;
+use itertools::Itertools;
+use std::collections::{HashMap, HashSet};
+use std::time::Instant;
 
-fn bench(f: fn()) {
-    let t0 = time::Instant::now();
-    let ret = f();
-    println!("time used {:?}", time::Instant::now().duration_since(t0));
-
-    ret
+fn bench<F, R>(f: F) -> R
+where
+    F: FnOnce() -> R,
+{
+    let t0 = Instant::now();
+    let result = f(); // Call the function and store the result
+    println!("time used: {:?}", Instant::now().duration_since(t0));
+    result // Return the result of the function
 }
 
 fn part_1() {
-    fs::read_to_string("template/input.txt").unwrap().split("\n");
+    let input = include_str!("input.txt");
 }
 
 fn part_2() {
-    fs::read_to_string("template/input.txt").unwrap().split("\n");
+    let input = include_str!("input.txt");
 }
 
 fn main() {
