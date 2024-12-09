@@ -1,11 +1,8 @@
-# pylint: disable=C0114,C0116,C0301,C0209,W1514,C0414
+# pylint: disable=C0114,C0116,C0301,C0209,W1514,C0414,C0200
 
-from collections import defaultdict, Counter, deque
-import sys
 from time import time as perf_counter
 from typing import Any
 import os
-import re
 
 input_file = os.path.join(os.path.dirname(__file__), "input.txt")
 # input_file = os.path.join(os.path.dirname(__file__), "test.txt")
@@ -30,9 +27,9 @@ def part_1():
 
     layout = []
 
-    for id in range(len(disk)):
-        ch = id // 2 if id % 2 == 0 else "."
-        layout.extend([ch] * int(disk[id]))
+    for idx in range(len(disk)):
+        ch = idx // 2 if idx % 2 == 0 else "."
+        layout.extend([ch] * int(disk[idx]))
 
     while layout.count("."):
         pos = layout.index(".")
@@ -77,12 +74,12 @@ def part_2():
     free_space = []  # (pos,size)
 
     pos = 0
-    for id in range(len(disk)):
+    for idx in range(len(disk)):
 
-        size = int(disk[id])
+        size = int(disk[idx])
 
-        if id % 2 == 0:
-            files.append((id//2, pos, size))
+        if idx % 2 == 0:
+            files.append((idx//2, pos, size))
         else:
             free_space.append((pos, size))
 
