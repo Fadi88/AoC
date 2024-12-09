@@ -19,17 +19,17 @@ def profiler(method):
 
 
 @profiler
-def part1():
+def part_1():
     with open(input_file) as _f:
         pass
 
 
 @profiler
-def part2():
+def part_2():
     with open(input_file) as _f:
         pass
 
 
 if __name__ == "__main__":
-    part1()
-    part2()
+    part_1()
+    part_2()
