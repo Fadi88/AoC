@@ -50,6 +50,7 @@ def clean_free(free_space):
     for fpos, fsize in free_space:
         if fsize == 0:
             continue
+
         if len(new_free_space) == 0:
             new_free_space.append((fpos, fsize))
         else:
