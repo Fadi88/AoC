@@ -2,8 +2,10 @@
 
 from time import time as perf_counter
 from typing import Any
-from collections import defaultdict
-from itertools import combinations
+import os
+
+input_file = os.path.join(os.path.dirname(__file__), "input.txt")
+# input_file = os.path.join(os.path.dirname(__file__), "test.txt")
 
 
 def profiler(method):
@@ -18,13 +20,13 @@ def profiler(method):
 
 @profiler
 def part1():
-    with open("day09/input.txt") as f:
+    with open(input_file) as _f:
         pass
 
 
 @profiler
 def part2():
-    with open("day09/input.txt") as f:
+    with open(input_file) as _f:
         pass
 
 
