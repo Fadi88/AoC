@@ -1,5 +1,3 @@
-use itertools::Itertools;
-use std::collections::{HashMap, HashSet};
 use std::time::Instant;
 
 fn bench<F, R>(f: F) -> R
