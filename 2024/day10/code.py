@@ -44,7 +44,7 @@ def explore(grid, p):
             if is_valid(grid, px+dx, py+dy) and grid[py+dy][px+dx] == height + 1:
                 to_visit.append((px+dx, py+dy))
 
-    return valid_path, nines
+    return valid_path, len(nines)
 
 
 @profiler
@@ -56,8 +56,8 @@ def part_1():
     for y, l in enumerate(grid):
         for x, h in enumerate(l):
             if h == 0:
-                u, n = explore(grid, (x, y))
-                s += len(n)
+                _, n = explore(grid, (x, y))
+                s += n
 
     print(s)
 
@@ -71,7 +71,7 @@ def part_2():
     for y, l in enumerate(grid):
         for x, h in enumerate(l):
             if h == 0:
-                u, n = explore(grid, (x, y))
+                u, _ = explore(grid, (x, y))
                 s += u
 
     print(s)
