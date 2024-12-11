@@ -19,7 +19,6 @@ def profiler(method):
     return wrapper_method
 
 
-
 @profiler
 def part_1():
     with open(input_file) as f:
@@ -32,15 +31,13 @@ def part_1():
                 new_l.append(1)
             elif len(str(s)) % 2 == 0:
                 num = str(s)
-                new_l.append(int(str(num[:len(num)//2])))                
+                new_l.append(int(str(num[:len(num)//2])))
                 new_l.append(int(str(num[len(num)//2:])))
             else:
                 new_l.append(s*2024)
         l = new_l
 
     print(len(l))
-
-
 
 
 @profiler
@@ -51,7 +48,6 @@ def part_2():
     # l = [125,17]
     l = Counter(l)
 
-
     for _ in range(75):
         new_l = Counter()
         for s in l:
@@ -59,9 +55,9 @@ def part_2():
                 new_l[1] += l[s]
             elif len(str(s)) % 2 == 0:
                 num = str(s)
-                n1 = int(str(num[:len(num)//2]))           
+                n1 = int(str(num[:len(num)//2]))
                 n2 = int(str(num[len(num)//2:]))
-                new_l[n1] += l[s]              
+                new_l[n1] += l[s]
                 new_l[n2] += l[s]
 
             else:
@@ -70,7 +66,6 @@ def part_2():
         l = new_l
 
     print(sum(l.values()))
-    
 
 
 if __name__ == "__main__":
