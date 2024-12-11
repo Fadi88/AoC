@@ -19,25 +19,35 @@ def profiler(method):
     return wrapper_method
 
 
+def count_after_blinking(l_cnt, n):
+    l_cnt = Counter(l_cnt)
+
+    for _ in range(n):
+        new_l = Counter()
+        for s in l_cnt:
+            if s == 0:
+                new_l[1] += l_cnt[s]
+            elif len(str(s)) % 2 == 0:
+                num = str(s)
+                n1 = int(str(num[:len(num)//2]))
+                n2 = int(str(num[len(num)//2:]))
+                new_l[n1] += l_cnt[s]
+                new_l[n2] += l_cnt[s]
+
+            else:
+                new_l[s*2024] += l_cnt[s]
+
+        l_cnt = new_l
+
+    return sum(l_cnt.values())
+
+
 @profiler
 def part_1():
     with open(input_file) as f:
         l = list(map(int, f.read().split()))
 
-    for _ in range(25):
-        new_l = list()
-        for s in l:
-            if s == 0:
-                new_l.append(1)
-            elif len(str(s)) % 2 == 0:
-                num = str(s)
-                new_l.append(int(str(num[:len(num)//2])))
-                new_l.append(int(str(num[len(num)//2:])))
-            else:
-                new_l.append(s*2024)
-        l = new_l
-
-    print(len(l))
+    print(count_after_blinking(l, 25))
 
 
 @profiler
@@ -45,27 +55,7 @@ def part_2():
     with open(input_file) as f:
         l = list(map(int, f.read().split()))
 
-    # l = [125,17]
-    l = Counter(l)
-
-    for _ in range(75):
-        new_l = Counter()
-        for s in l:
-            if s == 0:
-                new_l[1] += l[s]
-            elif len(str(s)) % 2 == 0:
-                num = str(s)
-                n1 = int(str(num[:len(num)//2]))
-                n2 = int(str(num[len(num)//2:]))
-                new_l[n1] += l[s]
-                new_l[n2] += l[s]
-
-            else:
-                new_l[s*2024] += l[s]
-
-        l = new_l
-
-    print(sum(l.values()))
+    print(count_after_blinking(l, 75))
 
 
 if __name__ == "__main__":
