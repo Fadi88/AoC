@@ -1,5 +1,5 @@
+use std::collections::HashMap;
 use std::time::Instant;
-use std::collections::HashSet;
 
 fn bench<F, R>(f: F) -> R
 where
@@ -11,76 +11,52 @@ where
     result // Return the result of the function
 }
 
-fn is_valid(grid: &Vec<Vec<u32>>, x: i32, y: i32) -> bool {
-    x >= 0 && x < grid[0].len() as i32 && y >= 0 && y < grid.len() as i32
-}
+fn count_after_blinking(l_cnt: Vec<i32>, n: i32) -> i32 {
+    let mut l_cnt: HashMap<i32, i32> = l_cnt.into_iter().fold(HashMap::new(), |mut acc, x| {
+        *acc.entry(x).or_insert(0) += 1;
+        acc
+    });
 
-fn explore(grid: &Vec<Vec<u32>>, p: (i32, i32)) -> (u32, usize) {
-    let deltas = [(0, 1), (0, -1), (1, 0), (-1, 0)];
-
-    let mut to_visit = vec![p];
-    let mut valid_path = 0;
-    let mut nines = HashSet::new();
-
-    while let Some((px, py)) = to_visit.pop() {
-        let height = grid[py as usize][px as usize];
-
-        if height == 9 {
-            valid_path += 1;
-            nines.insert((px, py));
-            continue;
-        }
-
-        for (dx, dy) in deltas {
-            let nx = px + dx;
-            let ny = py + dy;
-            if is_valid(grid, nx, ny) && grid[ny as usize][nx as usize] == height + 1 {
-                to_visit.push((nx, ny));
+    for _ in 0..n {
+        let mut new_l: HashMap<i32, i32> = HashMap::new();
+        for (&s, &count) in &l_cnt {
+            if s == 0 {
+                *new_l.entry(1).or_insert(0) += count;
+            } else if s.to_string().len() % 2 == 0 {
+                let num_str = s.to_string();
+                let mid = num_str.len() / 2;
+                let n1 = num_str[..mid].parse::<i32>().unwrap();
+                let n2 = num_str[mid..].parse::<i32>().unwrap();
+                *new_l.entry(n1).or_insert(0) += count;
+                *new_l.entry(n2).or_insert(0) += count;
+            } else {
+                *new_l.entry(s * 2024).or_insert(0) += count;
             }
         }
+        l_cnt = new_l;
     }
 
-    (valid_path, nines.len())
+    l_cnt.values().sum()
 }
 
 fn part_1() {
-    let input = include_str!("input.txt"); // Use include_str! here
-    let grid: Vec<Vec<u32>> = input
-        .lines()
-        .map(|line| line.chars().map(|c| c.to_digit(10).unwrap()).collect())
+    let contents = include_str!("input.txt");
+    let l: Vec<i32> = contents
+        .split_whitespace()
+        .map(|s| s.parse().unwrap())
         .collect();
 
-    let mut s = 0;
-    for (y, row) in grid.iter().enumerate() {
-        for (x, &h) in row.iter().enumerate() {
-            if h == 0 {
-                let (_, n) = explore(&grid, (x as i32, y as i32));
-                s += n;
-            }
-        }
-    }
-
-    println!("{}", s);
+    println!("{}", count_after_blinking(l, 25));
 }
 
 fn part_2() {
-    let input = include_str!("input.txt"); // Use include_str! here
-    let grid: Vec<Vec<u32>> = input
-        .lines()
-        .map(|line| line.chars().map(|c| c.to_digit(10).unwrap()).collect())
+    let contents = include_str!("input.txt");
+    let l: Vec<i32> = contents
+        .split_whitespace()
+        .map(|s| s.parse().unwrap())
         .collect();
 
-    let mut s = 0;
-    for (y, row) in grid.iter().enumerate() {
-        for (x, &h) in row.iter().enumerate() {
-            if h == 0 {
-                let (u, _) = explore(&grid, (x as i32, y as i32));
-                s += u;
-            }
-        }
-    }
-
-    println!("{}", s);
+    println!("{}", count_after_blinking(l, 75));
 }
 
 fn main() {
