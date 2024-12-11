@@ -1,4 +1,0 @@
-211306
-Method part_1 took : 0.126 sec
-250783680217283
-Method part_2 took : 0.084 sec
