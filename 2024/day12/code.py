@@ -89,7 +89,7 @@ def count_edges(points):
         s2 = False
         for y in range(min(ys), max(ys) + 1):
             ns1, ns2 = check_dir(points, (x, y))
-            edges += (int(ns1 and not s1) + (ns2 and not s2))
+            edges += int(ns1 and not s1 + ns2 and not s2)
             s1, s2 = ns1, ns2
 
     return edges
