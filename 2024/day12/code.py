@@ -56,7 +56,7 @@ def part_1():
     with open(input_file) as f:
         grid = [list(l.strip()) for l in f.readlines()]
 
-    crops = list()
+    crops = []
     visited = set()
     for y, l in enumerate(grid):
         for x, h in enumerate(l):
@@ -95,20 +95,15 @@ def count_edges(points):
     return edges
 
 
-def count_corners(points):
-    xs = set(px for px, _ in points)
-    ys = set(py for _, py in points)
-
-
 @profiler
 def part_2():
     with open(input_file) as f:
         grid = [list(l.strip()) for l in f.readlines()]
 
-    crops = list()
+    crops = []
     visited = set()
     for y, l in enumerate(grid):
-        for x, h in enumerate(l):
+        for x, _ in enumerate(l):
             if (x, y) not in visited:
                 v = flood_fill(grid, (x, y))
                 crops.append(v)
