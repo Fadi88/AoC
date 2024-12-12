@@ -95,6 +95,55 @@ def count_edges(points):
     return edges
 
 
+def get_boundries(points):
+    deltas = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    return set((p[0]+dx, p[1]+dy) for p in points for dx, dy in deltas if (p[0]+dx, p[1]+dy) not in points)
+
+
+def count_corners(region):
+    corners = set()
+    kernels = [
+        [(-1, 0), (0, -1), (-1, -1)],  # upper left
+        [(1, 0), (0, -1), (1, -1)],  # upper right
+        [(-1, 0), (0, 1), (-1, 1)],  # lower left
+        [(1, 0), (0, 1), (1, 1)],  # lower right
+    ]
+
+    # get outer corners
+    for px, py in region:
+        for kernel in kernels:
+            vals = [(px+kx, py+ky) for kx, ky in kernel]
+            if all(v not in region for v in vals):
+                corners.add((px, py, kernels.index(kernel)))
+
+    inner_kernels = [
+        [(-1, 0), (0, -1)],
+        [(-1, 0), (0, 1)],
+        [(1, 0), (0, -1)],
+        [(1, 0), (0, 1)],
+    ]
+    inner_corners = set()
+    # get inner corners
+    for px, py in get_boundries(region):
+        for kernel in inner_kernels:
+            vals = [(px+kx, py+ky) for kx, ky in kernel]
+            if all(v in region for v in vals):
+                dx, dy = kernel[0][0]+kernel[1][0], kernel[0][1]+kernel[1][1]
+                if (px+dx, py+dy) in region:
+                    inner_corners.add(
+                        (px+dx, py+dy, inner_kernels.index(kernel)))
+                else:
+                    (v1x, v1y), (v2x, v2y) = vals
+                    dx, dy = v1x-v2x, v1y-v2y
+                    d1 = [(-dx, 0), (0, dy)]
+                    d2 = [(dx, 0), (0, -dy)]
+
+                    inner_corners.add((v1x, v1y, inner_kernels.index(d1)))
+                    inner_corners.add((v2x, v2y, inner_kernels.index(d2)))
+
+    return len(corners) + len(inner_corners)
+
+
 @profiler
 def part_2():
     with open(input_file) as f:
@@ -109,8 +158,7 @@ def part_2():
                 crops.append(v)
                 visited |= v
 
-    print(sum(len(v) * 2 * count_edges(v) for v in crops))
-
+    print(sum(len(v) * count_corners(v) for v in crops))
 
 if __name__ == "__main__":
     part_1()
