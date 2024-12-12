@@ -44,21 +44,18 @@ def part_1():
 
 def clean_free(free_space):
 
-    new_free_space = []
+    new_free_space = [(0, 0)]
     free_space.sort(key=lambda x: x[0])
 
     for fpos, fsize in free_space:
         if fsize == 0:
             continue
 
-        if len(new_free_space) == 0:
-            new_free_space.append((fpos, fsize))
+        if new_free_space[-1][0] + new_free_space[-1][1] == fpos:
+            new_free_space[-1] = (new_free_space[-1]
+                                  [0], new_free_space[-1][1] + fsize)
         else:
-            if new_free_space[-1][0] + new_free_space[-1][1] == fpos:
-                new_free_space[-1] = (new_free_space[-1]
-                                      [0], new_free_space[-1][1] + fsize)
-            else:
-                new_free_space.append((fpos, fsize))
+            new_free_space.append((fpos, fsize))
 
     return new_free_space
 
