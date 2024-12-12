@@ -46,24 +46,18 @@ fn part_1() {
 }
 
 fn clean_free(free_space: &mut Vec<(u64, u64)>) -> Vec<(u64, u64)> {
-    let mut new_free_space = Vec::new();
+    let mut new_free_space = Vec::from([(0, 0)]);
     free_space.sort_by_key(|x| x.0); // Sort by starting position
 
     for &(fpos, fsize) in free_space.iter() {
         if fsize == 0 {
             continue;
         }
-
-        if new_free_space.is_empty() {
-            new_free_space.push((fpos, fsize));
+        if new_free_space.last().unwrap().0 + new_free_space.last().unwrap().1 == fpos {
+            let last = new_free_space.pop().unwrap();
+            new_free_space.push((last.0, last.1 + fsize));
         } else {
-            if new_free_space.last().unwrap().0 + new_free_space.last().unwrap().1 == fpos {
-                // Merge with the previous interval
-                let last = new_free_space.pop().unwrap();
-                new_free_space.push((last.0, last.1 + fsize));
-            } else {
-                new_free_space.push((fpos, fsize));
-            }
+            new_free_space.push((fpos, fsize));
         }
     }
 
@@ -79,10 +73,10 @@ fn part_2() {
     let mut free_space = Vec::new(); // (pos, size)
 
     for (idx, ch) in input.chars().enumerate() {
-        let size = ch.to_digit(10).unwrap() ; // Use i64 to prevent potential overflow
+        let size = ch.to_digit(10).unwrap(); // Use i64 to prevent potential overflow
 
         if idx % 2 == 0 {
-            files.push((idx as u64 /2 as u64, pos as u64, size as u64));
+            files.push((idx as u64 / 2 as u64, pos as u64, size as u64));
         } else {
             free_space.push((pos as u64, size as u64));
         }
@@ -110,18 +104,17 @@ fn part_2() {
 
                 free_space.push((fpos, fsize));
 
-                free_space = clean_free(& mut free_space);
+                free_space = clean_free(&mut free_space);
 
                 break;
             }
         }
     }
 
-    
     let checksum: u64 = files
         .iter()
         .flat_map(|(fid, fpos, fsize)| {
-            (0..*fsize).map(move |i|(*fpos + i as u64) * (*fid as u64) as u64)
+            (0..*fsize).map(move |i| (*fpos + i as u64) * (*fid as u64) as u64)
         })
         .sum();
 
