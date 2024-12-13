@@ -11,19 +11,26 @@ where
     result // Return the result of the function
 }
 
-fn solve_linear_system(a: (u32, u32), b: (u32, u32), p: (u32, u32), delta: u64) -> (f64, f64) {
-    let (ax, ay) = (a.0 as f64, a.1 as f64);
-    let (bx, by) = (b.0 as f64, b.1 as f64);
-    let (mut px, mut py) = (p.0 as f64, p.1 as f64);
-    let delta = delta as f64;
+fn solve_linear_system(
+    coefficients: ((u32, u32), (u32, u32)),
+    prize: (u32, u32),
+    delta: u64,
+) -> (f64, f64) {
+    let ((a_x, a_y), (b_x, b_y)) = coefficients;
+    let (point_x, point_y) = prize;
 
-    px += delta;
-    py += delta;
+    let a_x = a_x as f64;
+    let a_y = a_y as f64;
+    let b_x = b_x as f64;
+    let b_y = b_y as f64;
+    let point_x = point_x as f64 + delta as f64;
+    let point_y = point_y as f64 + delta as f64;
 
-    let det = ax * by as f64 - ay * bx as f64;
+    let determinant = a_x * b_y - a_y * b_x;
 
-    let n1 = (px * by - py * bx) / det;
-    let n2 = (py * ax - px * ay) / det;
+    let n1 = (point_x * b_y - point_y * b_x) / determinant;
+    let n2 = (point_y * a_x - point_x * a_y) / determinant;
+
     (n1, n2)
 }
 fn part_1() {
@@ -53,7 +60,7 @@ fn part_1() {
         let b = m.1;
         let p = m.2;
 
-        let (n1, n2) = solve_linear_system(a, b, p, 0);
+        let (n1, n2) = solve_linear_system((a, b), p, 0);
 
         if n1.fract() == 0.0
             && n2.fract() == 0.0
@@ -94,7 +101,7 @@ fn part_2() {
         let b = m.1;
         let p = m.2;
 
-        let (n1, n2) = solve_linear_system(a, b, p, 10000000000000);
+        let (n1, n2) = solve_linear_system((a, b), p, 10000000000000);
         if n1.fract() == 0.0 && n2.fract() == 0.0 {
             tokens += 3 * n1 as u64 + n2 as u64;
         }
