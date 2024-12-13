@@ -55,8 +55,13 @@ jobs:
       - name: Get changed Rust files
         id: changed-rust-files
         run: |
-          echo "files=$(git diff --name-only HEAD^ HEAD --diff-filter=d '*.rs')" >> $GITHUB_OUTPUT
+            echo "files=$(git diff --name-only HEAD^ HEAD --diff-filter=d '*.rs')" >> $GITHUB_OUTPUT
+  
       - name: Lint Rust code with clippy
         if: steps.changed-rust-files.outputs.files != ''
         run: |
-          cargo clippy -- -D warnings
+            for file in ${{ steps.changed-rust-files.outputs.files }}; do
+              directory=$(dirname "$file")
+              directory=$(echo "$directory" | cut -d '/' -f 1)  # Extract the first level directory
+              (cd "$directory" && cargo clippy -- -D warnings)
+            done
