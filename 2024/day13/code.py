@@ -51,7 +51,7 @@ def part_1():
 
         n1, n2 = solve_linear_system(a, b, p)
 
-        if n1 % 1 == 0 and n2 % 1 == 0:
+        if n1 % 1 == 0 and n2 % 1 == 0 and 0 <= int(n1) < 100 and 0 <= int(n2) < 100:
             tokens += (3*int(n1) + int(n2))
 
     print(tokens)
@@ -75,7 +75,7 @@ def part_2():
 
         n1, n2 = solve_linear_system(a, b, p, 10000000000000)
 
-        if n1 % 1 == 0 and n2 % 1 == 0:
+        if n1 % 1 == 0 and n2 % 1 == 0 and int(n1) >= 0 and int(n2) >= 0:
             tokens += (3*int(n1) + int(n2))
 
     print(tokens)
