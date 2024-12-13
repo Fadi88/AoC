@@ -9,10 +9,17 @@ input_file = os.path.join(os.path.dirname(__file__), "input.txt")
 
 
 def profiler(method):
+    from time import perf_counter_ns
+
     def wrapper_method(*args: Any, **kwargs: Any) -> Any:
-        t = perf_counter()
+        start_time = perf_counter_ns()
         ret = method(*args, **kwargs)
-        print(f"Method {method.__name__} took : {perf_counter() - t:.3f} sec")
+        stop_time = perf_counter_ns() - start_time
+        time_len = min(9, ((len(str(stop_time))-1)//3)*3)
+        time_conversion = {9: 'seconds', 6: 'milliseconds',
+                           3: 'microseconds', 0: 'nanoseconds'}
+        print(f"Method {method.__name__} took : {
+              stop_time / (10**time_len)} {time_conversion[time_len]}")
         return ret
 
     return wrapper_method
