@@ -56,11 +56,7 @@ fn part_1() {
     let mut tokens = 0;
 
     for m in &machines {
-        let a = m.0;
-        let b = m.1;
-        let p = m.2;
-
-        let (n1, n2) = solve_linear_system((a, b), p, 0);
+        let (n1, n2) = solve_linear_system((m.0, m.1), m.2, 0);
 
         if n1.fract() == 0.0
             && n2.fract() == 0.0
@@ -97,11 +93,8 @@ fn part_2() {
     let mut tokens = 0;
 
     for m in &machines {
-        let a = m.0;
-        let b = m.1;
-        let p = m.2;
 
-        let (n1, n2) = solve_linear_system((a, b), p, 10000000000000);
+        let (n1, n2) = solve_linear_system((m.0, m.1), m.2, 10000000000000);
         if n1.fract() == 0.0 && n2.fract() == 0.0 {
             tokens += 3 * n1 as u64 + n2 as u64;
         }
