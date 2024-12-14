@@ -1,15 +1,14 @@
 # pylint: disable=C0114,C0116,C0301,C0209,W1514,C0414
 
-from time import time as perf_counter
 from typing import Any
 import os
+from time import perf_counter_ns
 
 input_file = os.path.join(os.path.dirname(__file__), "input.txt")
 # input_file = os.path.join(os.path.dirname(__file__), "test.txt")
 
 
 def profiler(method):
-    from time import perf_counter_ns
 
     def wrapper_method(*args: Any, **kwargs: Any) -> Any:
         start_time = perf_counter_ns()
