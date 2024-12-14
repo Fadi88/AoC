@@ -1,7 +1,6 @@
 # pylint: disable=C0114,C0116,C0301,C0209,W1514,C0414
 
-import time
-import sys
+
 from time import perf_counter_ns
 from typing import Any
 import os
@@ -68,6 +67,30 @@ def part_1():
     print(count_quadrant(robots))
 
 
+def count_lines(robots):
+    lines = 0
+    ys = set(r[1] for r in robots)
+
+    for y in ys:
+        xs = sorted(r[0] for r in robots if r[1] == y)
+        if len(xs) < 10:
+            continue
+        line_length = 0
+        for i in range(1, len(xs)):
+            if xs[i] - xs[i-1] == 1:
+                line_length += 1
+            else:
+                if line_length > 10:
+                    lines += 1
+                    break
+                line_length = 0
+            if i == len(xs) - 1 and line_length > 10:
+                lines += 1
+            if lines >= 10:
+                return lines
+    return lines
+
+
 @profiler
 def part_2():
     robots = []
@@ -81,9 +104,16 @@ def part_2():
         t += 1
         n_robots = simulate_robots(robots, t)
         if len(set(n_robots)) == len(robots):
+            print(t)
             break
 
-    print(t)
+    t = 0
+    while True:
+        t += 1
+        n_robots = simulate_robots(robots, t)
+        if count_lines(set(n_robots)) >= 10:
+            print(t)
+            break
 
 
 if __name__ == "__main__":
