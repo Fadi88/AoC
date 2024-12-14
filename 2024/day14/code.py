@@ -87,21 +87,15 @@ def part_2():
             p = list(map(int, re.findall(r"-?\d+", l)))
             robots.append(((p[0], p[1]), (p[2], p[3])))
 
-    t = 0
-    while True:
+    t = 1
+    while len(set(simulate_robots(robots, t))) != len(robots):
         t += 1
-        n_robots = simulate_robots(robots, t)
-        if len(set(n_robots)) == len(robots):
-            print(t)
-            break
+    print(t)
 
-    t = 0
-    while True:
+    t = 1
+    while count_in_formation(set(simulate_robots(robots, t))) < len(robots) // 2:
         t += 1
-        n_robots = simulate_robots(robots, t)
-        if count_in_formation(set(n_robots)) > len(robots) // 2:
-            print(t)
-            break
+    print(t)
 
 
 if __name__ == "__main__":
