@@ -119,12 +119,12 @@ def mul_inv(a, b):
 
 
 def chinese_remainder(m, a):
-    sum = 0
+    total = 0
     prod = reduce(lambda acc, b: acc*b, m)
     for n_i, a_i in zip(m, a):
         p = prod // n_i
-        sum += a_i * mul_inv(p, n_i) * p
-    return sum % prod
+        total += a_i * mul_inv(p, n_i) * p
+    return total % prod
 
 
 def plot_robots(robots):
