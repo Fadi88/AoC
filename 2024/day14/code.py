@@ -1,8 +1,11 @@
 # pylint: disable=C0114,C0116,C0301,C0209,W1514,C0414
 
+import time
+import sys
 from time import perf_counter_ns
 from typing import Any
 import os
+import re
 
 input_file = os.path.join(os.path.dirname(__file__), "input.txt")
 # input_file = os.path.join(os.path.dirname(__file__), "test.txt")
@@ -24,16 +27,63 @@ def profiler(method):
     return wrapper_method
 
 
+def simulate_robots(robots, t=100):
+    max_x = 101
+    max_y = 103
+
+    new_robots = []
+    for (rx, ry), (vx, vy) in robots:
+        new_robots.append(((rx + t*vx) % max_x, (ry + t*vy) % max_y))
+    return new_robots
+
+
+def count_quadrant(robots):
+    c1, c2, c3, c4 = 0, 0, 0, 0
+    max_x = 101
+    max_y = 103
+
+    for r in robots:
+        if r[0] < max_x//2 and r[1] < max_y//2:
+            c1 += 1
+        elif r[0] > max_x//2 and r[1] < max_y//2:
+            c2 += 1
+        elif r[0] < max_x//2 and r[1] > max_y//2:
+            c3 += 1
+        elif r[0] > max_x//2 and r[1] > max_y//2:
+            c4 += 1
+
+    return c1*c2*c3*c4
+
+
 @profiler
 def part_1():
-    with open(input_file) as _f:
-        pass
+    robots = []
+    with open(input_file) as f:
+        for l in f:
+            p = list(map(int, re.findall(r"-?\d+", l)))
+            robots.append(((p[0], p[1]), (p[2], p[3])))
+
+    robots = simulate_robots(robots, 100)
+
+    print(count_quadrant(robots))
 
 
 @profiler
 def part_2():
-    with open(input_file) as _f:
-        pass
+    robots = []
+    with open(input_file) as f:
+        for l in f:
+            p = list(map(int, re.findall(r"-?\d+", l)))
+            robots.append(((p[0], p[1]), (p[2], p[3])))
+
+    t = 0
+    while True:
+        t += 1
+        n_robots = simulate_robots(robots, t)
+        if len(set(n_robots)) == len(robots):
+            break
+
+    print(t)
 
 
 if __name__ == "__main__":
