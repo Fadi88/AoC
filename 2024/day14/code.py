@@ -5,6 +5,8 @@ from time import perf_counter_ns
 from typing import Any
 import os
 import re
+from functools import reduce
+
 
 input_file = os.path.join(os.path.dirname(__file__), "input.txt")
 # input_file = os.path.join(os.path.dirname(__file__), "test.txt")
@@ -98,6 +100,68 @@ def part_2():
     print(t)
 
 
+def get_vairance(robots, d):
+    return len(set(r[d] for r in robots))
+
+
+def mul_inv(a, b):
+    b0 = b
+    x0, x1 = 0, 1
+    if b == 1:
+        return 1
+    while a > 1:
+        q = a // b
+        a, b = b, a % b
+        x0, x1 = x1 - q * x0, x0
+    if x1 < 0:
+        x1 += b0
+    return x1
+
+
+def chinese_remainder(m, a):
+    sum = 0
+    prod = reduce(lambda acc, b: acc*b, m)
+    for n_i, a_i in zip(m, a):
+        p = prod // n_i
+        sum += a_i * mul_inv(p, n_i) * p
+    return sum % prod
+
+
+def plot_robots(robots):
+    max_x = 101
+    max_y = 103
+
+    for y in range(max_y):
+        for x in range(max_x):
+            if (x, y) in robots:
+                print("#", end="")
+            else:
+                print(".", end="")
+        print()
+
+
+@profiler
+def part_2_crt():
+    robots = []
+    with open(input_file) as f:
+        for l in f:
+            p = list(map(int, re.findall(r"-?\d+", l)))
+            robots.append(((p[0], p[1]), (p[2], p[3])))
+
+    var_x, var_y = {}, {}
+    for t in range(103):
+
+        n_robots = simulate_robots(robots, t)
+        var_x[get_vairance(n_robots, 0)] = t
+        var_y[get_vairance(n_robots, 1)] = t
+
+    div_x = var_x[min(var_x)]
+    div_y = var_y[min(var_y)]
+
+    print(chinese_remainder([101, 103], [div_x, div_y]))
+
+
 if __name__ == "__main__":
     part_1()
     part_2()
+    part_2_crt()
