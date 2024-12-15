@@ -188,7 +188,7 @@ def part_2():
 
     moves = moves.replace("\n", "")
 
-    for i, m in enumerate(moves):
+    for m in moves:
         dx, dy = deltas[m]
         if (robot[0]+dx, robot[1]+dy) in walls:
             continue
