@@ -86,6 +86,7 @@ def part_1():
                     free_spaces.add((x, y))
 
     visited = dijkstra(start, frozenset(free_spaces))
+
     print(min(v for k, v in visited.items() if k[0] == end))
 
 
@@ -143,9 +144,11 @@ def part_2():
     # back track from end with lowest cost
     target_score = min(v for k, v in visited.items() if k[0] == end)
     target_state = [k for k, v in visited.items() if v ==
-                    target_score and k[0] == end][0]
+                    target_score and k[0] == end]
 
-    print(len(trace_back(visited, target_state)))
+    # ensure that there is only one state to achieve the goal with minimum score
+    assert len(target_state) == 1
+    print(len(trace_back(visited, target_state[0])))
 
 
 if __name__ == "__main__":
