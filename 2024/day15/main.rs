@@ -110,8 +110,8 @@ fn is_free_x(
         .collect();
     let bx: HashSet<i32> = boxes
         .iter()
-        .filter(|&&(b1, _)| b1.1 == robot.1)
-        .map(|&(b1, _)| b1.0)
+        .filter(|&&(b1, b2)| b1.1 == robot.1 || b2.1 == robot.1)
+        .flat_map(|&(b1, b2)| [b1.0, b2.0])
         .collect();
 
     let mut cx = robot.0 + dx;
@@ -227,7 +227,10 @@ fn part_2() {
                 let max_x = std::cmp::max(next_free, robot.0);
                 let to_move: HashSet<((i32, i32), (i32, i32))> = boxes
                     .iter()
-                    .filter(|&&(b1, _)| b1.1 == robot.1 && b1.0 >= min_x && b1.0 <= max_x)
+                    .filter(|&&(b1, b2)| {
+                        (b1.1 == robot.1 && b1.0 >= min_x && b1.0 <= max_x)
+                            || (b2.1 == robot.1 && b2.0 >= min_x && b2.0 <= max_x)
+                    })
                     .cloned()
                     .collect();
 
