@@ -11,17 +11,12 @@ where
     result // Return the result of the function
 }
 
-
 fn dijkstra(
     start: (i32, i32),
     free_spaces: &HashSet<(i32, i32)>,
 ) -> HashMap<((i32, i32), char), i32> {
-    let deltas: HashMap<char, (i32, i32)> = HashMap::from([
-        ('>', (1, 0)),
-        ('v', (0, 1)),
-        ('<', (-1, 0)),
-        ('^', (0, -1)),
-    ]);
+    let deltas: HashMap<char, (i32, i32)> =
+        HashMap::from([('>', (1, 0)), ('v', (0, 1)), ('<', (-1, 0)), ('^', (0, -1))]);
     let rot = ['>', 'v', '<', '^'];
 
     let mut to_visit = BinaryHeap::new();
@@ -43,16 +38,17 @@ fn dijkstra(
         let np = (cx + dx, cy + dy);
         if free_spaces.contains(&np)
             && visited
-                .get(&((np.0, np.1), cd))
+                .get(&(np, cd))
                 .map_or(true, |&v| v > score + 1)
         {
-            visited.insert(((np.0, np.1), cd), score + 1);
+            visited.insert((np, cd), score + 1);
             to_visit.push((-(score + 1), cd, np));
         }
 
         // Try turn
         for dr in [-1, 1] {
-            let nd = rot[(((rot.iter().position(|&r| r == cd).unwrap() as i32) + dr + 4) % 4) as usize];
+            let nd =
+                rot[(((rot.iter().position(|&r| r == cd).unwrap() as i32) + dr + 4) % 4) as usize];
             if visited
                 .get(&((cx, cy), nd))
                 .map_or(true, |&v| v > score + 1000)
@@ -65,7 +61,6 @@ fn dijkstra(
 
     visited
 }
-
 
 fn part_1() {
     let input_file = include_str!("input.txt");
@@ -106,12 +101,8 @@ fn trace_back(
     visited: &HashMap<((i32, i32), char), i32>,
     target_state: ((i32, i32), char),
 ) -> HashSet<(i32, i32)> {
-    let deltas: HashMap<char, (i32, i32)> = HashMap::from([
-        ('>', (1, 0)),
-        ('v', (0, 1)),
-        ('<', (-1, 0)),
-        ('^', (0, -1)),
-    ]);
+    let deltas: HashMap<char, (i32, i32)> =
+        HashMap::from([('>', (1, 0)), ('v', (0, 1)), ('<', (-1, 0)), ('^', (0, -1))]);
     let rot = ['>', 'v', '<', '^'];
 
     let mut to_visit = vec![target_state];
@@ -125,10 +116,10 @@ fn trace_back(
 
         // Try back forward
         if visited
-            .get(&((np.0, np.1), cd))
-            .map_or(false, |&v| v + 1 == visited[&((cp.0, cp.1), cd)])
+            .get(&(np, cd))
+            .map_or(false, |&v| v + 1 == visited[&(cp, cd)])
         {
-            to_visit.push(((np.0, np.1), cd));
+            to_visit.push((np, cd));
         }
 
         // Try rotate
@@ -136,16 +127,16 @@ fn trace_back(
         let nd2 = rot[((rot.iter().position(|&r| r == cd).unwrap() as i32 - 1 + 4) % 4) as usize];
 
         if visited
-            .get(&((cp.0, cp.1), nd1))
-            .map_or(false, |&v| v + 1000 == visited[&((cp.0, cp.1), cd)])
+            .get(&(cp, nd1))
+            .map_or(false, |&v| v + 1000 == visited[&(cp, cd)])
         {
-            to_visit.push(((cp.0, cp.1), nd1));
+            to_visit.push((cp, nd1));
         }
         if visited
-            .get(&((cp.0, cp.1), nd2))
-            .map_or(false, |&v| v + 1000 == visited[&((cp.0, cp.1), cd)])
+            .get(&(cp, nd2))
+            .map_or(false, |&v| v + 1000 == visited[&(cp, cd)])
         {
-            to_visit.push(((cp.0, cp.1), nd2));
+            to_visit.push((cp, nd2));
         }
     }
 
