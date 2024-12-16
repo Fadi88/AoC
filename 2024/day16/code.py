@@ -1,5 +1,6 @@
 # pylint: disable=C0114,C0116,C0301,C0209,W1514,C0414,E0001
 
+from functools import cache
 import heapq
 from typing import Any
 import os
@@ -25,6 +26,7 @@ def profiler(method):
     return wrapper_method
 
 
+@cache
 def dijkstra(start, free_spaces):
     deltas = {
         ">": (1, 0),
@@ -83,7 +85,7 @@ def part_1():
                 elif c == ".":
                     free_spaces.add((x, y))
 
-    visited = dijkstra(start, free_spaces)
+    visited = dijkstra(start, frozenset(free_spaces))
     print(min(v for k, v in visited.items() if k[0] == end))
 
 
@@ -136,7 +138,7 @@ def part_2():
                 elif c == ".":
                     free_spaces.add((x, y))
 
-    visited = dijkstra(start, free_spaces)
+    visited = dijkstra(start, frozenset(free_spaces))
 
     # back track from end with lowest cost
     target_score = min(v for k, v in visited.items() if k[0] == end)
