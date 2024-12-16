@@ -48,7 +48,7 @@ fn dijkstra(
         // Try turn
         for dr in [-1, 1] {
             let nd =
-                rot[(((rot.iter().position(|&r| r == cd).unwrap() as i32) + dr + 4) % 4) as usize];
+                rot[(((rot.iter().position(|&r| r == cd).unwrap() as i32) + dr).rem_euclid(4)) as usize];
             if visited
                 .get(&((cx, cy), nd))
                 .map_or(true, |&v| v > score + 1000)
@@ -123,8 +123,8 @@ fn trace_back(
         }
 
         // Try rotate
-        let nd1 = rot[((rot.iter().position(|&r| r == cd).unwrap() as i32 + 1 + 4) % 4) as usize];
-        let nd2 = rot[((rot.iter().position(|&r| r == cd).unwrap() as i32 - 1 + 4) % 4) as usize];
+        let nd1 = rot[((rot.iter().position(|&r| r == cd).unwrap() as i32 + 1).rem_euclid(4)) as usize];
+        let nd2 = rot[((rot.iter().position(|&r| r == cd).unwrap() as i32 - 1).rem_euclid(4)) as usize];
 
         if visited
             .get(&(cp, nd1))
