@@ -89,7 +89,7 @@ def part_1():
     print(min(v for k, v in visited.items() if k[0] == end))
 
 
-def back_track(visited, target_state):
+def trace_back(visited, target_state):
     deltas = {
         ">": (1, 0),
         "v": (0, 1),
@@ -145,7 +145,7 @@ def part_2():
     target_state = [k for k, v in visited.items() if v ==
                     target_score and k[0] == end][0]
 
-    print(len(back_track(visited, target_state)))
+    print(len(trace_back(visited, target_state)))
 
 
 if __name__ == "__main__":
