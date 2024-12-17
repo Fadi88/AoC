@@ -23,17 +23,70 @@ def profiler(method):
 
     return wrapper_method
 
+def exec(prog,reg):
+    pc = 0
+    output = []
+
+    while True:
+        if pc > len(prog) -1 :
+            return output
+
+        op = prog[pc]
+        opreand = prog[pc+1]
+        assert 0 <= opreand < 7
+        combo = opreand if opreand < 4 else reg[opreand-4]
+
+        if op == 0 : # division
+            reg[0] = reg[0] // 2 ** combo
+        elif op == 1 : # bxl
+            reg[1] ^= opreand
+        elif op == 2 : # bst
+            reg[1] = combo % 8
+        elif op == 3 : # jnz
+            if reg[0] != 0 :
+                pc = opreand
+                continue
+        elif op == 4 : # bxl
+            reg[1] ^= reg[2]
+        elif op == 5:
+            output.append(str(combo%8))
+        elif op == 6 : # division
+            reg[1] = reg[0] // 2 ** combo
+        elif op == 7 : # division
+            reg[2] = reg[0] // 2 ** combo
+
+        pc += 2
+
 
 @profiler
 def part_1():
     with open(input_file) as f:
-        l = f.read()
+        ps = f.read().split("\n\n")
+
+    reg = []
+    for l in ps[0].splitlines():
+        p = l.split(":")
+        reg.append(int(p[1]))
+
+    prog = list(map(int,ps[1].split(":")[1].split(",")))
+    print(",".join(exec(prog,reg)))
 
 
 @profiler
 def part_2():
     with open(input_file) as f:
-        l = f.read()
+        ps = f.read().split("\n\n")
+
+    prog = list(map(int,ps[1].split(":")[1].split(",")))
+    num = []
+    for idx in range(len(prog)):
+        for i in range(8):
+            output = exec(prog,[i,0,0])
+            if str(output[-1]) == prog[::-1][idx]:
+                num.append(i)
+        break
+
+    print(num)
 
 
 if __name__ == "__main__":
