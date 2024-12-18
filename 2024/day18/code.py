@@ -2,13 +2,13 @@
 
 from time import perf_counter_ns
 import os
+from typing import Any
 
 input_file = os.path.join(os.path.dirname(__file__), "input.txt")
 # input_file = os.path.join(os.path.dirname(__file__), "test.txt")
 
 
 def profiler(method):
-    from time import perf_counter_ns
 
     def wrapper_method(*args: Any, **kwargs: Any) -> Any:
         start_time = perf_counter_ns()
@@ -24,16 +24,62 @@ def profiler(method):
     return wrapper_method
 
 
+def maze(pts):
+    start = (0, 0)
+    end = (70, 70)
+
+    seen = set()
+    to_visit = [(start, 0)]
+
+    while to_visit:
+        cp, cd = to_visit.pop(0)
+
+        if cp in seen:
+            continue
+
+        if cp == end:
+            return cd
+
+        for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            np = cp[0] + dx, cp[1] + dy
+            if 0 <= np[0] <= 70 and 0 <= np[1] <= 70 and np not in seen and np not in pts:
+                to_visit.append((np, cd+1))
+
+        seen.add(cp)
+
+    return None
+
+
 @profiler
 def part_1():
+    pts = set()
     with open(input_file) as f:
-        l = f.read()
+        for l in f:
+            pts.add(tuple(map(int, l.strip().split(","))))
+            if len(pts) == 1024:
+                break
+    print(maze(pts))
 
 
 @profiler
 def part_2():
+    pts = []
     with open(input_file) as f:
-        l = f.read()
+        for l in f:
+            pts.append(tuple(map(int, l.strip().split(","))))
+
+    lower = 1024
+    upper = len(pts)
+
+    while upper - lower > 1:
+        l = (upper+lower) // 2
+
+        if maze(pts[:l]):
+            lower = l
+        else:
+            upper = l
+
+    print(pts[lower])
 
 
 if __name__ == "__main__":
