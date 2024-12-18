@@ -72,28 +72,22 @@ def part_1():
     prog = list(map(int, ps[1].split(":")[1].split(",")))
     print(",".join(exec(prog, reg)))
 
-
-def get_sum(num):
-    return sum(8**i * c for i, c in enumerate(num))
-
-
 @profiler
 def part_2():
     with open(input_file) as f:
         ps = f.read().split("\n\n")
 
     prog = list(map(int, ps[1].split(":")[1].split(",")))
-    to_visit = [(len(prog),0)]
+    to_visit = [(len(prog), 0)]
     while to_visit:
-        pos,a = to_visit.pop(0)
+        pos, a = to_visit.pop(0)
         for i in range(8):
             n_a = a*8 + i
-            o = list(map(int,exec(prog, [n_a, 0, 0])))
+            o = list(map(int, exec(prog, [n_a, 0, 0])))
             if o == prog[pos-1:]:
-                to_visit.append((pos - 1 , n_a))
+                to_visit.append((pos - 1, n_a))
                 if len(o) == len(prog):
                     print(n_a)
-
 
 if __name__ == "__main__":
     part_1()
