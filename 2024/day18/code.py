@@ -52,21 +52,15 @@ def maze(pts):
 
 @profiler
 def part_1():
-    pts = set()
     with open(input_file) as f:
-        for l in f:
-            pts.add(tuple(map(int, l.strip().split(","))))
-            if len(pts) == 1024:
-                break
-    print(maze(pts))
+        pts = [tuple(map(int, l.strip().split(","))) for l in f]
+    print(maze(pts[:1024]))
 
 
 @profiler
 def part_2():
-    pts = []
     with open(input_file) as f:
-        for l in f:
-            pts.append(tuple(map(int, l.strip().split(","))))
+        pts = [tuple(map(int, l.strip().split(","))) for l in f]
 
     lower = 1024
     upper = len(pts)
@@ -79,7 +73,7 @@ def part_2():
         else:
             upper = l
 
-    print(pts[lower])
+    print(pts[upper-1])
 
 
 if __name__ == "__main__":
