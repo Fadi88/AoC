@@ -23,12 +23,13 @@ def profiler(method):
 
     return wrapper_method
 
-def exec(prog,reg):
+
+def exec(prog, reg):
     pc = 0
     output = []
 
     while True:
-        if pc > len(prog) -1 :
+        if pc > len(prog) - 1:
             return output
 
         op = prog[pc]
@@ -36,23 +37,23 @@ def exec(prog,reg):
         assert 0 <= opreand < 7
         combo = opreand if opreand < 4 else reg[opreand-4]
 
-        if op == 0 : # division
+        if op == 0:  # adv
             reg[0] = reg[0] // 2 ** combo
-        elif op == 1 : # bxl
+        elif op == 1:  # bxl
             reg[1] ^= opreand
-        elif op == 2 : # bst
+        elif op == 2:  # bst
             reg[1] = combo % 8
-        elif op == 3 : # jnz
-            if reg[0] != 0 :
+        elif op == 3:  # jnz
+            if reg[0] != 0:
                 pc = opreand
                 continue
-        elif op == 4 : # bxl
+        elif op == 4:  # bxl
             reg[1] ^= reg[2]
         elif op == 5:
-            output.append(str(combo%8))
-        elif op == 6 : # division
+            output.append(str(combo % 8))
+        elif op == 6:  # bdv
             reg[1] = reg[0] // 2 ** combo
-        elif op == 7 : # division
+        elif op == 7:  # cdv
             reg[2] = reg[0] // 2 ** combo
 
         pc += 2
@@ -68,8 +69,12 @@ def part_1():
         p = l.split(":")
         reg.append(int(p[1]))
 
-    prog = list(map(int,ps[1].split(":")[1].split(",")))
-    print(",".join(exec(prog,reg)))
+    prog = list(map(int, ps[1].split(":")[1].split(",")))
+    print(",".join(exec(prog, reg)))
+
+
+def get_sum(num):
+    return sum(8**i * c for i, c in enumerate(num))
 
 
 @profiler
@@ -77,16 +82,17 @@ def part_2():
     with open(input_file) as f:
         ps = f.read().split("\n\n")
 
-    prog = list(map(int,ps[1].split(":")[1].split(",")))
-    num = []
-    for idx in range(len(prog)):
+    prog = list(map(int, ps[1].split(":")[1].split(",")))
+    to_visit = [(len(prog),0)]
+    while to_visit:
+        pos,a = to_visit.pop(0)
         for i in range(8):
-            output = exec(prog,[i,0,0])
-            if str(output[-1]) == prog[::-1][idx]:
-                num.append(i)
-        break
-
-    print(num)
+            n_a = a*8 + i
+            o = list(map(int,exec(prog, [n_a, 0, 0])))
+            if o == prog[pos-1:]:
+                to_visit.append((pos - 1 , n_a))
+                if len(o) == len(prog):
+                    print(n_a)
 
 
 if __name__ == "__main__":
