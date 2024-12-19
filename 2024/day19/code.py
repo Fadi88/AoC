@@ -25,9 +25,6 @@ def profiler(method):
     return wrapper_method
 
 
-count = {}
-
-
 @cache
 def count_allowed(towel, patterns):
     combs = 0
