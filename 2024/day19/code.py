@@ -60,7 +60,6 @@ def part_2():
         ps = f.read().split("\n\n")
 
     allowed = list(ps[0].split(", "))
-    allowed.sort(key=lambda x: -len(x))
 
     towels = ps[1].split()
 
