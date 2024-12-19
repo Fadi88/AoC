@@ -11,6 +11,13 @@ where
     result // Return the result of the function
 }
 
+fn is_in_bounds(np: (i32, i32), max_x: i32, max_y: i32) -> bool {
+    let x = np.0 >= 0 && np.0 <= max_x;
+    let y = np.1 >= 0 && np.1 <= max_y;
+
+    x && y
+}
+
 fn maze(pts: &[(i32, i32)]) -> Option<i32> {
     let start = (0, 0);
     let end = (70, 70);
@@ -19,28 +26,20 @@ fn maze(pts: &[(i32, i32)]) -> Option<i32> {
     let mut to_visit = VecDeque::from([(start, 0)]);
 
     while let Some((cp, cd)) = to_visit.pop_front() {
-        if seen.contains(&cp) {
-            continue;
-        }
+        if !seen.contains(&cp) {
+            seen.insert(cp);
 
-        if cp == end {
-            return Some(cd);
-        }
+            if cp == end {
+                return Some(cd);
+            }
 
-        for (dx, dy) in [(1, 0), (-1, 0), (0, 1), (0, -1)] {
-            let np = (cp.0 + dx, cp.1 + dy);
-            if 0 <= np.0
-                && np.0 <= 70
-                && 0 <= np.1
-                && np.1 <= 70
-                && !seen.contains(&np)
-                && !pts.contains(&np)
-            {
-                to_visit.push_back((np, cd + 1));
+            for (dx, dy) in [(1, 0), (-1, 0), (0, 1), (0, -1)] {
+                let np = (cp.0 + dx, cp.1 + dy);
+                if is_in_bounds(np, 70, 70) && !pts.contains(&np) {
+                    to_visit.push_back((np, cd + 1));
+                }
             }
         }
-
-        seen.insert(cp);
     }
 
     None
