@@ -3,7 +3,7 @@
 from typing import Any
 import os
 from time import perf_counter_ns
-from collections import defaultdict
+from functools import cache
 
 input_file = os.path.join(os.path.dirname(__file__), "input.txt")
 # input_file = os.path.join(os.path.dirname(__file__), "test.txt")
@@ -28,18 +28,15 @@ def profiler(method):
 count = {}
 
 
+@cache
 def count_allowed(towel, patterns):
     combs = 0
-    if towel in count:
-        return count[towel]
-
     for p in patterns:
         if towel == p:
             combs += 1
         if towel.startswith(p):
             new_towel = towel.replace(p, "", 1)
             combs += count_allowed(new_towel, patterns)
-    count[towel] = combs
     return combs
 
 
@@ -48,7 +45,7 @@ def part_1():
     with open(input_file) as f:
         ps = f.read().split("\n\n")
 
-    allowed = list(ps[0].split(", "))
+    allowed = frozenset(ps[0].split(", "))
     towels = ps[1].split()
 
     print(sum(count_allowed(t, allowed) > 0 for t in towels))
@@ -59,8 +56,7 @@ def part_2():
     with open(input_file) as f:
         ps = f.read().split("\n\n")
 
-    allowed = list(ps[0].split(", "))
-
+    allowed = frozenset(ps[0].split(", "))
     towels = ps[1].split()
 
     print(sum(count_allowed(t, allowed) for t in towels))
