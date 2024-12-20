@@ -90,7 +90,7 @@ def part_1():
 
     distances = dijkstra(start, free_space)
 
-    print(get_savings_2(distances, 2))
+    print(get_savings(distances, 2))
 
 
 @profiler
@@ -107,7 +107,7 @@ def part_2():
 
     distances = dijkstra(start, free_space)
 
-    print(get_savings_2(distances, 20))
+    print(get_savings(distances, 20))
 
 
 if __name__ == "__main__":
