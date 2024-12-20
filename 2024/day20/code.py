@@ -70,10 +70,8 @@ def get_savings_2(distances, jump_size):
     ret = 0
     for p, np in combinations(distances, 2):
         cheat_cost = abs(p[0]-np[0]) + abs(p[1]-np[1])
-        if cheat_cost > jump_size:
-            continue
         initial_cost = distances[np] - distances[p]
-        if (initial_cost - cheat_cost) >= 100:
+        if cheat_cost <= jump_size and (initial_cost - cheat_cost) >= 100:
             ret += 1
     return ret
 
@@ -109,7 +107,7 @@ def part_2():
 
     distances = dijkstra(start, free_space)
 
-    print(get_savings(distances, 20))
+    print(get_savings_2(distances, 20))
 
 
 if __name__ == "__main__":
