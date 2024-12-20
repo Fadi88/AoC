@@ -1,7 +1,7 @@
 # pylint: disable=C0114,C0116,C0301,C0209,W1514,C0414,E0001
 
 
-from itertools import product
+from itertools import product, combinations
 from typing import Any
 import os
 from time import perf_counter_ns
@@ -51,54 +51,65 @@ def dijkstra(start, free_spaces):
     return visited
 
 
-def get_savings(distances, jump_size, free_space):
+def get_savings(distances, jump_size):
     ret = 0
-    for p in free_space:
+    for p in distances:
         for dx, dy in product(range(-jump_size, jump_size+1), repeat=2):
             if dx == dy == 0 or abs(dx) + abs(dy) > jump_size:
                 continue
             np = (p[0]+dx, p[1]+dy)
-            if np in free_space:
-                no_walls_cost = abs(p[0]-np[0]) + abs(p[1]-np[1])
-                all_walls_cost = distances[np] - distances[p]
-
-                if (all_walls_cost - no_walls_cost) >= 100:
+            if np in distances:
+                initial_cost = distances[p] - distances[np]
+                cheat_cost = abs(p[0]-np[0]) + abs(p[1]-np[1])
+                if (initial_cost - cheat_cost) >= 100:
                     ret += 1
+    return ret
+
+
+def get_savings_2(distances, jump_size):
+    ret = 0
+    for p, np in combinations(distances, 2):
+        cheat_cost = abs(p[0]-np[0]) + abs(p[1]-np[1])
+        if cheat_cost > jump_size:
+            continue
+        initial_cost = distances[np] - distances[p]
+        if (initial_cost - cheat_cost) >= 100:
+            ret += 1
     return ret
 
 
 @profiler
 def part_1():
     free_space = set()
-    end = None
+    start = None
     with open(input_file) as f:
         for y, line in enumerate(f):
             for x, c in enumerate(line):
                 if c in ".SE":
                     free_space.add((x, y))
-                if c == "E":
-                    end = (x, y)
+                if c == "S":
+                    start = (x, y)
 
-    from_end = dijkstra(end, free_space)
+    distances = dijkstra(start, free_space)
 
-    print(get_savings(from_end, 2, free_space))
+    print(get_savings_2(distances, 2))
 
 
 @profiler
 def part_2():
     free_space = set()
-    end = None
+    start = None
     with open(input_file) as f:
         for y, line in enumerate(f):
             for x, c in enumerate(line):
                 if c in ".SE":
                     free_space.add((x, y))
-                if c == "E":
-                    end = (x, y)
+                if c == "S":
+                    start = (x, y)
 
-    from_end = dijkstra(end, free_space)
+    distances = dijkstra(start, free_space)
 
-    print(get_savings(from_end, 20, free_space))
+    print(get_savings(distances, 20))
 
 
 if __name__ == "__main__":
