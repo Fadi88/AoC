@@ -37,17 +37,17 @@ fn dijkstra(start: (i32, i32), free_spaces: &HashSet<(i32, i32)>) -> HashMap<(i3
     visited
 }
 
-fn _get_savings(distances: &HashMap<(i32, i32), i32>, jump_size: i32) -> usize {
+fn get_savings(distances: &HashMap<(i32, i32), i32>, jump_size: i32) -> usize {
     let mut ret = 0;
     for p in distances.keys() {
-        for (dx, dy) in (0..=jump_size)
-            .cartesian_product(0..=jump_size)
-            .filter(|(dx, dy)| *dx != 0 || *dy != 0 && *dx + *dy <= jump_size)
+        for (dx, dy) in (-jump_size..=jump_size)
+            .cartesian_product(-jump_size..=jump_size)
+            .filter(|(dx, dy)| !(*dx == 0 && *dy == 0) && dx.abs() + dy.abs() <= jump_size)
         {
             let np = (p.0 + dx, p.1 + dy);
             if let Some(&initial_cost) = distances.get(p) {
                 if let Some(&np_cost) = distances.get(&np) {
-                    let cheat_cost = dx + dy;
+                    let cheat_cost = dx.abs() + dy.abs();
                     if (initial_cost - np_cost - cheat_cost) >= 100 {
                         ret += 1;
                     }
@@ -98,7 +98,7 @@ fn part_1() {
     let start = start.expect("No starting position found");
     let distances = dijkstra(start, &free_space);
 
-    let savings = get_savings_2(
+    let savings = get_savings(
         &distances
             .iter()
             .map(|(&k, &v)| (k, v))
@@ -128,7 +128,7 @@ fn part_2() {
     let start = start.expect("No starting position found");
     let distances = dijkstra(start, &free_space);
 
-    let savings = get_savings_2(
+    let savings = get_savings(
         &distances
             .iter()
             .map(|(&k, &v)| (k, v))
