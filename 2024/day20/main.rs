@@ -1,4 +1,4 @@
-use itertools::Itertools;
+//use itertools::Itertools;
 use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::time::Instant;
 
@@ -40,19 +40,22 @@ fn dijkstra(start: (i32, i32), free_spaces: &HashSet<(i32, i32)>) -> HashMap<(i3
 fn get_savings(distances: &HashMap<(i32, i32), i32>, jump_size: i32) -> usize {
     let mut ret = 0;
     for p in distances.keys() {
-        for (dx, dy) in (-jump_size..=jump_size)
-            .cartesian_product(-jump_size..=jump_size)
-            .filter(|(dx, dy)| !(*dx == 0 && *dy == 0) && dx.abs() + dy.abs() <= jump_size)
+        for dx in -jump_size..=jump_size
         {
-            let np = (p.0 + dx, p.1 + dy);
-            if let Some(&initial_cost) = distances.get(p) {
-                if let Some(&np_cost) = distances.get(&np) {
-                    let cheat_cost = dx.abs() + dy.abs();
-                    if (initial_cost - np_cost - cheat_cost) >= 100 {
-                        ret += 1;
+            for dy in -jump_size..=jump_size {
+                let np = (p.0 + dx, p.1 + dy);
+                if dx.abs() + dy.abs() > jump_size {
+                    continue;
+                }
+                if let Some(&initial_cost) = distances.get(p) {
+                    if let Some(&np_cost) = distances.get(&np) {
+                        let cheat_cost = dx.abs() + dy.abs();
+                        if (initial_cost - np_cost - cheat_cost) >= 100 {
+                            ret += 1;
+                        }
                     }
                 }
-            }
+           }
         }
     }
     ret
