@@ -62,15 +62,15 @@ def part_2():
     print(",".join(sorted(clusters[0])))
 
 
-def bron_kerbosch(r, p, x, graph):
-    if not p and not x:
-        return [r]
+def bron_kerbosch(graph, to_explore, seen=set(), explored=set()):
+    if not to_explore and not seen:
+        return [explored]
     cliques = []
-    for v in list(p):
-        cliques.extend(bron_kerbosch(
-            r | {v}, p & graph[v], x & graph[v], graph))
-        p.remove(v)
-        x.add(v)
+    for v in list(to_explore):
+        cliques.extend(bron_kerbosch(graph, to_explore &
+                       graph[v], seen & graph[v], explored | {v}))
+        to_explore.remove(v)
+        seen.add(v)
     return cliques
 
 
@@ -83,7 +83,7 @@ def part_2_hand():
             data[ps[0]].add(ps[1])
             data[ps[1]].add(ps[0])
 
-    c = bron_kerbosch(set(), set(data.keys()), set(), data)
+    c = bron_kerbosch(data, set(data.keys()))
     c.sort(key=len, reverse=True)
 
     print(",".join(sorted(c[0])))
