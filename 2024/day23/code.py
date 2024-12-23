@@ -45,25 +45,51 @@ def part_1():
                     threes.add(frozenset((k, c1, c2)))
 
     print(len(threes))
-    print(len(data))
 
 
 @profiler
 def part_2():
-    g = nx.Graph()
+    with open(input_file) as f:
+        edges = [(l.split("-")[0], l.split("-")[1])
+                 for l in f.read().splitlines()]
 
+    g = nx.Graph()
+    g.add_edges_from(edges)
+
+    clusters = list(nx.find_cliques(g))
+    clusters.sort(key=len, reverse=True)
+
+    print(",".join(sorted(clusters[0])))
+
+
+def bron_kerbosch(r, p, x, graph):
+    if not p and not x:
+        return [r]
+    cliques = []
+    for v in list(p):
+        cliques.extend(bron_kerbosch(
+            r | {v}, p & graph[v], x & graph[v], graph))
+        p.remove(v)
+        x.add(v)
+    return cliques
+
+
+@profiler
+def part_2_hand():
+    data = defaultdict(set)
     with open(input_file) as f:
         for l in f.read().splitlines():
             ps = l.split("-")
-            g.add_edge(ps[0], ps[1])
+            data[ps[0]].add(ps[1])
+            data[ps[1]].add(ps[0])
 
-    clusters = list(nx.find_cliques_recursive(g))
-    clusters.sort(key=len, reverse=True)
-    clusters[0].sort()
+    c = bron_kerbosch(set(), set(data.keys()), set(), data)
+    c.sort(key=len, reverse=True)
 
-    print(",".join(clusters[0]))
+    print(",".join(sorted(c[0])))
 
 
 if __name__ == "__main__":
     part_1()
     part_2()
+    part_2_hand()
