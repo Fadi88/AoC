@@ -1,13 +1,9 @@
-# pylint: disable=C0114,C0116,C0301,C0209,W1514,C0414,E0001
+# pylint: disable=C0114,C0116,C0301,C0209,W1514,C0414,E0001,R0914
 
-import matplotlib.pyplot as plt
-import networkx as nx
 from typing import Any
 import os
 from time import perf_counter_ns
-from collections import defaultdict
 import re
-from itertools import permutations
 
 input_file = os.path.join(os.path.dirname(__file__), "input.txt")
 # input_file = os.path.join(os.path.dirname(__file__), "test.txt")
@@ -46,7 +42,7 @@ def get_num(d, c):
     for i in range(top, -1, -1):
         try:
             ret += str(d[c + f"{i:02d}"])
-        except:
+        except KeyError:
             return -1
     return int(ret, 2)
 
@@ -155,7 +151,6 @@ def part_2():
             xor2_gate = rev_ops[(xor_gate, "XOR", carry)]
             if xor2_gate != z:
                 wrong_gates.add(xor2_gate)
-            pass
 
     print(",".join(sorted(list(wrong_gates))))
 
