@@ -66,21 +66,6 @@ def eval_loop(res, xs, ys):
     return get_num(wires, "z")
 
 
-def get_new_res(mapping, res):
-    rev_mapping = {v: k for k, v in mapping.items()}
-    new_res = {}
-    for d in res:
-        if re.match(r"z\d+", d):
-            num = int(d[1:])
-            if num in mapping:
-                pass
-            elif num in rev_mapping:
-                pass
-        new_res[d] = res[d]
-
-    return new_res
-
-
 @profiler
 def part_1():
     with open(input_file) as f:
