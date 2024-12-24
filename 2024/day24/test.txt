@@ -1,0 +1,19 @@
+x00: 0
+x01: 1
+x02: 1
+y00: 1
+y01: 0
+y02: 0
+
+y00 XOR x00 -> z00
+y00 AND x00 -> dhb
+x01 XOR y01 -> qpp
+y01 AND x01 -> pbr
+x02 XOR y02 -> phv
+x02 AND y02 -> kng
+dhb XOR qpp -> z01
+vnb XOR phv -> z02
+ndg OR pbr -> vnb
+qpp AND dhb -> ndg
+phv AND vnb -> rkh
+kng OR rkh -> wtc
