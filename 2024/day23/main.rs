@@ -97,9 +97,9 @@ fn part_2() {
     );
 
     let mut sorted_cliques: Vec<_> = cliques.iter().collect();
-    sorted_cliques.sort_by_key(|clique| -(clique.len() as isize));
+    sorted_cliques.sort_by_key(|clique| (clique.len() as isize));
 
-    if let Some(largest_clique) = sorted_cliques.first() {
+    if let Some(largest_clique) = sorted_cliques.last() {
         let mut largest_clique_vec: Vec<_> = largest_clique.iter().copied().collect();
         largest_clique_vec.sort();
         println!("{}", largest_clique_vec.join(","));
