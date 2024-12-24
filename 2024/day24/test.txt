@@ -6,14 +6,14 @@ y01: 0
 y02: 0
 
 y00 XOR x00 -> z00
-y00 AND x00 -> dhb
-x01 XOR y01 -> qpp
-y01 AND x01 -> pbr
-x02 XOR y02 -> phv
-x02 AND y02 -> kng
-dhb XOR qpp -> z01
-vnb XOR phv -> z02
-ndg OR pbr -> vnb
-qpp AND dhb -> ndg
-phv AND vnb -> rkh
-kng OR rkh -> wtc
+y00 AND x00 -> abc
+x01 XOR y01 -> bcd
+y01 AND x01 -> cde
+x02 XOR y02 -> aaa
+x02 AND y02 -> bbb
+abc XOR bcd -> z01
+ccc XOR aaa -> z02
+ddd OR cde -> ccc
+bcd AND abc -> ddd
+aaa AND ccc -> eee
+bbb OR eee -> fff
