@@ -34,8 +34,8 @@ def get_heights(d):
 
 
 def does_fit(p):
-    k, l = p
-    return all(k[i]+l[i] <= 7 for i in range(len(k)))
+    ks, ls = p
+    return all(k+l <= 7 for k, l in zip(ks, ls))
 
 
 @profiler
