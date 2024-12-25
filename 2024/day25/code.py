@@ -28,8 +28,8 @@ def profiler(method):
 def get_heights(d):
     ret = []
     for i in range(len(d[0])):
-        col = [l[i] for l in d]
-        ret.append(col.count("#"))
+        col = [l[i] == "#" for l in d]
+        ret.append(sum(col))
     return ret
 
 
@@ -46,10 +46,10 @@ def part_1():
     with open(input_file) as f:
         for block in f.read().split("\n\n"):
             lines = block.splitlines()
-            if lines[0].count("."):
-                lock_heights.append(tuple(get_heights(lines)))
+            if lines[0].count(".") == 0:
+                lock_heights.append(get_heights(lines))
             else:
-                key_heights.append(tuple(get_heights(lines)))
+                key_heights.append(get_heights(lines))
 
     s = sum(does_fit(combination)
             for combination in product(key_heights, lock_heights))
