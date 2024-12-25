@@ -30,13 +30,13 @@ fn does_fit(p: (&[usize], &[usize])) -> bool {
     zip(k, l).all(|(ki, li)| ki + li <= 7)
 }
 fn part_1() {
-    let input_file = include_str!("input.txt"); // Include the file at compile time
+    let input_file = include_str!("input.txt");
     let mut key_heights = Vec::new();
     let mut lock_heights = Vec::new();
 
     for block in input_file.split("\n\n") {
         let lines: Vec<&str> = block.lines().collect();
-        if lines[0].contains('.') {
+        if lines[0].contains('#') {
             lock_heights.push(get_heights(&lines));
         } else {
             key_heights.push(get_heights(&lines));
