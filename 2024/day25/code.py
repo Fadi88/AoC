@@ -25,7 +25,7 @@ def profiler(method):
     return wrapper_method
 
 
-def get_vals(d):
+def get_heights(d):
     ret = []
     for i in range(len(d[0])):
         col = [l[i] for l in d]
@@ -33,26 +33,27 @@ def get_vals(d):
     return ret
 
 
+def does_fit(p):
+    k, l = p
+    return all(k[i]+l[i] <= 7 for i in range(len(k)))
+
+
 @profiler
 def part_1():
+    key_heights = []
+    lock_heights = []
+
     with open(input_file) as f:
-        data = [l.splitlines() for l in f.read().split("\n\n")]
+        for block in f.read().split("\n\n"):
+            lines = block.splitlines()
+            if lines[0].count("."):
+                lock_heights.append(tuple(get_heights(lines)))
+            else:
+                key_heights.append(tuple(get_heights(lines)))
 
-    locks = [d for d in data if d[0].count(".") == 0]
-    keys = [d for d in data if d[-1].count(".") == 0]
-
-    h = len(locks[0])
-
-    locks = list(map(get_vals, locks))
-    keys = list(map(get_vals, keys))
-
-    t = 0
-
-    for k, l in product(keys, locks):
-        if all(k[i]+l[i] <= h for i in range(len(k))):
-            t += 1
-
-    print(t)
+    s = sum(does_fit(combination)
+            for combination in product(key_heights, lock_heights))
+    print(s)
 
 
 if __name__ == "__main__":
