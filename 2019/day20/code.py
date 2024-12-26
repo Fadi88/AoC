@@ -1,147 +1,125 @@
-from collections import defaultdict, deque
-import string
+# pylint: disable=C0114,C0116,C0301,C0209,W1514,C0414,E0001,R0914,C0206,R1702
+
+from typing import Any
+import os
+from time import perf_counter_ns
+
+input_file = os.path.join(os.path.dirname(__file__), "day20_input.txt")
+# input_file = os.path.join(os.path.dirname(__file__), "test.txt")
 
 
-def parse_maze(filename):
-    with open(filename) as f:
-        maze = f.read().splitlines()
+def profiler(method):
 
-    portals = defaultdict(list)
-    height, width = len(maze), len(maze[0])
+    def wrapper_method(*args: Any, **kwargs: Any) -> Any:
+        start_time = perf_counter_ns()
+        ret = method(*args, **kwargs)
+        stop_time = perf_counter_ns() - start_time
+        time_len = min(9, ((len(str(stop_time))-1)//3)*3)
+        time_conversion = {9: 'seconds', 6: 'milliseconds',
+                           3: 'microseconds', 0: 'nanoseconds'}
+        print(f"Method {method.__name__} took : {
+              stop_time / (10**time_len)} {time_conversion[time_len]}")
+        return ret
 
-    for y in range(height):
-        for x in range(width):
-            if maze[y][x].isalpha():
-                if x + 1 < width and maze[y][x + 1].isalpha():
-                    portal_name = maze[y][x] + maze[y][x + 1]
-                    if x - 1 >= 0 and maze[y][x - 1] == '.':
-                        portals[portal_name].append((x - 1, y))
-                    elif x + 2 < width and maze[y][x + 2] == '.':
-                        portals[portal_name].append((x + 2, y))
-                if y + 1 < height and maze[y + 1][x].isalpha():
-                    portal_name = maze[y][x] + maze[y + 1][x]
-                    if y - 1 >= 0 and maze[y - 1][x] == '.':
-                        portals[portal_name].append((x, y - 1))
-                    elif y + 2 < height and maze[y + 2][x] == '.':
-                        portals[portal_name].append((x, y + 2))
-
-    return maze, portals
+    return wrapper_method
 
 
-def build_graph(maze, portals):
-    graph = defaultdict(list)
+def parse():
+    free_spaces = set()
+    portals_raw = {}
+    x, y = -1, -1
+    with open(input_file) as f:
+        for y, l in enumerate(f.readlines()):
+            max_y = y + 1
+            for x, c in enumerate(l):
+                if c == ".":
+                    free_spaces.add((x, y))
+                elif c.isalpha():
+                    portals_raw[(x, y)] = c
+            max_x = x + 1
 
-    height, width = len(maze), len(maze[0])
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    portal_mapped = {}
+    outer_portals = {}
+    for p in free_spaces:
+        for d in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            if (p[0] + d[0], p[1] + d[1]) in portals_raw:
+                name = portals_raw[(p[0] + d[0], p[1] + d[1])] + \
+                    portals_raw[(p[0] + 2*d[0], p[1] + 2*d[1])]
+                portal_mapped[p] = "".join(sorted(name))
+                if portal_mapped[p] == "AA":
+                    start = p
+                outer_portals[p] = p[0] in [
+                    2, max_x - 3] or p[1] in [2, max_y - 3]
+                break
 
-    for y in range(height):
-        for x in range(width):
-            if maze[y][x] == '.':
-                for dx, dy in directions:
-                    nx, ny = x + dx, y + dy
-                    if 0 <= nx < width and 0 <= ny < height and maze[ny][nx] == '.':
-                        graph[(x, y)].append((nx, ny))
-
-    for portal_positions in portals.values():
-        if len(portal_positions) == 2:
-            graph[portal_positions[0]].append(portal_positions[1])
-            graph[portal_positions[1]].append(portal_positions[0])
-
-    return graph
-
-
-def shortest_path(graph, start, end):
-    queue = deque([(start, 0)])
-    visited = set()
-
-    while queue:
-        current, steps = queue.popleft()
-
-        if current == end:
-            return steps
-
-        if current in visited:
-            continue
-        visited.add(current)
-
-        for neighbor in graph[current]:
-            if neighbor not in visited:
-                queue.append((neighbor, steps + 1))
-
-    return -1
+    return start, portal_mapped, outer_portals, free_spaces
 
 
+@profiler
 def part_1():
-    maze, portals = parse_maze("day20/day20_input.txt")
-    print(shortest_path(build_graph(maze, portals),
-          portals["AA"][0], portals["ZZ"][0]))
 
+    start, portal_mapped, _, free_spaces = parse()
 
-def shortest_path_recursive(graph, portals, start, end):
-    """Find the shortest path in a recursive maze."""
-    queue = deque([(start, 0, 0)])  # (position, level, steps)
-    visited = set()
+    seen = set()
 
-    # Determine maze boundaries for identifying inner and outer portals
-    min_x = min(pos[0] for portal in portals.values() for pos in portal)
-    max_x = max(pos[0] for portal in portals.values() for pos in portal)
-    min_y = min(pos[1] for portal in portals.values() for pos in portal)
-    max_y = max(pos[1] for portal in portals.values() for pos in portal)
-
-    while queue:
-        current, level, steps = queue.popleft()
-
-        # Stop if we reach the end at level 0
-        if current == end and level == 0:
-            return steps
-
-        # Skip visited states
-        if (current, level) in visited:
+    to_visit = [(start, 0)]
+    while to_visit:
+        p, steps = to_visit.pop(0)
+        if p in seen:
             continue
-        visited.add((current, level))
-
-        # Explore neighbors
-        for neighbor in graph[current]:
-            # Handle portal transitions
-            if neighbor in portals:
-                for portal_name, positions in portals.items():
-                    if neighbor in positions and portal_name not in ("AA", "ZZ"):  # Exclude start and end portals
-                        other_end = next(p for p in positions if p != neighbor)
-                        if (min_x < neighbor[0] < max_x and min_y < neighbor[1] < max_y):
-                            # Inner portal -> Increase level
-                            queue.append((other_end, level + 1, steps + 1))
-                        elif level > 0:
-                            # Outer portal -> Decrease level
-                            queue.append((other_end, level - 1, steps + 1))
-            else:
-                # Regular movement
-                queue.append((neighbor, level, steps + 1))
-
-    return -1  # No path found
+        seen.add(p)
+        for d in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            np = (p[0] + d[0], p[1] + d[1])
+            if np in portal_mapped and np not in seen:
+                name = portal_mapped[np]
+                if name == "ZZ":
+                    print(steps + 1)
+                    return
+                for jp in portal_mapped:
+                    if portal_mapped[jp] == name and jp != np:
+                        to_visit.append((jp, steps + 2))
+                        break
+            elif np in free_spaces and np not in seen:
+                to_visit.append((np, steps + 1))
 
 
-
+@ profiler
 def part_2():
-    maze, portals = parse_maze("day20/day20_input.txt")
-    print(shortest_path_recursive(build_graph(maze, portals), portals,
-          portals["AA"][0], portals["ZZ"][0]))
+
+    start, portal_mapped, outer_portals, free_spaces = parse()
+
+    seen = set()
+
+    to_visit = [(start, 0, 0)]
+    while to_visit:
+        p, steps, level = to_visit.pop(0)
+        if (p, level) in seen:
+            continue
+        seen.add((p, level))
+        for d in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            np = (p[0] + d[0], p[1] + d[1])
+            if np in portal_mapped and np not in seen:
+                name = portal_mapped[np]
+                if level == 0:
+                    if name == "ZZ":
+                        print(steps + 1)
+                        return
+                    if outer_portals[np]:
+                        continue
+                else:
+                    if name in ["AA", "ZZ"]:
+                        continue
+                for jp in portal_mapped:
+                    if portal_mapped[jp] == name and jp != np:
+                        if level == 0 and portal_mapped[jp] in ["AA", "ZZ"]:
+                            continue
+                        dl = 1 if outer_portals[jp] else -1
+                        to_visit.append((jp, steps + 2, level + dl))
+                        break
+            elif np in free_spaces:
+                to_visit.append((np, steps + 1, level))
 
 
 if __name__ == "__main__":
-
     part_1()
     part_2()
-
-        # Parse maze and portals
-    maze, portals = parse_maze("day20/day20_input.txt")
-
-    # Part 1
-    start = portals["AA"][0]
-    end = portals["ZZ"][0]
-    graph = build_graph(maze, portals)
-    part1_result = shortest_path(graph, start, end)
-    print(f"Part 1: Shortest path = {part1_result}")
-
-    # Part 2
-    part2_result = shortest_path_recursive(graph, portals, start, end)
-    print(f"Part 2: Shortest recursive path = {part2_result}")
