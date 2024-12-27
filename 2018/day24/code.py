@@ -41,7 +41,7 @@ class unit:
     def calculate_damage(self, target):
         if self.damage_type in target.immune:
             return 0
-        elif self.damage_type in target.weak:
+        if self.damage_type in target.weak:
             return self.get_power() * 2
         return self.get_power()
 
@@ -62,6 +62,7 @@ def parse_unit(l):
 
     return unit(cnt, hp, init, damage_type, atk, wek, imm)
 
+
 def select_targets(attackers, defenders):
     targets = {}
     attackers.sort(key=lambda u: (-u.get_power(), -u.init))
@@ -72,8 +73,8 @@ def select_targets(attackers, defenders):
         ]
 
         if valid_targets:
-            # Correctly sort valid targets by damage, then effective power, then initiative
-            valid_targets.sort(key=lambda d: (-attacker.calculate_damage(d), -d.get_power(), -d.init))  
+            valid_targets.sort(
+                key=lambda d: (-attacker.calculate_damage(d), -d.get_power(), -d.init))
             targets[attacker] = valid_targets[0]
     return targets
 
@@ -89,20 +90,26 @@ def attack(attackers, targets):
 
 
 def solve(immune, infect):
+    previous_total_units = None
+
     while immune and infect:
         targets = {}
         targets.update(select_targets(immune, infect))
         targets.update(select_targets(infect, immune))
 
-        attack(immune + infect, targets)  
+        attack(immune + infect, targets)
+        current_total_units = sum(u.num for u in immune + infect)
 
-        if all(attacker.calculate_damage(targets.get(attacker, unit(0, 0, 0, '', 0, [], []))) == 0 for attacker in immune + infect):  
-            return sum(u.num for u in immune)
+        if current_total_units == previous_total_units:
+            return 0, False
+
+        previous_total_units = current_total_units
 
         immune = [u for u in immune if u.num > 0]
         infect = [u for u in infect if u.num > 0]
 
-    return sum(u.num for u in immune + infect)  
+    return sum(u.num for u in immune + infect), bool(immune)
+
 
 @profiler
 def part_1():
@@ -112,26 +119,32 @@ def part_1():
     imm = [parse_unit(l) for l in data[0].splitlines()[1:]]
     inf = [parse_unit(l) for l in data[1].splitlines()[1:]]
 
-    print(solve(imm,inf))
+    print(solve(imm, inf))
+
+
 def solve_part_2(immune, infect):
     low = 1
     high = 50000
     while low < high:
         mid = (low + high) // 2
-        immune_copy = [unit(u.num, u.hp, u.init, u.damage_type, u.damage + mid if u.damage_type != 'fire' else u.damage, u.weak, u.immune) for u in immune]
-        infect_copy = [unit(u.num, u.hp, u.init, u.damage_type, u.damage, u.weak, u.immune) for u in infect]
+        immune_copy = [unit(u.num, u.hp, u.init, u.damage_type,
+                            u.damage + mid, u.weak, u.immune) for u in immune]
+        infect_copy = [unit(u.num, u.hp, u.init, u.damage_type,
+                            u.damage, u.weak, u.immune) for u in infect]
 
-        result = solve(immune_copy, infect_copy)
+        _, immune_wins = solve(immune_copy, infect_copy)
 
-        if result < sum(u.num for u in infect) and all(u.num > 0 for u in immune_copy):
+        if immune_wins:
             high = mid
         else:
             low = mid + 1
 
-
-    immune_copy = [unit(u.num, u.hp, u.init, u.damage_type, u.damage + high , u.weak, u.immune) for u in immune]
-    infect_copy = [unit(u.num, u.hp, u.init, u.damage_type, u.damage, u.weak, u.immune) for u in infect]
+    immune_copy = [unit(u.num, u.hp, u.init, u.damage_type,
+                        u.damage + high, u.weak, u.immune) for u in immune]
+    infect_copy = [unit(u.num, u.hp, u.init, u.damage_type,
+                        u.damage, u.weak, u.immune) for u in infect]
     return solve(immune_copy, infect_copy)
+
 
 @ profiler
 def part_2():
@@ -141,8 +154,7 @@ def part_2():
     imm = [parse_unit(l) for l in data[0].splitlines()[1:]]
     inf = [parse_unit(l) for l in data[1].splitlines()[1:]]
 
-    print(solve_part_2(imm,inf))
-
+    print(solve_part_2(imm, inf))
 
 
 if __name__ == "__main__":
