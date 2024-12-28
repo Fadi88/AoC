@@ -28,7 +28,7 @@ def profiler(method):
 class Unit:
     def __init__(self, pos, Team):
         self.pos = pos
-        self.Team = Team
+        self.team = Team
         self.hp = 200
         self.attack = 3
 
@@ -44,11 +44,11 @@ class Unit:
         return hash(self.pos)
 
     def __repr__(self):
-        return f"Unit({self.pos}, {self.Team}, {self.hp}, {self.attack})"
+        return f"Unit({self.pos}, {self.team}, {self.hp}, {self.attack})"
 
 
 def is_next_to(u, units):
-    enemy_units = [ou for ou in units if u.Team != ou.Team and ou.is_alive()]
+    enemy_units = [ou for ou in units if u.team != ou.team and ou.is_alive()]
     n = []
     for dx, dy in [(0, -1), (-1, 0), (1, 0), (0, 1)]:
         if (u.pos[0]+dx, u.pos[1]+dy) in enemy_units:
@@ -70,52 +70,42 @@ def reading_order(pos):
 def find_target_position(unit, units, free_space):
     alive_units = [ou for ou in units if ou.is_alive()]
     enemy_positions = {
-        enemy.pos for enemy in alive_units if enemy.Team != unit.Team}
+        enemy.pos for enemy in alive_units if enemy.team != unit.team}
     in_range_positions = {
         adj for pos in enemy_positions for adj in get_adjacent_positions(pos) if adj in free_space
     }
 
-    queue = deque([(unit.pos, None)])
+    queue = deque([(unit.pos, None, 0)])
     visited = set()
 
+    possible = {}
     while queue:
-        current, first_step = queue.popleft()
+        current, first_step, d = queue.popleft()
         if current in visited:
             continue
         visited.add(current)
 
         if current in in_range_positions:
-            return first_step
-
+            if current not in possible:
+                possible[current] = (d, first_step)
         for neighbor in get_adjacent_positions(current):
             if neighbor in free_space and neighbor not in visited and neighbor not in alive_units:
-                queue.append((neighbor, first_step or neighbor))
+                queue.append((neighbor, first_step or neighbor, d+1))
 
+    if possible:
+        min_val = min(v[0] for v in possible.values())
+        ret = [v[1] for v in possible.values() if v[0] == min_val]
+        ret.sort(key=reading_order)
+        if len(set(ret)) > 1:
+            target_vals = {(min_val, r) for r in ret}
+            targets = [k for k, v in possible.items() if v in target_vals]
+            targets.sort(key=reading_order)
+            return possible[targets[0]][1]
+        return ret[0]
     return None
 
 
-def plot(units, free_space):
-    max_y = max(pos[1] for pos in free_space)
-    max_x = max(pos[0] for pos in free_space)
-
-    for y in range(max_y + 2):
-        for x in range(max_x + 2):
-            if (x, y) in units:
-                for e in units:
-                    if e.pos == (x, y):
-                        if e.is_alive():
-                            print(e.Team, end="")
-                        else:
-                            print("X", end="")
-                        break
-            elif (x, y) in free_space:
-                print(".", end="")
-            else:
-                print("#", end="")
-        print()
-
-
-def battle(units, free_space, boost=0):
+def battle(units, free_space):
     round = 0
     while True:
         units = [u for u in units if u.is_alive()]
@@ -131,7 +121,7 @@ def battle(units, free_space, boost=0):
             if e := is_next_to(u, units):
                 e.sort(key=lambda u: u.hp)
                 e[0].hp -= u.attack
-                if all(not u.is_alive() for u in units if u.Team == "E") or all(not u.is_alive() for u in units if u.Team == "G"):
+                if all(not u.is_alive() for u in units if u.team == "E") or all(not u.is_alive() for u in units if u.team == "G"):
                     return round, units
 
         # print(round, sum(u.hp for u in units if u.Team == "G"))
@@ -156,17 +146,46 @@ def part_1():
 
 @ profiler
 def part_2():
-    free_space, elves, goblins = set(), set(), set()
+    free_space, units = set(), set()
 
     with open(input_file) as f:
         for y, l in enumerate(f.read().splitlines()):
             for x, c in enumerate(l):
-                if c == "G":
-                    goblins.add((x, y))
-                elif c == "E":
-                    elves.add((x, y))
+                if c in "GE":
+                    units.add(Unit((x, y), c))
                 if c in "GE.":
                     free_space.add((x, y))
+
+    low = 0
+    high = 100
+    elf_cnt = sum(u.team == "E" for u in units)
+    while low < high:
+        mid = (low + high) // 2
+        units_copy = []
+        for u in units:
+            if u.team == "E":
+                units_copy.append(Unit(u.pos, u.team))
+                units_copy[-1].attack += mid
+            else:
+                units_copy.append(Unit(u.pos, u.team))
+
+        _, units_res = battle(units_copy, free_space)
+
+        if sum(u.team == "E" for u in units_res) == elf_cnt:
+            high = mid
+        else:
+            low = mid + 1
+
+    units_copy = []
+    for u in units:
+        if u.team == "E":
+            units_copy.append(Unit(u.pos, u.team))
+            units_copy[-1].attack += high
+        else:
+            units_copy.append(Unit(u.pos, u.team))
+
+    round, units = battle(units_copy, free_space)
+    print(round * sum(u.hp for u in units if u.is_alive()))
 
 
 if __name__ == "__main__":
