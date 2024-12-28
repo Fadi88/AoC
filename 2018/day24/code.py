@@ -119,12 +119,12 @@ def part_1():
     imm = [parse_unit(l) for l in data[0].splitlines()[1:]]
     inf = [parse_unit(l) for l in data[1].splitlines()[1:]]
 
-    print(solve(imm, inf))
+    print(solve(imm, inf)[0])
 
 
 def solve_part_2(immune, infect):
     low = 1
-    high = 50000
+    high = 10000
     while low < high:
         mid = (low + high) // 2
         immune_copy = [unit(u.num, u.hp, u.init, u.damage_type,
@@ -154,7 +154,7 @@ def part_2():
     imm = [parse_unit(l) for l in data[0].splitlines()[1:]]
     inf = [parse_unit(l) for l in data[1].splitlines()[1:]]
 
-    print(solve_part_2(imm, inf))
+    print(solve_part_2(imm, inf)[0])
 
 
 if __name__ == "__main__":
