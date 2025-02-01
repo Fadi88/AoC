@@ -1,3 +1,5 @@
+# pylint: disable=C0114,C0116,C0301,C0209,W1514,C0414,C0103
+
 import time
 import re
 import heapq
@@ -19,7 +21,7 @@ def get_dst(p1, p2):
 
 
 def get_in_range(bots, b):
-    return sum([True for p in bots if get_dst(p[0], b[0]) <= b[1]])
+    return sum(get_dst(p[0], b[0]) <= b[1] for p in bots)
 
 
 @profiler
@@ -50,15 +52,15 @@ def part_2():
         heapq.heappush(h, (d + r, -1))
 
     count = 0
-    maxCount = 0
+    max_count = 0
     result = 0
 
     while h:
         dist, e = heapq.heappop(h)
         count += e
-        if count > maxCount:
+        if count > max_count:
             result = dist
-            maxCount = count
+            max_count = count
     print(result)
 
 
