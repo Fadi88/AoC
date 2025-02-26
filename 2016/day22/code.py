@@ -1,5 +1,6 @@
 import time
 import re
+from itertools import combinations
 
 
 def profiler(method):
@@ -23,16 +24,9 @@ def part1():
         grid[(int(g[0][0]), int(g[0][1]))] = [int(p[1][:-1]), int(p[2][:-1])]
 
     cnt = 0
-    for i in grid:
-        for o in grid:
-            if o == i:
-                continue
-            a = grid[i]
-            b = grid[o]
-
-            if a[1] <= b[0] - b[1] and a[1] > 0:
-                cnt += 1
-
+    for a, b in combinations(grid.values(), 2):
+        cnt += int(a[1] <= b[0] - b[1] and a[1] != 0) + \
+            int(b[1] <= a[0] - a[1] and b[1] != 0)
     print(cnt)
 
 
