@@ -1,6 +1,5 @@
 import time
 import re
-from collections import deque
 
 
 def profiler(method):
@@ -39,30 +38,22 @@ def part1():
 
 @profiler
 def part2():
-    nodes = {}
+    max_x, max_y = 0, 0
+    node_grid = {}
+    empty_node = None
+
     with open('input.txt') as f:
         lines = f.read().splitlines()[2:]
 
     for line in lines:
         parts = line.split()
         coords = re.findall(r'-x(\d+)-y(\d+)', line)
-        x, y = int(coords[0][0]), int(coords[0][1])
-        nodes[(x, y)] = [int(parts[1][:-1]), int(parts[2][:-1])]
-
-    max_x = max(x for x, _ in nodes)
-    max_y = max(y for _, y in nodes)
-
-    empty_node = None
-    node_grid = [['#' if nodes[(x, y)][0] > 100 else '.' for x in range(
-        max_x + 1)] for y in range(max_y + 1)]
-
-    for (x, y), node in nodes.items():
-        if node[1] == 0:
+        x, y = map(int, coords[0])
+        size, used = map(int, (parts[1][:-1], parts[2][:-1]))
+        max_x, max_y = max(max_x, x), max(max_y, y)
+        if used == 0:
             empty_node = (x, y)
-            break
-
-    if empty_node is None:
-        raise ValueError("No empty node found")
+        node_grid[(x, y)] = '#' if size > 100 else '.'
 
     queue = [(empty_node, (max_x, 0), 0)]
     visited = set()
@@ -77,7 +68,9 @@ def part2():
 
         for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
             new_empty = (empty[0] + dx, empty[1] + dy)
-            if 0 <= new_empty[0] <= max_x and 0 <= new_empty[1] <= max_y and node_grid[new_empty[1]][new_empty[0]] != '#':
+            if (0 <= new_empty[0] <= max_x and
+                0 <= new_empty[1] <= max_y and
+                    node_grid.get(new_empty, '#') != '#'):
                 new_goal = goal if new_empty != goal else empty
 
                 if (new_empty, new_goal) not in visited:
