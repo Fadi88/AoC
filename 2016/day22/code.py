@@ -60,12 +60,16 @@ def part2():
             print(steps)
             break
 
-        for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+        for dx, dy in [(0, -1), (0, 1), (1, 0), (-1, 0)]:
             new_empty = (empty[0] + dx, empty[1] + dy)
+            new_goal = goal
             if (0 <= new_empty[0] <= max_x and
                 0 <= new_empty[1] <= max_y and
                     node_grid.get(new_empty, '#') != '#'):
-                new_goal = goal if new_empty != goal else empty
+                if new_empty == goal:
+                    # sawp empty and goal, move data to empty and mark its spot as free
+                    new_goal = empty
+                    new_empty = goal
 
                 if (new_empty, new_goal) not in visited:
                     visited.add((new_empty, new_goal))
