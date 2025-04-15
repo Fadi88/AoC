@@ -70,15 +70,8 @@ def part2():
 
     eq = get_eq(monkeys, "root").split("=")
 
-    if "humn" in eq[0]:
-        rhs = eq[0]
-        lhs = eq[1]
-    else:
-        rhs = eq[1]
-        lhs = eq[0]
-
-    rhs = simplify(rhs)
-    lhs = int(lhs[1:-2])
+    rhs, lhs = eq if "humn" in eq[0] else eq[::-1]
+    rhs, lhs = simplify(rhs), int(lhs[1:-2])
 
     r = [0, 1e15]
 
