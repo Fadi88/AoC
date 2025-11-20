@@ -1,4 +1,5 @@
 use anyhow::Result;
+#[allow(unused_imports)]
 use itertools::Itertools;
 
 pub fn parse(input: &str) -> Vec<&str> {
