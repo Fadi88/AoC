@@ -32,7 +32,11 @@ jobs:
       - name: Get changed Python files
         id: changed-python-files
         run: |
-          echo "files=$(git diff --name-only HEAD^ HEAD --diff-filter=d '*.py')" >> $GITHUB_OUTPUT
+          {
+            echo "files<<EOF"
+            git diff --name-only HEAD^ HEAD --diff-filter=d '*.py'
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
       - name: Analysing Python code with pylint
         if: steps.changed-python-files.outputs.files != ''
         run: |
@@ -55,7 +59,11 @@ jobs:
       - name: Get changed Rust files
         id: changed-rust-files
         run: |
-            echo "files=$(git diff --name-only HEAD^ HEAD --diff-filter=d '*.rs')" >> $GITHUB_OUTPUT
+            {
+              echo "files<<EOF"
+              git diff --name-only HEAD^ HEAD --diff-filter=d '*.rs'
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
   
       - name: Lint Rust code with clippy
         if: steps.changed-rust-files.outputs.files != ''
