@@ -7,3 +7,4 @@ out/
 **input.txt
 **.vscode/*
 *DS_STORE
+target/

@@ -54,6 +54,25 @@ cargo run --release --bin day{XY} # XY can be from 01 to 25
 debug mode is useful for error detection, sometimes code just works in release mode
 but in debug mode it is able to detect big issues (like overflow,underflow etc...)
 
+### Rust (2025+)
+
+Starting from 2025, the project uses a Cargo Workspace structure.
+
+**Setup:**
+1. Navigate to the 2025 directory: `cd 2025`
+2. Create a new day: `python3 new_day.py <day_number>` (e.g., `python3 new_day.py 1`)
+
+**Running (Rust):**
+- Run a specific day: `cargo run -p day<day_number>` (e.g., `cargo run -p day01`)
+- Run with release profile: `cargo run --release -p day<day_number>`
+
+**Running (Python):**
+- Navigate to the day's directory: `cd days/day<day_number>`
+- Run the solution: `python3 solution.py`
+
+**Benchmarking (Rust):**
+- Run benchmarks for a day: `cargo bench -p day<day_number>`
+
 ### C++
 
 only 2018 mainly and some days here in there
