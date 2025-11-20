@@ -2,6 +2,8 @@ import os
 import time
 import functools
 
+# pylint: disable=fixme
+
 def timer(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -19,16 +21,19 @@ def read_input():
         return f.read().strip()
 
 @timer
-def part_1(input_data):
+def part_1(data: str) -> int:
     # TODO: Solve Part 1
-    return len(input_data)
+    return len(data)
 
 @timer
-def part_2(input_data):
+def part_2(data: str) -> int:
     # TODO: Solve Part 2
-    return len(input_data)
+    return len(data)
 
-if __name__ == "__main__":
+def main():
     input_data = read_input()
     part_1(input_data)
     part_2(input_data)
+
+if __name__ == "__main__":
+    main()
