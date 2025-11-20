@@ -1,11 +1,18 @@
 use anyhow::Result;
+use itertools::Itertools;
+
+pub fn parse(input: &str) -> Vec<&str> {
+    input.lines().collect()
+}
 
 pub fn part_1(input: &str) -> Result<String> {
+    let _parsed = parse(input);
     // TODO: Solve Part 1
     Ok(input.len().to_string())
 }
 
 pub fn part_2(input: &str) -> Result<String> {
+    let _parsed = parse(input);
     // TODO: Solve Part 2
     Ok(input.len().to_string())
 }
