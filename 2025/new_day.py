@@ -56,6 +56,21 @@ def main():
     # Fetch input using aocd
     input_path = os.path.join(new_day_dir, "input.txt")
     try:
+        # Load .env manually to avoid dependency issues
+        env_path = os.path.join(base_dir, ".env")
+        if os.path.exists(env_path):
+            with open(env_path, "r") as f:
+                for line in f:
+                    if line.strip() and not line.startswith("#") and "=" in line:
+                        key, val = line.strip().split("=", 1)
+                        if key == "AOC_SESSION":
+                            os.environ["AOC_SESSION"] = val.strip()
+
+        # Try to get cookie from WSL if not set
+        if "AOC_SESSION" not in os.environ:
+            print("AOC_SESSION not found in environment or .env.")
+            print("Please set it in .env file: AOC_SESSION=your_cookie")
+
         from aocd import get_data
         print(f"Fetching input for year 2025, day {day_num}...")
         data = get_data(day=day_num, year=2025)
