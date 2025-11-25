@@ -46,13 +46,19 @@ This template uses `advent-of-code-data` to automatically fetch your puzzle inpu
     (This is already included in the Dev Container).
 
 2.  **Authentication:**
-    The tool attempts to find your session cookie from your browser (Chrome, Firefox, etc.).
-    If that fails, you can manually set it:
-    *   **Environment Variable:** `export AOC_SESSION=your_session_cookie`
-    *   **File:** Create `~/.config/aocd/token` containing your cookie.
+    The tool needs your Advent of Code session cookie to download inputs.
+    
+    1.  **Get your cookie:**
+        - Log in to Advent of Code in your browser.
+        - Open Developer Tools (F12) -> Application/Storage -> Cookies.
+        - Copy the value of the `session` cookie.
+    2.  **Set it in `.env`:**
+        - Create or open the `.env` file in the root directory.
+        - Paste your cookie: `AOC_SESSION=your_copied_cookie_value`
 
 3.  **Usage:**
     When you create a new day using `python3 2025/new_day.py <day>`, the input will be automatically downloaded to `2025/day<day>/input.txt`.
+
 
 ```
 cd AoC\2022

@@ -8,3 +8,5 @@ out/
 **.vscode/*
 *DS_STORE
 target/
+.env
+__pycache__/
