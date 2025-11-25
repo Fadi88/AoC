@@ -35,6 +35,25 @@ install rust as documented [here](https://www.rust-lang.org/tools/install)
 
 navigate to the year folder for example 2022
 
+## Fetching Inputs
+
+This template uses `advent-of-code-data` to automatically fetch your puzzle inputs.
+
+1.  **Install the tool:**
+    ```bash
+    pip install advent-of-code-data
+    ```
+    (This is already included in the Dev Container).
+
+2.  **Authentication:**
+    The tool attempts to find your session cookie from your browser (Chrome, Firefox, etc.).
+    If that fails, you can manually set it:
+    *   **Environment Variable:** `export AOC_SESSION=your_session_cookie`
+    *   **File:** Create `~/.config/aocd/token` containing your cookie.
+
+3.  **Usage:**
+    When you create a new day using `python3 2025/new_day.py <day>`, the input will be automatically downloaded to `2025/day<day>/input.txt`.
+
 ```
 cd AoC\2022
 ```

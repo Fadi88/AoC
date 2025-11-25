@@ -53,11 +53,27 @@ def main():
     with open(bench_rs_path, "w") as f:
         f.write(content)
 
-    # Create empty input.txt if it doesn't exist (it might be ignored in template)
+    # Fetch input using aocd
     input_path = os.path.join(new_day_dir, "input.txt")
-    if not os.path.exists(input_path):
+    try:
+        from aocd import get_data
+        print(f"Fetching input for year 2025, day {day_num}...")
+        data = get_data(day=day_num, year=2025)
         with open(input_path, "w") as f:
-            f.write("")
+            f.write(data)
+        print("Input fetched successfully!")
+    except ImportError:
+        print("Warning: advent-of-code-data not installed. Skipping input download.")
+        print("Install it with: pip install advent-of-code-data")
+        if not os.path.exists(input_path):
+            with open(input_path, "w") as f:
+                f.write("")
+    except Exception as e:
+        print(f"Warning: Failed to fetch input: {e}")
+        print("Check your session cookie or internet connection.")
+        if not os.path.exists(input_path):
+            with open(input_path, "w") as f:
+                f.write("")
 
     print(f"Successfully created {day_str}!")
     print("Don't forget to add it to the workspace members in Cargo.toml if not using a glob!")
