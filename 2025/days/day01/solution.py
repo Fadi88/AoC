@@ -6,6 +6,8 @@ import functools
 
 
 def timer(func):
+    """Decorator to measure the execution time of a function."""
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """Wrapper function to execute the decorated function and print its runtime."""
@@ -41,14 +43,12 @@ def part_1(data: list[str]) -> int:
     p = 50
     zeros = 0
 
+    ds = {"R": 1, "L": -1}
     for r in data:
-        if r[0] == "R":
-            p = (p + int(r[1:])) % 100
-        elif r[0] == "L":
-            p = (p - int(r[1:])) % 100
+        amt = int(r[1:])
+        p = (p + ds[r[0]] * amt) % 100
+        zeros += p == 0
 
-        if p == 0:
-            zeros += 1
     return zeros
 
 
@@ -58,20 +58,20 @@ def part_2(data: list[str]) -> int:
     p = 50
     zeros = 0
 
+    ds = {"R": 1, "L": -1}
     for r in data:
         amt = int(r[1:])
-        zeros += amt // 100
+        direction = ds[r[0]]
 
-        if r[0] == "R":
-            new_p = (p + amt) % 100
-            if new_p < p:
-                zeros += 1
-            p = new_p
-        elif r[0] == "L":
-            new_p = (p - amt) % 100
-            if p != 0 and (new_p > p or new_p == 0):
-                zeros += 1
-            p = new_p
+        prev_p = p
+        p += direction * amt
+
+        if direction == 1:
+            zeros += p // 100 - prev_p // 100
+        else:
+            start_interval = (prev_p - 1) // 100
+            end_interval = (p - 1) // 100
+            zeros += start_interval - end_interval
 
     return zeros
 
