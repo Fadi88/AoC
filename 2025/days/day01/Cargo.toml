@@ -1,5 +1,5 @@
 [package]
-name = "day99"
+name = "day01"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,3 +10,7 @@ itertools = { workspace = true }
 
 [dev-dependencies]
 criterion = { workspace = true }
+
+[[bin]]
+name = "day01"
+path = "src/bin/day01.rs"

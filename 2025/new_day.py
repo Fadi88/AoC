@@ -66,7 +66,7 @@ def main():
         sys.exit(1)
 
     print(f"Creating {day_str} from template...")
-    shutil.copytree(template_dir, new_day_dir)
+    shutil.copytree(template_dir, new_day_dir, ignore=shutil.ignore_patterns("input.txt"))
 
     # Update Cargo.toml
     update_file_content(
@@ -74,12 +74,16 @@ def main():
         {'name = "day_template"': f'name = "{day_str}"'}
     )
 
-    # Update main.rs
+    # Rename day_template.rs to dayXX.rs
+    old_main_path = os.path.join(new_day_dir, "src", "bin", "day_template.rs")
+    new_main_path = os.path.join(new_day_dir, "src", "bin", f"{day_str}.rs")
+    os.rename(old_main_path, new_main_path)
+
+    # Update dayXX.rs
     update_file_content(
-        os.path.join(new_day_dir, "src", "bin", "main.rs"),
+        new_main_path,
         {
-            'day_template': day_str,
-            'read_input("template")': f'read_input("{day_str}")'
+            'day_template': day_str
         }
     )
 
@@ -87,8 +91,7 @@ def main():
     update_file_content(
         os.path.join(new_day_dir, "benches", "bench.rs"),
         {
-            'day_template': day_str,
-            'read_input("template")': f'read_input("{day_str}")'
+            'day_template': day_str
         }
     )
 
