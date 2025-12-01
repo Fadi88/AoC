@@ -27,17 +27,47 @@ def timer(func):
 def read_input():
     input_path = os.path.join(os.path.dirname(__file__), "input.txt")
     with open(input_path, "r") as f:
-        return f.read().strip()
+        return f.read().strip().split()
 
 @timer
-def part_1(data: str) -> int:
-    # TODO: Solve Part 1
-    return len(data)
+def part_1(data: list[str]) -> int:
+    p = 50
+    zeros = 0
+    
+    for r in data:        
+        if r[0] == 'R':
+            p = (p + int(r[1:])) % 100
+        elif r[0] == 'L':
+            p = (p - int(r[1:])) % 100
+            
+        if p == 0:
+            zeros += 1
+    return zeros
 
 @timer
-def part_2(data: str) -> int:
-    # TODO: Solve Part 2
-    return len(data)
+def part_2(data: list[str]) -> int:
+    p = 50
+    zeros = 0
+    
+    for r in data:
+        amt = int(r[1:])
+        
+        if r[0] == 'R':
+            dist = (100 - p) % 100
+            if dist == 0: dist = 100
+            
+            if amt >= dist:
+                zeros += 1 + (amt - dist) // 100
+            p = (p + amt) % 100
+            
+        elif r[0] == 'L':
+            dist = p if p != 0 else 100
+                
+            if amt >= dist:
+                zeros += 1 + (amt - dist) // 100
+            p = (p - amt) % 100
+            
+    return zeros
 
 def main():
     input_data = read_input()
