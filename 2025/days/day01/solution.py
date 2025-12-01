@@ -13,7 +13,7 @@ def timer(func):
         print(f"[{func.__name__}] Result: {result}")
         duration = end - start
         time_units = {
-            "µs": (1e-3, 1e6),
+            "us": (1e-3, 1e6),
             "ms": (1, 1e3),
             "s":  (float('inf'), 1),
         }
