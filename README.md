@@ -70,7 +70,7 @@ to run the code in debug mode.
 cargo run --bin day{XY} # XY can be from 01 to 25
 ```
 
-to run the code in debug mode.
+to run the code in release mode.
 
 ```
 cargo run --release --bin day{XY} # XY can be from 01 to 25

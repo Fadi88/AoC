@@ -10,3 +10,7 @@ itertools = { workspace = true }
 
 [dev-dependencies]
 criterion = { workspace = true }
+
+[[bin]]
+name = "day_template"
+path = "src/bin/day_template.rs"
