@@ -6,6 +6,8 @@ import functools
 
 
 def timer(func):
+    """Decorator to measure the execution time of a function."""
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """Wrapper function to execute the decorated function and print its runtime."""

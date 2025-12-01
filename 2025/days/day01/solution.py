@@ -66,14 +66,14 @@ def part_2(data: list[str]) -> int:
         zeros += amt // 100
         remainder = amt % 100
 
-        if direction == 1:
-            if p + remainder >= 100:
-                zeros += 1
-        else:
-            if (p - 1) % 100 < remainder:
-                zeros += 1
+        new_p = p + direction * remainder
 
-        p = (p + direction * remainder) % 100
+        if direction == 1:
+            zeros += new_p >= 100
+        else:
+            zeros += new_p <= 0 and p != 0
+
+        p = new_p % 100
 
     return zeros
 
