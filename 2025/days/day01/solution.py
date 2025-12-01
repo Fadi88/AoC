@@ -63,15 +63,17 @@ def part_2(data: list[str]) -> int:
         amt = int(r[1:])
         direction = ds[r[0]]
 
-        prev_p = p
-        p += direction * amt
+        zeros += amt // 100
+        remainder = amt % 100
 
         if direction == 1:
-            zeros += p // 100 - prev_p // 100
+            if p + remainder >= 100:
+                zeros += 1
         else:
-            start_interval = (prev_p - 1) // 100
-            end_interval = (p - 1) // 100
-            zeros += start_interval - end_interval
+            if (p - 1) % 100 < remainder:
+                zeros += 1
+
+        p = (p + direction * remainder) % 100
 
     return zeros
 
