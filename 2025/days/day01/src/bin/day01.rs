@@ -1,6 +1,6 @@
 use anyhow::Result;
 use day01::{part_1, part_2};
-use utils::{read_input, run_part};
+use utils::run_part;
 
 fn main() -> Result<()> {
     // Read input for the current day (automatically found relative to the crate)

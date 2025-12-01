@@ -2,6 +2,7 @@ import os
 import shutil
 import sys
 
+
 def update_file_content(path, replacements):
     """Reads a file, applies replacements, and writes it back."""
     with open(path, "r", encoding="utf-8") as f:
@@ -12,6 +13,7 @@ def update_file_content(path, replacements):
 
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
+
 
 def load_env(base_dir):
     """Loads environment variables from .env file."""
@@ -24,11 +26,13 @@ def load_env(base_dir):
                     if key == "AOC_SESSION":
                         os.environ["AOC_SESSION"] = val.strip()
 
+
 def fetch_input(day_num, input_path):
     """Fetches input using aocd."""
     try:
         # pylint: disable=import-outside-toplevel
         from aocd import get_data
+
         print(f"Fetching input for year 2025, day {day_num}...")
         data = get_data(day=day_num, year=2025)
         with open(input_path, "w", encoding="utf-8") as f:
@@ -43,11 +47,13 @@ def fetch_input(day_num, input_path):
         print("Check your session cookie or internet connection.")
         create_empty_input(input_path)
 
+
 def create_empty_input(input_path):
     """Creates an empty input file if it doesn't exist."""
     if not os.path.exists(input_path):
         with open(input_path, "w", encoding="utf-8") as f:
             f.write("")
+
 
 def main():
     if len(sys.argv) != 2:
@@ -66,13 +72,30 @@ def main():
         sys.exit(1)
 
     print(f"Creating {day_str} from template...")
-    shutil.copytree(template_dir, new_day_dir, ignore=shutil.ignore_patterns("input.txt"))
+    shutil.copytree(
+        template_dir, new_day_dir, ignore=shutil.ignore_patterns("input.txt")
+    )
 
     # Update Cargo.toml
     update_file_content(
         os.path.join(new_day_dir, "Cargo.toml"),
-        {'name = "day_template"': f'name = "{day_str}"'}
+        {
+            'name = "day_template"': f'name = "{day_str}"',
+            'path = "src/bin/day_template.rs"': f'path = "src/bin/{day_str}.rs"',
+        },
     )
+
+    # Create README.md
+    readme_content = f"""# {day_str}
+
+## Running
+
+```bash
+cargo run -p {day_str}
+```
+"""
+    with open(os.path.join(new_day_dir, "README.md"), "w", encoding="utf-8") as f:
+        f.write(readme_content)
 
     # Rename day_template.rs to dayXX.rs
     old_main_path = os.path.join(new_day_dir, "src", "bin", "day_template.rs")
@@ -80,19 +103,11 @@ def main():
     os.rename(old_main_path, new_main_path)
 
     # Update dayXX.rs
-    update_file_content(
-        new_main_path,
-        {
-            'day_template': day_str
-        }
-    )
+    update_file_content(new_main_path, {"day_template": day_str})
 
     # Update bench.rs
     update_file_content(
-        os.path.join(new_day_dir, "benches", "bench.rs"),
-        {
-            'day_template': day_str
-        }
+        os.path.join(new_day_dir, "benches", "bench.rs"), {"day_template": day_str}
     )
 
     # Load env and fetch input
@@ -104,7 +119,10 @@ def main():
     fetch_input(day_num, os.path.join(new_day_dir, "input.txt"))
 
     print(f"Successfully created {day_str}!")
-    print("Don't forget to add it to the workspace members in Cargo.toml if not using a glob!")
+    print(
+        "Don't forget to add it to the workspace members in Cargo.toml if not using a glob!"
+    )
+
 
 if __name__ == "__main__":
     main()
