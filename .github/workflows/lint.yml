@@ -13,7 +13,7 @@ jobs:
         with:
           fetch-depth: "2"
 
-      # Python linting (unchanged)
+      # Python linting
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
@@ -40,7 +40,9 @@ jobs:
       - name: Analysing Python code with pylint
         if: steps.changed-python-files.outputs.files != ''
         run: |
-          pylint ${{ steps.changed-python-files.outputs.files }} --rcfile=.pylintrc 
+          # Convert newlines to spaces so pylint sees them as arguments
+          files=$(echo "${{ steps.changed-python-files.outputs.files }}" | tr '\n' ' ')
+          pylint $files --rcfile=.pylintrc
 
       # Rust linting
       - name: Install Rust
@@ -68,8 +70,15 @@ jobs:
       - name: Lint Rust code with clippy
         if: steps.changed-rust-files.outputs.files != ''
         run: |
-            for file in ${{ steps.changed-rust-files.outputs.files }}; do
+            # Loop over files properly
+            echo "${{ steps.changed-rust-files.outputs.files }}" | while read file; do
+              if [ -z "$file" ]; then continue; fi
               directory=$(dirname "$file")
               directory=$(echo "$directory" | cut -d '/' -f 1)  # Extract the first level directory
-              (cd "$directory" && cargo clippy -- -D warnings)
+              
+              # Check if it's a directory before cd-ing
+              if [ -d "$directory" ]; then
+                  echo "Linting in $directory for $file"
+                  (cd "$directory" && cargo clippy -- -D warnings)
+              fi
             done
