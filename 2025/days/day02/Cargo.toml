@@ -1,0 +1,16 @@
+[package]
+name = "day02"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+utils = { workspace = true }
+anyhow = { workspace = true }
+itertools = { workspace = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bin]]
+name = "day02"
+path = "src/bin/day02.rs"

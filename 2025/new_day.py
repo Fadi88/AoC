@@ -85,18 +85,6 @@ def main():
         },
     )
 
-    # Create README.md
-    readme_content = f"""# {day_str}
-
-## Running
-
-```bash
-cargo run -p {day_str}
-```
-"""
-    with open(os.path.join(new_day_dir, "README.md"), "w", encoding="utf-8") as f:
-        f.write(readme_content)
-
     # Rename day_template.rs to dayXX.rs
     old_main_path = os.path.join(new_day_dir, "src", "bin", "day_template.rs")
     new_main_path = os.path.join(new_day_dir, "src", "bin", f"{day_str}.rs")
