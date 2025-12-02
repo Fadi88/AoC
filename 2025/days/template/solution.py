@@ -1,3 +1,7 @@
+"""
+Advent of Code 2025 - Day XX
+"""
+
 import os
 import time
 import functools
