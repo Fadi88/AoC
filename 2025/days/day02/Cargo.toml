@@ -14,3 +14,7 @@ criterion = { workspace = true }
 [[bin]]
 name = "day02"
 path = "src/bin/day02.rs"
+
+[[bench]]
+name = "bench"
+harness = false
