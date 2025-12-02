@@ -1,3 +1,8 @@
+"""
+Script to generate a new day's directory from the template.
+Usage: python new_day.py <day_number>
+"""
+
 import os
 import shutil
 import sys
@@ -96,6 +101,11 @@ def main():
     # Update bench.rs
     update_file_content(
         os.path.join(new_day_dir, "benches", "bench.rs"), {"day_template": day_str}
+    )
+
+    # Update solution.py
+    update_file_content(
+        os.path.join(new_day_dir, "solution.py"), {"Day XX": f"Day {day_num}"}
     )
 
     # Load env and fetch input
