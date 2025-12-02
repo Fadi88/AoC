@@ -11,29 +11,12 @@ import math
 # pylint: disable=fixme
 
 
-def timer(func):
-    """Decorator to measure the execution time of a function."""
+import sys
 
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        """Wrapper function to execute the decorated function and print its runtime."""
-        start = time.time()
-        result = func(*args, **kwargs)
-        end = time.time()
-        print(f"[{func.__name__}] Result: {result}")
-        duration = end - start
-        time_units = {
-            "us": (1e-3, 1e6),
-            "ms": (1, 1e3),
-            "s": (float("inf"), 1),
-        }
-        for unit, (threshold, multiplier) in time_units.items():
-            if duration < threshold:
-                print(f"[{func.__name__}] Time: {duration * multiplier:.4f} {unit}")
-                break
-        return result
+# Add project root to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-    return wrapper
+from utils.decorators import timer
 
 
 def read_input():

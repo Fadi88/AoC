@@ -61,6 +61,7 @@ def create_empty_input(input_path):
 
 
 def main():
+    """Main function to generate a new day's directory."""
     if len(sys.argv) != 2:
         print("Usage: python new_day.py <day_number>")
         sys.exit(1)
