@@ -38,21 +38,52 @@ def read_input():
     """Read and parse the input file."""
     input_path = os.path.join(os.path.dirname(__file__), "input.txt")
     with open(input_path, "r", encoding="utf-8") as f:
-        return f.read().strip()
+        return [list(map(int, line.strip())) for line in f.readlines()]
+
+
+def ge_max_val(data):
+    max_val = 0
+    for i in range(len(data) - 1):
+        current_val = 10 * data[i] + max(data[i + 1 :])
+        if current_val > max_val:
+            max_val = current_val
+    return max_val
 
 
 @timer
 def part_1(data: str) -> int:
     """Calculate the solution for Part 1."""
-    # TODO: Solve Part 1
-    return len(data)
+    return sum(map(ge_max_val, data))
+
+
+def get_max_dp(digits):
+    """Find the largest 12-digit number subsequence using DP."""
+    n = len(digits)
+
+    @functools.lru_cache(None)
+    def dp(index, k):
+        if k == 0:
+            return 0
+
+        res_pick = -1
+        if n - index >= k:
+            res_pick = digits[index] * (10 ** (k - 1)) + dp(index + 1, k - 1)
+
+        res_skip = -1
+        if n - (index + 1) >= k:
+            res_skip = dp(index + 1, k)
+        return max(res_pick, res_skip)
+
+    return dp(0, 12)
 
 
 @timer
-def part_2(data: str) -> int:
+def part_2(data: list[list[int]]) -> int:
     """Calculate the solution for Part 2."""
-    # TODO: Solve Part 2
-    return len(data)
+    total = 0
+    for bank in data:
+        total += get_max_dp(bank)
+    return total
 
 
 def main():
@@ -64,5 +95,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# trigger ci
