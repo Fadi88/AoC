@@ -62,12 +62,12 @@ def get_max_dp(digits: list[int]) -> int:
 
     @functools.cache
     def dp(index, k):
-        if k == 0:
-            return 0
-        if n - index == k:
-            return digits[index] * (10 ** (k - 1)) + dp(index + 1, k - 1)
-
+        if k == 1:  # only 1 digit left pick the max
+            return max(digits[index:])
         pick = digits[index] * (10 ** (k - 1)) + dp(index + 1, k - 1)
+        if n - index == k:
+            return pick
+
         skip = dp(index + 1, k)
         return max(pick, skip)
 
