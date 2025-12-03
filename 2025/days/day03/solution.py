@@ -44,10 +44,9 @@ def read_input():
 def ge_max_val(data):
     """Find the largest 2-digit number subsequence using a single pass."""
     max_val = 0
-    max_seen = -1
-    for x in reversed(data):
-        if max_seen != -1:
-            max_val = max(max_val, 10 * x + max_seen)
+    max_seen = data[-1]
+    for x in reversed(data[:-1]):
+        max_val = max(max_val, 10 * x + max_seen)
         max_seen = max(max_seen, x)
     return max_val
 
