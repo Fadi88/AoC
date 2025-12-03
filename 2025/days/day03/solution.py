@@ -57,31 +57,23 @@ def part_1(data: list[list[int]]) -> int:
     return sum(map(ge_max_val, data))
 
 
-def get_max_dp(digits: list[int]) -> int:
-    """Find the largest 12-digit number subsequence using DP."""
+def get_max_12(digits):
+    """Find the largest 12-digit number subsequence using a greedy approach."""
     n = len(digits)
-
-    @functools.cache
-    def dp(index, k):
-        if k == 1:  # only 1 digit left pick the max
-            return max(digits[index:])
-        pick = digits[index] * (10 ** (k - 1)) + dp(index + 1, k - 1)
-        if n - index == k:
-            return pick
-
-        skip = dp(index + 1, k)
-        return max(pick, skip)
-
-    return dp(0, 12)
+    result = 0
+    current_idx = 0
+    for k in range(12, 0, -1):
+        window = digits[current_idx : n - k + 1]
+        max_d = max(window)
+        result = result * 10 + max_d
+        current_idx += window.index(max_d) + 1
+    return result
 
 
 @timer
 def part_2(data: list[list[int]]) -> int:
     """Calculate the solution for Part 2."""
-    total = 0
-    for bank in data:
-        total += get_max_dp(bank)
-    return total
+    return sum(map(get_max_12, data))
 
 
 def main():
