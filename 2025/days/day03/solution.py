@@ -38,41 +38,38 @@ def read_input():
     """Read and parse the input file."""
     input_path = os.path.join(os.path.dirname(__file__), "input.txt")
     with open(input_path, "r", encoding="utf-8") as f:
-        return [list(map(int, line.strip())) for line in f.readlines()]
+        return [list(map(int, line.strip())) for line in f]
 
 
 def ge_max_val(data):
+    """Find the largest 2-digit number subsequence."""
     max_val = 0
     for i in range(len(data) - 1):
         current_val = 10 * data[i] + max(data[i + 1 :])
-        if current_val > max_val:
-            max_val = current_val
+        max_val = max(max_val, current_val)
     return max_val
 
 
 @timer
-def part_1(data: str) -> int:
+def part_1(data: list[list[int]]) -> int:
     """Calculate the solution for Part 1."""
     return sum(map(ge_max_val, data))
 
 
-def get_max_dp(digits):
+def get_max_dp(digits: list[int]) -> int:
     """Find the largest 12-digit number subsequence using DP."""
     n = len(digits)
 
-    @functools.lru_cache(None)
+    @functools.cache
     def dp(index, k):
         if k == 0:
             return 0
+        if n - index == k:
+            return digits[index] * (10 ** (k - 1)) + dp(index + 1, k - 1)
 
-        res_pick = -1
-        if n - index >= k:
-            res_pick = digits[index] * (10 ** (k - 1)) + dp(index + 1, k - 1)
-
-        res_skip = -1
-        if n - (index + 1) >= k:
-            res_skip = dp(index + 1, k)
-        return max(res_pick, res_skip)
+        pick = digits[index] * (10 ** (k - 1)) + dp(index + 1, k - 1)
+        skip = dp(index + 1, k)
+        return max(pick, skip)
 
     return dp(0, 12)
 
