@@ -37,22 +37,60 @@ def timer(func):
 def read_input():
     """Read and parse the input file."""
     input_path = os.path.join(os.path.dirname(__file__), "input.txt")
+    paper = set()
     with open(input_path, "r", encoding="utf-8") as f:
-        return f.read().strip()
+        for y, l in enumerate(f.read().strip().split("\n")):
+            for x, c in enumerate(l):
+                if c == "@":
+                    paper.add((x, y))
+    return paper
 
 
 @timer
-def part_1(data: str) -> int:
+def part_1(data: set[tuple[int, int]]) -> int:
     """Calculate the solution for Part 1."""
-    # TODO: Solve Part 1
-    return len(data)
+    paper = data
+    count = 0
+    for x, y in paper:
+        neighbors = 0
+        for dx in range(-1, 2):
+            for dy in range(-1, 2):
+                if dx == 0 and dy == 0:
+                    continue
+                if (x + dx, y + dy) in paper:
+                    neighbors += 1
+        if neighbors < 4:
+            count += 1
+    return count
+
+
+def count_neighbors(x, y, paper):
+    """Count the number of adjacent paper rolls."""
+    count = 0
+    for dx in range(-1, 2):
+        for dy in range(-1, 2):
+            if dx == 0 and dy == 0:
+                continue
+            if (x + dx, y + dy) in paper:
+                count += 1
+    return count
 
 
 @timer
-def part_2(data: str) -> int:
+def part_2(data: set[tuple[int, int]]) -> int:
     """Calculate the solution for Part 2."""
-    # TODO: Solve Part 2
-    return len(data)
+    paper = data.copy()
+    total_removed = 0
+    while True:
+        to_remove = {(x, y) for x, y in paper if count_neighbors(x, y, paper) < 4}
+
+        if not to_remove:
+            break
+
+        total_removed += len(to_remove)
+        paper -= to_remove
+
+    return total_removed
 
 
 def main():
