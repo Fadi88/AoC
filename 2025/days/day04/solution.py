@@ -46,33 +46,27 @@ def read_input():
     return paper
 
 
+def count_neighbors(x, y, paper):
+    """Count the number of adjacent paper rolls."""
+    count = 0
+    ds = [-1, 0, 1]
+    for dx in ds:
+        for dy in ds:
+            if dx == dy == 0:
+                continue
+            if (x + dx, y + dy) in paper:
+                count += 1
+    return count
+
+
 @timer
 def part_1(data: set[tuple[int, int]]) -> int:
     """Calculate the solution for Part 1."""
     paper = data
     count = 0
     for x, y in paper:
-        neighbors = 0
-        for dx in range(-1, 2):
-            for dy in range(-1, 2):
-                if dx == 0 and dy == 0:
-                    continue
-                if (x + dx, y + dy) in paper:
-                    neighbors += 1
-        if neighbors < 4:
+        if count_neighbors(x, y, paper) < 4:
             count += 1
-    return count
-
-
-def count_neighbors(x, y, paper):
-    """Count the number of adjacent paper rolls."""
-    count = 0
-    for dx in range(-1, 2):
-        for dy in range(-1, 2):
-            if dx == 0 and dy == 0:
-                continue
-            if (x + dx, y + dy) in paper:
-                count += 1
     return count
 
 
