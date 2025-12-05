@@ -34,7 +34,7 @@ def timer(func):
     return wrapper
 
 
-def read_input():
+def read_input() -> str:
     """Read and parse the input file."""
     input_path = os.path.join(os.path.dirname(__file__), "input.txt")
     with open(input_path, "r", encoding="utf-8") as f:
@@ -44,15 +44,37 @@ def read_input():
 @timer
 def part_1(data: str) -> int:
     """Calculate the solution for Part 1."""
-    # TODO: Solve Part 1
-    return len(data)
+    sec = data.split("\n\n")
+    ranges = sec[0]
+    values = sec[1] if len(sec) > 1 else ""
+
+    r = [tuple(map(int, line.split("-"))) for line in ranges.split("\n")]
+    r.sort(key=lambda x: x[0])
+    m = []
+    for s, e in r:
+        if m and m[-1][1] >= s:
+            m[-1][1] = max(m[-1][1], e)
+        else:
+            m.append([s, e])
+    d = list(map(int, values.split("\n"))) if values else []
+    return sum(1 for x in d if any(s <= x <= e for s, e in m))
 
 
 @timer
 def part_2(data: str) -> int:
     """Calculate the solution for Part 2."""
-    # TODO: Solve Part 2
-    return len(data)
+    sec = data.split("\n\n")
+    ranges = sec[0]
+
+    r = [tuple(map(int, line.split("-"))) for line in ranges.split("\n")]
+    r.sort(key=lambda x: x[0])
+    m = []
+    for s, e in r:
+        if m and m[-1][1] >= s:
+            m[-1][1] = max(m[-1][1], e)
+        else:
+            m.append([s, e])
+    return sum(e - s + 1 for s, e in m)
 
 
 def main():
