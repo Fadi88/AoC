@@ -15,12 +15,13 @@ def timer(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """Wrapper function to execute the decorated function and print its runtime."""
-        start = time.time()
+        start = time.perf_counter()
         result = func(*args, **kwargs)
-        end = time.time()
+        end = time.perf_counter()
         print(f"[{func.__name__}] Result: {result}")
         duration = end - start
         time_units = {
+            "ns": (1e-6, 1e9),
             "us": (1e-3, 1e6),
             "ms": (1, 1e3),
             "s": (float("inf"), 1),
