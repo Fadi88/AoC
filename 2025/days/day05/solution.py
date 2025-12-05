@@ -45,35 +45,46 @@ def read_input() -> str:
 def part_1(data: str) -> int:
     """Calculate the solution for Part 1."""
     sec = data.split("\n\n")
-    ranges = sec[0]
-    values = sec[1] if len(sec) > 1 else ""
 
-    r = [tuple(map(int, line.split("-"))) for line in ranges.split("\n")]
-    r.sort(key=lambda x: x[0])
-    m = []
-    for s, e in r:
-        if m and m[-1][1] >= s:
-            m[-1][1] = max(m[-1][1], e)
+    r = [tuple(map(int, line.split("-"))) for line in sec[0].split("\n")]
+    d = list(map(int, sec[1].split("\n")))
+
+    r.sort()
+    m = [r[0]]
+    for s, e in r[1:]:
+        if m[-1][1] >= s:
+            m[-1] = (m[-1][0], max(m[-1][1], e))
         else:
-            m.append([s, e])
-    d = list(map(int, values.split("\n"))) if values else []
-    return sum(1 for x in d if any(s <= x <= e for s, e in m))
+            m.append((s, e))
+
+    t = 0
+    for x in d:
+        l, r = 0, len(m) - 1
+        i = -1
+        while l <= r:
+            mid = (l + r) // 2
+            if m[mid][0] <= x:
+                i = mid
+                l = mid + 1
+            else:
+                r = mid - 1
+        if i >= 0 and m[i][0] <= x <= m[i][1]:
+            t += 1
+    return t
 
 
 @timer
 def part_2(data: str) -> int:
     """Calculate the solution for Part 2."""
     sec = data.split("\n\n")
-    ranges = sec[0]
-
-    r = [tuple(map(int, line.split("-"))) for line in ranges.split("\n")]
-    r.sort(key=lambda x: x[0])
-    m = []
-    for s, e in r:
-        if m and m[-1][1] >= s:
-            m[-1][1] = max(m[-1][1], e)
+    r = [tuple(map(int, line.split("-"))) for line in sec[0].split("\n")]
+    r.sort()
+    m = [r[0]]
+    for s, e in r[1:]:
+        if m[-1][1] >= s:
+            m[-1] = (m[-1][0], max(m[-1][1], e))
         else:
-            m.append([s, e])
+            m.append((s, e))
     return sum(e - s + 1 for s, e in m)
 
 
