@@ -15,7 +15,7 @@ pub fn parse(input: &str) -> Vec<Vec<u8>> {
         .collect()
 }
 
-pub fn get_max_val(data: &Vec<u8>) -> u64 {
+pub fn get_max_val(data: &[u8]) -> u64 {
     let mut max_val = 0;
     let mut max_seen = data[data.len() - 1];
     for x in data.iter().rev().skip(1) {
@@ -34,7 +34,7 @@ pub fn part_1(input: &str) -> Result<String> {
         .to_string())
 }
 
-pub fn get_max_12(data: &Vec<u8>) -> u64 {
+pub fn get_max_12(data: &[u8]) -> u64 {
     let n = data.len();
     let mut result: u64 = 0;
     let mut current_idx = 0;
