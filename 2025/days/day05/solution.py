@@ -41,6 +41,20 @@ def read_input() -> str:
         return f.read().strip()
 
 
+def in_range(m: list[tuple[int, int]], x: int) -> bool:
+    """Binary search to check if x is in any range in m."""
+    l, r = 0, len(m) - 1
+    i = -1
+    while l <= r:
+        mid = (l + r) // 2
+        if m[mid][0] <= x:
+            i = mid
+            l = mid + 1
+        else:
+            r = mid - 1
+    return m[i][0] <= x <= m[i][1]
+
+
 @timer
 def part_1(data: str) -> int:
     """Calculate the solution for Part 1."""
@@ -56,21 +70,7 @@ def part_1(data: str) -> int:
             m[-1] = (m[-1][0], max(m[-1][1], e))
         else:
             m.append((s, e))
-
-    t = 0
-    for x in d:
-        l, r = 0, len(m) - 1
-        i = -1
-        while l <= r:
-            mid = (l + r) // 2
-            if m[mid][0] <= x:
-                i = mid
-                l = mid + 1
-            else:
-                r = mid - 1
-        if i >= 0 and m[i][0] <= x <= m[i][1]:
-            t += 1
-    return t
+    return sum(in_range(m, x) for x in d)
 
 
 @timer
