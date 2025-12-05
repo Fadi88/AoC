@@ -3,8 +3,7 @@ use anyhow::Result;
 use itertools::Itertools;
 use std::cmp::max;
 
-pub fn parse() -> Vec<Vec<u8>> {
-    let input = include_str!("../input.txt");
+pub fn parse(input: &str) -> Vec<Vec<u8>> {
     input
         .lines()
         .map(|line| {
@@ -26,8 +25,8 @@ pub fn get_max_val(data: &Vec<u8>) -> u64 {
     max_val.into()
 }
 
-pub fn part_1() -> Result<String> {
-    let parsed = parse();
+pub fn part_1(input: &str) -> Result<String> {
+    let parsed = parse(input);
     Ok(parsed
         .iter()
         .map(|x| get_max_val(x))
@@ -54,8 +53,8 @@ pub fn get_max_12(data: &Vec<u8>) -> u64 {
     result
 }
 
-pub fn part_2() -> Result<String> {
-    let parsed = parse();
+pub fn part_2(input: &str) -> Result<String> {
+    let parsed = parse(input);
     // TODO: Solve Part 2
     Ok(parsed
         .iter()
@@ -70,11 +69,13 @@ mod tests {
 
     #[test]
     fn test_part_1() {
-        assert_eq!(part_1().unwrap(), "16973");
+        let input = std::fs::read_to_string("input.txt").unwrap();
+        assert_eq!(part_1(&input).unwrap(), "16973");
     }
 
     #[test]
     fn test_part_2() {
-        assert_eq!(part_2().unwrap(), "168027167146027");
+        let input = std::fs::read_to_string("input.txt").unwrap();
+        assert_eq!(part_2(&input).unwrap(), "168027167146027");
     }
 }

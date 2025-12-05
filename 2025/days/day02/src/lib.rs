@@ -87,13 +87,13 @@ mod tests {
 
     #[test]
     fn test_part_1() {
-        let input = include_str!("../input.txt");
-        assert_eq!(part_1(input).unwrap(), "23560874270");
+        let input = std::fs::read_to_string("input.txt").unwrap();
+        assert_eq!(part_1(&input).unwrap(), "23560874270");
     }
 
     #[test]
     fn test_part_2() {
-        let input = include_str!("../input.txt");
-        assert_eq!(part_2(input).unwrap(), "44143124633");
+        let input = std::fs::read_to_string("input.txt").unwrap();
+        assert_eq!(part_2(&input).unwrap(), "44143124633");
     }
 }
