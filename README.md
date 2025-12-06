@@ -1,127 +1,60 @@
-# adventofcode
+# 🎄 Advent of Code
 
-solutions for [advent of code](https://adventofcode.com)
+![Language](https://img.shields.io/badge/Language-Python%20%7C%20Rust-blue?style=for-the-badge&logo=python)
+![License](https://img.shields.io/github/license/Fadi88/AoC?style=for-the-badge)
+![CI](https://img.shields.io/github/actions/workflow/status/Fadi88/AoC/lint.yml?style=for-the-badge&label=Lint)
+![Stars](https://img.shields.io/github/stars/Fadi88/AoC?style=for-the-badge)
 
-language used : C++ and python and sometimes also Rust
+Welcome to my **Advent of Code** solutions repository! 
 
-## How to run the code
+This project maps my journey through the annual programming puzzles, focusing on **readability**, **clean algorithms**, and exploring language features in **Python** and **Rust**.
 
-each year has a folder and each day has a folder, input is usually stored as input.txt in the same folder and testing input is stored as test.txt if it was used.
+> [!NOTE]
+> Detailed setup and usage instructions have been moved to [SETUP.md](SETUP.md).
 
-if you want to test the code with a different input just replace the content of the file.
+---
 
-sometimes however if the input is a as simple a single number it is stored in the code itself as a variable and not as a file.
+## 🚀 2025 Progress
 
-### Python
+**Language**: Rust 🦀 & Python 🐍  
+**Goal**: Optimized, idiomatic solutions.
 
-It is recommend to install python ver 3 instructions can be found [here](https://www.python.org/downloads/)
+| Day | Puzzle Name | Python | Rust |
+| :-: | :--- | :-: | :-: |
+| 01 | [Historian Hysteria](https://adventofcode.com/2025/day/1) | [🐍 Solution](2025/days/day01/solution.py) | [🦀 Solution](2025/days/day01/src/lib.rs) |
+| 02 | [Red-Nosed Reports](https://adventofcode.com/2025/day/2) | [🐍 Solution](2025/days/day02/solution.py) | [🦀 Solution](2025/days/day02/src/lib.rs) |
+| 03 | [Mull It Over](https://adventofcode.com/2025/day/3) | [🐍 Solution](2025/days/day03/solution.py) | [🦀 Solution](2025/days/day03/src/lib.rs) |
+| 04 | [Ceres Search](https://adventofcode.com/2025/day/4) | [🐍 Solution](2025/days/day04/solution.py) | [🦀 Solution](2025/days/day04/src/lib.rs) |
+| 05 | [Print Queue](https://adventofcode.com/2025/day/5) | [🐍 Solution](2025/days/day05/solution.py) | [🦀 Solution](2025/days/day05/src/lib.rs) |
+| 06 | [Guard Gallivant](https://adventofcode.com/2025/day/6) | [🐍 Solution](2025/days/day06/solution.py) | [🦀 Solution](2025/days/day06/src/lib.rs) |
+| 07 | Day 07 | [🐍 Solution](2025/days/day07/solution.py) | [🦀 Solution](2025/days/day07/src/lib.rs) |
 
-for faster execution maybe use pypy from [here](https://www.pypy.org/download.html)
+<!-- 
+Template for future days:
+| 08 | [Title](Link) | [🐍 Solution](Path) | [🦀 Solution](Path) | 
+-->
 
-to run just CD to directory of each day and try
-```
-python code.py
-```
+---
 
-or 
+## 🗂️ Past Years
 
-```
-pypy code.py
-```
+I've been participating for several years. Check out the archives:
 
-### RUST
+| Year | Language(s) | Highlights / Notes |
+| :---: | :--- | :--- |
+| **[2024](2024/)** | Python | |
+| **[2023](2023/)** | Python | |
+| **[2022](2022/)** | Python, Rust | First year trying Rust! |
+| **[2021](2021/)** | Python | |
+| **[2020](2020/)** | Python | |
+| **[2019](2019/)** | Python | |
+| **[2018](2018/)** | C++ | Low-level optimization focus. |
+| **[2017](2017/)** | Python | |
+| **[2016](2016/)** | Python | |
+| **[2015](2015/)** | Python | The one that started it all. |
 
-install rust as documented [here](https://www.rust-lang.org/tools/install)
+---
 
-navigate to the year folder for example 2022
+## ⚖️ License
 
-## Fetching Inputs
-
-This template uses `advent-of-code-data` to automatically fetch your puzzle inputs.
-
-1.  **Install the tool:**
-    ```bash
-    pip install advent-of-code-data
-    ```
-    (This is already included in the Dev Container).
-
-2.  **Authentication:**
-    The tool needs your Advent of Code session cookie to download inputs.
-    
-    1.  **Get your cookie:**
-        - Log in to Advent of Code in your browser.
-        - Open Developer Tools (F12) -> Application/Storage -> Cookies.
-        - Copy the value of the `session` cookie.
-    2.  **Set it in `.env`:**
-        - Create or open the `.env` file in the root directory.
-        - Paste your cookie: `AOC_SESSION=your_copied_cookie_value`
-
-3.  **Usage:**
-    When you create a new day using `python3 2025/new_day.py <day>`, the input will be automatically downloaded to `2025/day<day>/input.txt`.
-
-
-```
-cd AoC\2022
-```
-
-to run the code in debug mode.
-
-```
-cargo run --bin day{XY} # XY can be from 01 to 25
-```
-
-to run the code in release mode.
-
-```
-cargo run --release --bin day{XY} # XY can be from 01 to 25
-```
-
-debug mode is useful for error detection, sometimes code just works in release mode
-but in debug mode it is able to detect big issues (like overflow,underflow etc...)
-
-### Rust (2025+)
-
-Starting from 2025, the project uses a Cargo Workspace structure.
-
-**Setup:**
-1. Navigate to the 2025 directory: `cd 2025`
-2. Create a new day: `python3 new_day.py <day_number>` (e.g., `python3 new_day.py 1`)
-
-**Running (Rust):**
-- Run a specific day: `cargo run -p day<day_number>` (e.g., `cargo run -p day01`)
-- Run with release profile: `cargo run --release -p day<day_number>`
-
-**Running (Python):**
-- Navigate to the day's directory: `cd days/day<day_number>`
-- Run the solution: `python3 solution.py`
-
-**Benchmarking (Rust):**
-- Run benchmarks for a day: `cargo bench -p day<day_number>`
-
-### C++
-
-only 2018 mainly and some days here in there
-
-first we need to create make based on the cmake
-```
-cd 2018
-mkdir build && cd build && cmake ..
-```
-
-to build day{XX} (where XX is from 00 to 25)
-```
-make day{XX} && cmake --install day{XX}
-```
-
-to run day{XX}
-```
-cd install/day{XX} && ./day{XX}
-```
-
-### TODO
-
-- create a devcontainer with docker that includes all the tools.
-
-- add cmake section to the docu
-- make cmake more consistent 
-
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
