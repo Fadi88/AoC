@@ -1,5 +1,7 @@
 # 🎄 Advent of Code
 
+![AoC Banner](.github/assets/banner.png)
+
 ![Language](https://img.shields.io/badge/Language-Python%20%7C%20Rust-blue?style=for-the-badge&logo=python)
 ![License](https://img.shields.io/github/license/Fadi88/AoC?style=for-the-badge)
 ![CI](https://img.shields.io/github/actions/workflow/status/Fadi88/AoC/lint.yml?style=for-the-badge&label=Lint)
