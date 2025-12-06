@@ -78,27 +78,16 @@ def transpose(data: str) -> list:
 def calc_op(op: list) -> int:
     """Calculate the value of an operation array."""
     operator = op[0][-1]
-
-    numbers = []
-    for item in op:
-        num_str = item.rstrip("+*")
-        if num_str.strip():
-            numbers.append(int(num_str))
-    if operator == "+":
-        return sum(numbers)
-    elif operator == "*":
-        return math.prod(numbers)
-    return 0
+    numbers = [int(item.rstrip("+*")) for item in op if item.rstrip("+*").strip()]
+    return sum(numbers) if operator == "+" else math.prod(numbers)
 
 
 @timer
 def part_2(data: str) -> int:
     """Calculate the solution for Part 2."""
-    f = transpose(data)
-
     ops = []
     current_group = []
-    for item in f:
+    for item in transpose(data):
         if item.strip():
             current_group.append(item.strip())
         elif current_group:
@@ -106,7 +95,6 @@ def part_2(data: str) -> int:
             current_group = []
     if current_group:
         ops.append(current_group)
-
     return sum(map(calc_op, ops))
 
 
