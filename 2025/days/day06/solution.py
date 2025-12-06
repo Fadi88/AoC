@@ -66,7 +66,8 @@ def transpose(data: str) -> list:
 def calc_op(op: list) -> int:
     """Calculate the value of an operation array."""
     operator = op[0][-1]
-    numbers = [int(item.rstrip("+*")) for item in op if item.rstrip("+*").strip()]
+    op[0] = op[0][:-1]
+    numbers = [int(item) for item in op if item.strip()]
     return sum(numbers) if operator == "+" else math.prod(numbers)
 
 
