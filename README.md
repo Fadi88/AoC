@@ -21,13 +21,13 @@ This project maps my journey through the annual programming puzzles, focusing on
 
 | Day | Puzzle Name | Python | Rust |
 | :-: | :--- | :-: | :-: |
-| 01 | [Historian Hysteria](https://adventofcode.com/2025/day/1) | [🐍 Solution](2025/days/day01/solution.py) | [🦀 Solution](2025/days/day01/src/lib.rs) |
-| 02 | [Red-Nosed Reports](https://adventofcode.com/2025/day/2) | [🐍 Solution](2025/days/day02/solution.py) | [🦀 Solution](2025/days/day02/src/lib.rs) |
-| 03 | [Mull It Over](https://adventofcode.com/2025/day/3) | [🐍 Solution](2025/days/day03/solution.py) | [🦀 Solution](2025/days/day03/src/lib.rs) |
-| 04 | [Ceres Search](https://adventofcode.com/2025/day/4) | [🐍 Solution](2025/days/day04/solution.py) | [🦀 Solution](2025/days/day04/src/lib.rs) |
-| 05 | [Print Queue](https://adventofcode.com/2025/day/5) | [🐍 Solution](2025/days/day05/solution.py) | [🦀 Solution](2025/days/day05/src/lib.rs) |
-| 06 | [Guard Gallivant](https://adventofcode.com/2025/day/6) | [🐍 Solution](2025/days/day06/solution.py) | [🦀 Solution](2025/days/day06/src/lib.rs) |
-| 07 | Day 07 | [🐍 Solution](2025/days/day07/solution.py) | [🦀 Solution](2025/days/day07/src/lib.rs) |
+| 01 | [Historian Hysteria](https://adventofcode.com/2025/day/1) | [🐍 Solution](2025/days/day01/solution.py) <br> ⚡ 2.01ms | [🦀 Solution](2025/days/day01/src/lib.rs) <br> ⚡ 350.50ms |
+| 02 | [Red-Nosed Reports](https://adventofcode.com/2025/day/2) | [🐍 Solution](2025/days/day02/solution.py) <br> ⚡ 2.59s | [🦀 Solution](2025/days/day02/src/lib.rs) <br> ⚡ 276.70ms |
+| 03 | [Mull It Over](https://adventofcode.com/2025/day/3) | [🐍 Solution](2025/days/day03/solution.py) <br> ⚡ 5.81ms | [🦀 Solution](2025/days/day03/src/lib.rs) <br> ⚡ 285.60ms |
+| 04 | [Ceres Search](https://adventofcode.com/2025/day/4) | [🐍 Solution](2025/days/day04/solution.py) <br> ⚡ 429.50ms | [🦀 Solution](2025/days/day04/src/lib.rs) <br> ⚡ 52.43ms |
+| 05 | [Print Queue](https://adventofcode.com/2025/day/5) | [🐍 Solution](2025/days/day05/solution.py) <br> ⚡ 1.39ms | [🦀 Solution](2025/days/day05/src/lib.rs) <br> ⚡ 397.30ms |
+| 06 | [Guard Gallivant](https://adventofcode.com/2025/day/6) | [🐍 Solution](2025/days/day06/solution.py) <br> ⚡ 2.83ms | [🦀 Solution](2025/days/day06/src/lib.rs) <br> ⚡ 396.30ms |
+| 07 | Day 07 | [🐍 Solution](2025/days/day07/solution.py) <br> ⚡ 600.01ms | [🦀 Solution](2025/days/day07/src/lib.rs) <br> ⚡ 2.00ms |
 
 <!-- 
 Template for future days:
