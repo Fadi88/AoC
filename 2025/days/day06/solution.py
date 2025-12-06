@@ -6,6 +6,7 @@ import os
 import time
 import functools
 import math
+from itertools import zip_longest
 
 # pylint: disable=fixme
 
@@ -50,29 +51,16 @@ def part_1(data: str) -> int:
     ops = lines[-1].split()
     rows = [line.split() for line in lines[:-1]]
 
-    add_lists = [
-        [int(row[i]) for row in rows if i < len(row)]
-        for i in range(len(rows[0]))
-        if ops[i] == "+"
-    ]
-
-    mul_lists = [
-        [int(row[i]) for row in rows if i < len(row)]
-        for i in range(len(rows[0]))
-        if ops[i] == "*"
-    ]
-
-    add_total = sum(sum(nums) for nums in add_lists)
-    mul_total = sum(math.prod(nums) for nums in mul_lists)
-
-    return add_total + mul_total
+    total = 0
+    for i, op in enumerate(ops):
+        nums = [int(row[i]) for row in rows if i < len(row)]
+        total += sum(nums) if op == "+" else math.prod(nums)
+    return total
 
 
 def transpose(data: str) -> list:
-    """Transpose the input, reading columns right-to-left."""
-    data = data.split("\n")
-    data[-1] += " "
-    return ["".join(x) for x in zip(*data)]
+    """Transpose the input, handling uneven line lengths."""
+    return ["".join(x) for x in zip_longest(*data.split("\n"), fillvalue=" ")]
 
 
 def calc_op(op: list) -> int:
@@ -85,17 +73,8 @@ def calc_op(op: list) -> int:
 @timer
 def part_2(data: str) -> int:
     """Calculate the solution for Part 2."""
-    ops = []
-    current_group = []
-    for item in transpose(data):
-        if item.strip():
-            current_group.append(item.strip())
-        elif current_group:
-            ops.append(current_group)
-            current_group = []
-    if current_group:
-        ops.append(current_group)
-    return sum(map(calc_op, ops))
+    groups = "\n".join(row.strip() for row in transpose(data)).split("\n\n")
+    return sum(calc_op(group.splitlines()) for group in groups if group.strip())
 
 
 def main():
