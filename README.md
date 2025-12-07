@@ -3,16 +3,28 @@
 ![AoC Banner](.github/assets/banner.png)
 
 ![Language](https://img.shields.io/badge/Language-Python%20%7C%20Rust-blue?style=for-the-badge&logo=python)
-![License](https://img.shields.io/github/license/Fadi88/AoC?style=for-the-badge)
+![License](https://img.shields.io/badge/license-Unlicense-blue?style=for-the-badge)
 ![CI](https://img.shields.io/github/actions/workflow/status/Fadi88/AoC/lint.yml?style=for-the-badge&label=Lint)
 ![Stars](https://img.shields.io/github/stars/Fadi88/AoC?style=for-the-badge)
 
-Welcome to my **Advent of Code** solutions repository! 
+Welcome to my **Advent of Code** solutions repository!
 
 This project maps my journey through the annual programming puzzles, focusing on **readability**, **clean algorithms**, and exploring language features in **Python** and **Rust**.
 
-> [!NOTE]
-> Detailed setup and usage instructions have been moved to [SETUP.md](SETUP.md).
+## 📖 Table of Contents
+- [Quick Start](#-quick-start)
+- [2025 Progress](#-2025-progress)
+- [Past Years](#-past-years)
+- [License](#-license)
+
+## ⚡ Quick Start
+
+For detailed setup instructions, please see [SETUP.md](SETUP.md).
+
+**To check your environment:**
+```bash
+python check.py
+```
 
 ---
 
