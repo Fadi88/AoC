@@ -195,6 +195,13 @@ def update_readme():
                 continue
             days_found.append((item, int(day_num_str)))
 
+    # Only run for the latest day
+    if days_found:
+        # Sort by day number descending and pick the first one
+        days_found.sort(key=lambda x: x[1], reverse=True)
+        latest_day = days_found[0]
+        days_found = [latest_day]
+
     insert_base_index = (
         last_day_row_index + 1 if last_day_row_index != -1 else table_start + 2
     )

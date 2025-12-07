@@ -29,7 +29,7 @@ This project maps my journey through the annual programming puzzles, focusing on
 | 04 | [Printing Department](https://adventofcode.com/2025/day/4) | [🐍 Solution](2025/days/day04/solution.py) <br> P1: ⚡ 8.52ms<br> P2: ⚡ 253.52ms | [🦀 Solution](2025/days/day04/src/lib.rs) <br> P1: ⚡ 1.40ms<br> P2: ⚡ 28.27ms |
 | 05 | [Cafeteria](https://adventofcode.com/2025/day/5) | [🐍 Solution](2025/days/day05/solution.py) <br> P1: ⚡ 611µs<br> P2: ⚡ 101µs | [🦀 Solution](2025/days/day05/src/lib.rs) <br> P1: ⚡ 107µs<br> P2: ⚡ 48µs |
 | 06 | [Trash Compactor](https://adventofcode.com/2025/day/6) | [🐍 Solution](2025/days/day06/solution.py) <br> P1: ⚡ 648µs<br> P2: ⚡ 978µs | [🦀 Solution](2025/days/day06/src/lib.rs) <br> P1: ⚡ 81µs<br> P2: ⚡ 146µs |
-| 07 | [Laboratories](https://adventofcode.com/2025/day/7) | [🐍 Solution](2025/days/day07/solution.py) <br> P1: ⚡ 1.04ms<br> P2: ⚡ 1.70ms | [🦀 Solution](2025/days/day07/src/lib.rs) <br> P1: ⚡ 82µs<br> P2: ⚡ 72µs |
+| 07 | [Laboratories](https://adventofcode.com/2025/day/7) | [🐍 Solution](2025/days/day07/solution.py) <br> P1: ⚡ 1.86ms<br> P2: ⚡ 2.71ms | [🦀 Solution](2025/days/day07/src/lib.rs) <br> P1: ⚡ 134µs<br> P2: ⚡ 110µs |
 
 <!-- 
 Template for future days:
