@@ -78,32 +78,64 @@ def run_python(day_dir):
 
 
 def run_rust(year_dir, day_name):
-    """Runs the Rust solution and parses execution time."""
+    """Runs the Rust solution benchmarks and parses execution time."""
     try:
+        # Run cargo bench
+        # We need to run it for the specific day's library,
+        # but cargo bench usually runs all benches in workspace
+        # unless filtered. The user's bench.rs is inside the package.
+        # Command: cargo bench -p dayXX
         result = subprocess.run(
-            ["cargo", "run", "--release", "-p", day_name],
+            ["cargo", "bench", "-p", day_name],
             cwd=year_dir,
             capture_output=True,
             encoding="utf-8",
-            timeout=30,
+            timeout=120,  # Benchmarking takes longer
             check=False,
         )
         if result.returncode != 0:
+            print(f"Rust benchmark failed for {day_name}")
             return []
 
         output = result.stdout
         times = []
 
-        # Regex to capture value and unit
-        regex = re.compile(r"Time: ([0-9.]+)\s*(\w+|µs)")
+        # Criterion output example:
+        # part_1                  time:   [37.792 µs 37.951 µs 38.109 µs]
+        # We want the middle value (main estimate).
+        # Regex to capture the middle value and unit.
+        # It looks for "time:", optional spaces, "[",
+        # then a value+unit (min), then our target value+unit (mid).
+
+        # Regex explanation:
+        # time:\s*\[            Match "time: ["
+        # [^0-9]*               Skip until number (min value)
+        # [0-9.]+\s*\w+\s+      Match min value and unit and processing space
+        # ([0-9.]+)\s*          Capture MID value (group 1)
+        # (\w+|µs)              Capture MID unit (group 2)
+        regex = re.compile(
+            r"time:\s*\[[^\]]*?([0-9.]+)\s*(\w+|µs)[^\]]*?([0-9.]+)\s*(\w+|µs)"
+        )
+
+        # Actually simpler regex: just look for the line and split?
+        # Let's stick to a robust regex for the array format [ min mid max ]
+        # The line usually has "time:   [min mid max]"
+        # We can capture all 3 and pick middle.
+
+        regex = re.compile(
+            r"time:\s*\[\s*([0-9.]+)\s*(\w+|µs)\s+([0-9.]+)\s*(\w+|µs)\s+([0-9.]+)\s*(\w+|µs)"
+        )
 
         for line in output.splitlines():
-            line = strip_ansi(line)
+            line = strip_ansi(line).strip()
+            # print(f"Scanning: {line}") # Debug if needed
             match = regex.search(line)
             if match:
                 try:
-                    val = float(match.group(1))
-                    unit = match.group(2)
+                    # groups: 1=min, 2=unit, 3=mid, 4=unit, 5=max, 6=unit
+                    # We want group 3 (mid value) and 4 (mid unit)
+                    val = float(match.group(3))
+                    unit = match.group(4)
 
                     if unit in ("µs", "us"):
                         val /= 1000.0
@@ -111,6 +143,7 @@ def run_rust(year_dir, day_name):
                         val /= 1000000.0
                     elif unit == "s":
                         val *= 1000.0
+
                     times.append(val)
                 except ValueError:
                     pass
@@ -118,7 +151,7 @@ def run_rust(year_dir, day_name):
         return times
 
     except (subprocess.SubprocessError, OSError, ValueError, IndexError) as e:
-        print(f"Error running Rust for {day_name}: {e}")
+        print(f"Error running Rust bench for {day_name}: {e}")
         return []
 
 
@@ -194,13 +227,6 @@ def update_readme():
             if not day_num_str.isdigit():
                 continue
             days_found.append((item, int(day_num_str)))
-
-    # Only run for the latest day
-    if days_found:
-        # Sort by day number descending and pick the first one
-        days_found.sort(key=lambda x: x[1], reverse=True)
-        latest_day = days_found[0]
-        days_found = [latest_day]
 
     insert_base_index = (
         last_day_row_index + 1 if last_day_row_index != -1 else table_start + 2
