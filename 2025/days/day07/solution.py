@@ -63,7 +63,6 @@ def part_1(data: str) -> int:
     tips = {s[0]}
 
     for y in range(s[1] + 1, h):
-        # Optimization: If no beam hits a splitter, they all just fall straight down.
         if not any((x, y) in grid for x in tips):
             continue
 
@@ -89,7 +88,6 @@ def part_2(data: str) -> int:
     lines = data.splitlines()
     h = len(lines)
 
-    # Parse Grid
     grid = set()
     s = (0, 0)
 
@@ -104,7 +102,6 @@ def part_2(data: str) -> int:
     tips[s[0]] = 1
 
     for y in range(s[1] + 1, h):
-        # Optimization: Keys (beams) fall straight unless hitting a splitter
         if not any((x, y) in grid for x in tips):
             continue
 
@@ -119,7 +116,6 @@ def part_2(data: str) -> int:
         tips = next_tips
         if not tips:
             break
-
     return sum(tips.values())
 
 
