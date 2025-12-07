@@ -1,3 +1,7 @@
+"""
+Script to run benchmarks for AoC solutions and update the README.md with the results.
+"""
+
 import os
 import re
 import subprocess
@@ -5,6 +9,7 @@ import urllib.request
 
 
 def strip_ansi(text):
+    """Removes ANSI escape codes from a string."""
     ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
     return ansi_escape.sub("", text)
 
@@ -24,12 +29,14 @@ def get_day_title(day_num, year=2025):
             match = re.search(r"<h2>--- Day \d+: (.+?) ---</h2>", html)
             if match:
                 return match.group(1)
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         print(f"Warning: Could not fetch title for Day {day_num}: {e}")
     return None
 
 
 def run_python(day_dir):
+    """Runs the Python solution and parses execution time."""
+    # pylint: disable=too-many-nested-blocks
     try:
         result = subprocess.run(
             ["python", "solution.py"],
@@ -51,7 +58,7 @@ def run_python(day_dir):
                     if len(parts) >= 2:
                         val = float(parts[0])
                         unit = parts[1]
-                        if unit == "us" or unit == "µs":
+                        if unit in ("us", "µs"):
                             val /= 1000.0
                         elif unit == "s":
                             val *= 1000.0
@@ -71,6 +78,7 @@ def run_python(day_dir):
 
 
 def run_rust(year_dir, day_name):
+    """Runs the Rust solution and parses execution time."""
     try:
         result = subprocess.run(
             ["cargo", "run", "--release", "-p", day_name],
@@ -97,7 +105,7 @@ def run_rust(year_dir, day_name):
                     val = float(match.group(1))
                     unit = match.group(2)
 
-                    if unit == "µs" or unit == "us":
+                    if unit in ("µs", "us"):
                         val /= 1000.0
                     elif unit == "ns":
                         val /= 1000000.0
@@ -115,6 +123,7 @@ def run_rust(year_dir, day_name):
 
 
 def format_time(ms):
+    """Formats a millisecond value into a specific unit string."""
     if ms is None:
         return "N/A"
     if ms < 0.001:
@@ -140,6 +149,8 @@ def format_cell_times(times):
 
 
 def update_readme():
+    """Updates the README.md file with benchmark results."""
+    # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     base_dir = os.path.dirname(os.path.abspath(__file__))
     readme_path = os.path.join(os.path.dirname(base_dir), "README.md")
 
