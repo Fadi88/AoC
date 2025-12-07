@@ -23,13 +23,13 @@ This project maps my journey through the annual programming puzzles, focusing on
 
 | Day | Puzzle Name | Python | Rust |
 | :-: | :--- | :-: | :-: |
-| 01 | [Secret Entrance](https://adventofcode.com/2025/day/1) | [🐍 Solution](2025/days/day01/solution.py) <br> P1: ⚡ 504µs<br> P2: ⚡ 502µs | [🦀 Solution](2025/days/day01/src/lib.rs) <br> P1: ⚡ 309.40ms<br> P2: ⚡ 84.00ms |
-| 02 | [Gift Shop](https://adventofcode.com/2025/day/2) | [🐍 Solution](2025/days/day02/solution.py) <br> P1: ⚡ 267.80ms<br> P2: ⚡ 753.19ms<br> P3: ⚡ 473.00ms | [🦀 Solution](2025/days/day02/src/lib.rs) <br> P1: ⚡ 48.49ms<br> P2: ⚡ 75.37ms |
-| 03 | [Lobby](https://adventofcode.com/2025/day/3) | [🐍 Solution](2025/days/day03/solution.py) <br> P1: ⚡ 1.89ms<br> P2: ⚡ 1.50ms | [🦀 Solution](2025/days/day03/src/lib.rs) <br> P1: ⚡ 67.90ms<br> P2: ⚡ 93.80ms |
-| 04 | [Printing Department](https://adventofcode.com/2025/day/4) | [🐍 Solution](2025/days/day04/solution.py) <br> P1: ⚡ 9.03ms<br> P2: ⚡ 246.74ms | [🦀 Solution](2025/days/day04/src/lib.rs) <br> P1: ⚡ 1.44ms<br> P2: ⚡ 30.75ms |
-| 05 | [Cafeteria](https://adventofcode.com/2025/day/5) | [🐍 Solution](2025/days/day05/solution.py) <br> P1: ⚡ 653µs<br> P2: ⚡ 101µs | [🦀 Solution](2025/days/day05/src/lib.rs) <br> P1: ⚡ 108.80ms<br> P2: ⚡ 40.40ms |
-| 06 | [Trash Compactor](https://adventofcode.com/2025/day/6) | [🐍 Solution](2025/days/day06/solution.py) <br> P1: ⚡ 695µs<br> P2: ⚡ 985µs | [🦀 Solution](2025/days/day06/src/lib.rs) <br> P1: ⚡ 77.80ms<br> P2: ⚡ 152.70ms |
-| 07 | [Laboratories](https://adventofcode.com/2025/day/7) | [🐍 Solution](2025/days/day07/solution.py) <br> P1: ⚡ 1.01ms<br> P2: ⚡ 1.64ms | [🦀 Solution](2025/days/day07/src/lib.rs) <br> P1: ⚡ 77.90ms<br> P2: ⚡ 66.20ms |
+| 01 | [Secret Entrance](https://adventofcode.com/2025/day/1) | [🐍 Solution](2025/days/day01/solution.py) <br> P1: ⚡ 0ns<br> P2: ⚡ 1.57ms | [🦀 Solution](2025/days/day01/src/lib.rs) <br> P1: ⚡ 112µs<br> P2: ⚡ 74µs |
+| 02 | [Gift Shop](https://adventofcode.com/2025/day/2) | [🐍 Solution](2025/days/day02/solution.py) <br> P1: ⚡ 273.51ms<br> P2: ⚡ 763.37ms<br> P3: ⚡ 481.15ms | [🦀 Solution](2025/days/day02/src/lib.rs) <br> P1: ⚡ 48.81ms<br> P2: ⚡ 75.48ms |
+| 03 | [Lobby](https://adventofcode.com/2025/day/3) | [🐍 Solution](2025/days/day03/solution.py) <br> P1: ⚡ 2.03ms<br> P2: ⚡ 1000µs | [🦀 Solution](2025/days/day03/src/lib.rs) <br> P1: ⚡ 69µs<br> P2: ⚡ 89µs |
+| 04 | [Printing Department](https://adventofcode.com/2025/day/4) | [🐍 Solution](2025/days/day04/solution.py) <br> P1: ⚡ 8.52ms<br> P2: ⚡ 253.52ms | [🦀 Solution](2025/days/day04/src/lib.rs) <br> P1: ⚡ 1.40ms<br> P2: ⚡ 28.27ms |
+| 05 | [Cafeteria](https://adventofcode.com/2025/day/5) | [🐍 Solution](2025/days/day05/solution.py) <br> P1: ⚡ 611µs<br> P2: ⚡ 101µs | [🦀 Solution](2025/days/day05/src/lib.rs) <br> P1: ⚡ 107µs<br> P2: ⚡ 48µs |
+| 06 | [Trash Compactor](https://adventofcode.com/2025/day/6) | [🐍 Solution](2025/days/day06/solution.py) <br> P1: ⚡ 648µs<br> P2: ⚡ 978µs | [🦀 Solution](2025/days/day06/src/lib.rs) <br> P1: ⚡ 81µs<br> P2: ⚡ 146µs |
+| 07 | [Laboratories](https://adventofcode.com/2025/day/7) | [🐍 Solution](2025/days/day07/solution.py) <br> P1: ⚡ 1.04ms<br> P2: ⚡ 1.70ms | [🦀 Solution](2025/days/day07/src/lib.rs) <br> P1: ⚡ 82µs<br> P2: ⚡ 72µs |
 
 <!-- 
 Template for future days:

@@ -76,7 +76,7 @@ def run_rust(year_dir, day_name):
             ["cargo", "run", "--release", "-p", day_name],
             cwd=year_dir,
             capture_output=True,
-            text=True,
+            encoding="utf-8",
             timeout=30,
             check=False,
         )
