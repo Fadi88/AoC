@@ -85,38 +85,47 @@ def part_1(data: str) -> int:
 @timer
 def part_2(data: str) -> int:
     """Calculate the solution for Part 2."""
+
     lines = data.splitlines()
-    h = len(lines)
 
     grid = set()
     s = (0, 0)
+    last_splitter_y = -1
 
     for y, l in enumerate(lines):
         for x, c in enumerate(l):
             if c == "^":
                 grid.add((x, y))
+                last_splitter_y = max(last_splitter_y, y)
             elif c == "S":
                 s = (x, y)
 
     tips = defaultdict(int)
-    tips[s[0]] = 1
+    tips[s] = 1
 
-    for y in range(s[1] + 1, h):
-        if not any((x, y) in grid for x in tips):
+    total_timelines = 1
+
+    for y in range(s[1] + 1, last_splitter_y + 1):
+        if not any((x, y) in grid for (x, _) in tips):
+            new_tips = defaultdict(int)
+            for (x, _), count in tips.items():
+                new_tips[(x, y)] = count
+            tips = new_tips
             continue
 
         next_tips = defaultdict(int)
-        for x, count in tips.items():
+        for (x, _), count in tips.items():
             if (x, y) in grid:
-                next_tips[x - 1] += count
-                next_tips[x + 1] += count
+                total_timelines += count
+
+                next_tips[(x - 1, y)] += count
+                next_tips[(x + 1, y)] += count
             else:
-                next_tips[x] += count
+                next_tips[(x, y)] += count
 
         tips = next_tips
-        if not tips:
-            break
-    return sum(tips.values())
+
+    return total_timelines
 
 
 def main():
