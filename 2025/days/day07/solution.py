@@ -5,6 +5,7 @@ Advent of Code 2025 - Day 7
 import os
 import time
 import functools
+from collections import defaultdict
 
 # pylint: disable=fixme
 
@@ -45,15 +46,81 @@ def read_input() -> str:
 @timer
 def part_1(data: str) -> int:
     """Calculate the solution for Part 1."""
-    # TODO: Solve Part 1
-    return len(data)
+    lines = data.splitlines()
+    h = len(lines)
+
+    grid = set()
+    s = (0, 0)
+
+    for y, l in enumerate(lines):
+        for x, c in enumerate(l):
+            if c == "^":
+                grid.add((x, y))
+            elif c == "S":
+                s = (x, y)
+
+    total = 0
+    tips = {s[0]}
+
+    for y in range(s[1] + 1, h):
+        # Optimization: If no beam hits a splitter, they all just fall straight down.
+        if not any((x, y) in grid for x in tips):
+            continue
+
+        next_tips = set()
+        for x in tips:
+            if (x, y) in grid:
+                total += 1
+                next_tips.add(x - 1)
+                next_tips.add(x + 1)
+            else:
+                next_tips.add(x)
+
+        tips = next_tips
+        if not tips:
+            break
+
+    return total
 
 
 @timer
 def part_2(data: str) -> int:
     """Calculate the solution for Part 2."""
-    # TODO: Solve Part 2
-    return len(data)
+    lines = data.splitlines()
+    h = len(lines)
+
+    # Parse Grid
+    grid = set()
+    s = (0, 0)
+
+    for y, l in enumerate(lines):
+        for x, c in enumerate(l):
+            if c == "^":
+                grid.add((x, y))
+            elif c == "S":
+                s = (x, y)
+
+    tips = defaultdict(int)
+    tips[s[0]] = 1
+
+    for y in range(s[1] + 1, h):
+        # Optimization: Keys (beams) fall straight unless hitting a splitter
+        if not any((x, y) in grid for x in tips):
+            continue
+
+        next_tips = defaultdict(int)
+        for x, count in tips.items():
+            if (x, y) in grid:
+                next_tips[x - 1] += count
+                next_tips[x + 1] += count
+            else:
+                next_tips[x] += count
+
+        tips = next_tips
+        if not tips:
+            break
+
+    return sum(tips.values())
 
 
 def main():
