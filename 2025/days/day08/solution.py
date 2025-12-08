@@ -6,6 +6,7 @@ import itertools
 import os
 import time
 import functools
+import heapq
 
 # pylint: disable=fixme
 
@@ -40,26 +41,25 @@ def dist_sq(p1, p2):
     return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2 + (p1[2] - p2[2]) ** 2
 
 
-def get_sorted_pairs(points):
-    """Generate all pairs of points sorted by squared distance."""
-    return sorted(
-        (
-            (dist_sq(p1, p2), i, j)
-            for (i, p1), (j, p2) in itertools.combinations(enumerate(points), 2)
-        ),
-        key=lambda x: x[0],
-    )
+def get_pairs(points):
+    """Generate all pairs of points (unsorted)."""
+    return [
+        (dist_sq(p1, p2), i, j)
+        for (i, p1), (j, p2) in itertools.combinations(enumerate(points), 2)
+    ]
 
 
 @timer
 def part_1(data: str) -> int:
     """Solve Part 1: Product of sizes of 3 largest clusters using 1000 closest edges."""
     points = [tuple(map(int, line.split(","))) for line in data.splitlines()]
-    pairs = get_sorted_pairs(points)
+    pairs = get_pairs(points)
+
+    top_pairs = heapq.nsmallest(1000, pairs, key=lambda x: x[0])
 
     components = [{i} for i in range(len(points))]
 
-    for _, i, j in pairs[:1000]:
+    for _, i, j in top_pairs:
         idx_i = -1
         idx_j = -1
 
@@ -81,11 +81,15 @@ def part_1(data: str) -> int:
 def part_2(data: str) -> int:
     """Solve Part 2: Product of Xs of last connected points for full connectivity."""
     points = [tuple(map(int, line.split(","))) for line in data.splitlines()]
-    pairs = get_sorted_pairs(points)
+    pairs = get_pairs(points)
+
+    heapq.heapify(pairs)
 
     components = [{i} for i in range(len(points))]
 
-    for _, i, j in pairs:
+    while pairs:
+        _, i, j = heapq.heappop(pairs)
+
         idx_i = -1
         idx_j = -1
 
