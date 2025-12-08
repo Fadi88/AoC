@@ -98,6 +98,8 @@ def part_2(data: str) -> int:
                 idx_i = idx
             if j in comp:
                 idx_j = idx
+            if idx_i != -1 and idx_j != -1:
+                break
 
         if idx_i != idx_j:
             components[idx_i].update(components[idx_j])
