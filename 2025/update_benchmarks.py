@@ -181,6 +181,27 @@ def format_cell_times(times):
     return "<br> ".join(parts)
 
 
+def ensure_input(day_num, day_dir):
+    """Checks if input.txt exists, and tries to download it if not."""
+    input_path = os.path.join(day_dir, "input.txt")
+    if os.path.exists(input_path):
+        return
+
+    print(f"Input missing for Day {day_num:02d}. Attempting download...")
+    try:
+        # pylint: disable=import-outside-toplevel
+        from aocd import get_data
+
+        data = get_data(day=day_num, year=2025)
+        with open(input_path, "w", encoding="utf-8") as f:
+            f.write(data)
+        print("Downloaded input.txt")
+    except ImportError:
+        print("aocd library not found. Input download skipped.")
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        print(f"Failed to download input: {e}")
+
+
 def update_readme():
     """Updates the README.md file with benchmark results."""
     # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -236,6 +257,10 @@ def update_readme():
     for item, day_num in days_found:
         day_id = f"{day_num:02d}"
         print(f"Benchmarking Day {day_id}...")
+
+        # Ensure input exists
+        day_dir_path = os.path.join(days_dir, item)
+        ensure_input(day_num, day_dir_path)
 
         # fetch title
         web_title = get_day_title(day_num)
