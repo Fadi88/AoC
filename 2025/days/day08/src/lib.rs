@@ -34,7 +34,6 @@ pub fn part_1(input: &str) -> Result<String> {
     let points = parse(input);
     let mut pairs = get_pairs(&points);
 
-    // Sort to emulate Python's nsmallest behavior for Part 1
     pairs.sort_unstable_by_key(|k| k.0);
     let top_pairs = &pairs[..1000.min(pairs.len())];
 
@@ -82,7 +81,6 @@ pub fn part_2(input: &str) -> Result<String> {
     let points = parse(input);
     let pairs = get_pairs(&points);
 
-    // Use BinaryHeap for Min-Heap behavior (via Reverse)
     let mut heap = BinaryHeap::new();
     for p in pairs {
         heap.push(Reverse(p));
