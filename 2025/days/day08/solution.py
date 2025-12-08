@@ -2,6 +2,7 @@
 Advent of Code 2025 - Day 8
 """
 
+import itertools
 import os
 import time
 import functools
@@ -10,54 +11,101 @@ import functools
 
 
 def timer(func):
-    """Decorator to measure the execution time of a function."""
+    """Decorator to time function execution."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        """Wrapper function to execute the decorated function and print its runtime."""
         start = time.perf_counter()
         result = func(*args, **kwargs)
         end = time.perf_counter()
         print(f"[{func.__name__}] Result: {result}")
-        duration = end - start
-        time_units = {
-            "ns": (1e-6, 1e9),
-            "us": (1e-3, 1e6),
-            "ms": (1, 1e3),
-            "s": (float("inf"), 1),
-        }
-        for unit, (threshold, multiplier) in time_units.items():
-            if duration < threshold:
-                print(f"[{func.__name__}] Time: {duration * multiplier:.4f} {unit}")
-                break
+        if (duration := end - start) < 1:
+            print(f"[{func.__name__}] Time: {duration * 1000:.4f} ms")
+        else:
+            print(f"[{func.__name__}] Time: {duration:.4f} s")
         return result
 
     return wrapper
 
 
 def read_input() -> str:
-    """Read and parse the input file."""
+    """Read input from file."""
     input_path = os.path.join(os.path.dirname(__file__), "input.txt")
     with open(input_path, "r", encoding="utf-8") as f:
         return f.read().strip()
 
 
+def dist_sq(p1, p2):
+    """Calculate squared Euclidean distance between two 3D points."""
+    return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2 + (p1[2] - p2[2]) ** 2
+
+
+def get_sorted_pairs(points):
+    """Generate all pairs of points sorted by squared distance."""
+    return sorted(
+        (
+            (dist_sq(p1, p2), i, j)
+            for (i, p1), (j, p2) in itertools.combinations(enumerate(points), 2)
+        ),
+        key=lambda x: x[0],
+    )
+
+
 @timer
 def part_1(data: str) -> int:
-    """Calculate the solution for Part 1."""
-    # TODO: Solve Part 1
-    return len(data)
+    """Solve Part 1: Product of sizes of 3 largest clusters using 1000 closest edges."""
+    points = [tuple(map(int, line.split(","))) for line in data.splitlines()]
+    pairs = get_sorted_pairs(points)
+
+    components = [{i} for i in range(len(points))]
+
+    for _, i, j in pairs[:1000]:
+        idx_i = -1
+        idx_j = -1
+
+        for idx, comp in enumerate(components):
+            if i in comp:
+                idx_i = idx
+            if j in comp:
+                idx_j = idx
+
+        if idx_i != idx_j:
+            components[idx_i].update(components[idx_j])
+            components.pop(idx_j)
+
+    sizes = sorted([len(c) for c in components], reverse=True)
+    return sizes[0] * sizes[1] * sizes[2]
 
 
 @timer
 def part_2(data: str) -> int:
-    """Calculate the solution for Part 2."""
-    # TODO: Solve Part 2
-    return len(data)
+    """Solve Part 2: Product of Xs of last connected points for full connectivity."""
+    points = [tuple(map(int, line.split(","))) for line in data.splitlines()]
+    pairs = get_sorted_pairs(points)
+
+    components = [{i} for i in range(len(points))]
+
+    for _, i, j in pairs:
+        idx_i = -1
+        idx_j = -1
+
+        for idx, comp in enumerate(components):
+            if i in comp:
+                idx_i = idx
+            if j in comp:
+                idx_j = idx
+
+        if idx_i != idx_j:
+            components[idx_i].update(components[idx_j])
+            components.pop(idx_j)
+
+            if len(components) == 1:
+                return points[i][0] * points[j][0]
+    return 0
 
 
 def main():
-    """Execute the solution for both parts."""
+    """Run the solution."""
     input_data = read_input()
     part_1(input_data)
     part_2(input_data)
