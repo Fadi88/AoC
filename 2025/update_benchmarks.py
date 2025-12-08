@@ -221,6 +221,7 @@ def update_readme():
     # Find the table range
     table_start = -1
     last_day_row_index = -1
+    existing_days = set()
 
     for i, line in enumerate(lines):
         if line.strip().startswith("| Day |"):
@@ -231,8 +232,10 @@ def update_readme():
             and not line.strip().startswith("| Day")
             and not line.strip().startswith("| ---")
         ):
-            if re.match(r"\|\s*\d+\s*\|", line.strip()):
+            match = re.match(r"\|\s*(\d+)\s*\|", line.strip())
+            if match:
                 last_day_row_index = i
+                existing_days.add(int(match.group(1)))
 
     if table_start == -1:
         print("Could not find table in README")
@@ -254,7 +257,12 @@ def update_readme():
     )
     offset = 0
 
-    for item, day_num in days_found:
+    # Filter to run only new days
+    days_to_process = [
+        (item, num) for item, num in days_found if num not in existing_days
+    ]
+
+    for item, day_num in days_to_process:
         day_id = f"{day_num:02d}"
         print(f"Benchmarking Day {day_id}...")
 
