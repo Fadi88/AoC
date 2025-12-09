@@ -5,6 +5,7 @@ Advent of Code 2025 - Day 9
 import functools
 import os
 import time
+from itertools import combinations
 
 from shapely.geometry import Polygon, box
 from shapely.prepared import prep
@@ -43,20 +44,16 @@ def read_input() -> str:
         return f.read().strip()
 
 
-def calculate_area(x1: int, y1: int, x2: int, y2: int) -> int:
+def calculate_area(p1: tuple[int, int], p2: tuple[int, int]) -> int:
     """Calculate rectangle area including both corners."""
-    return (abs(x2 - x1) + 1) * (abs(y2 - y1) + 1)
+    return (abs(p2[0] - p1[0]) + 1) * (abs(p2[1] - p1[1]) + 1)
 
 
 @timer
 def part_1(data: str) -> int:
     """Find the largest rectangle using any two red tiles as opposite corners."""
     tiles = [tuple(map(int, line.split(","))) for line in data.splitlines() if line]
-    return max(
-        calculate_area(x1, y1, x2, y2)
-        for i, (x1, y1) in enumerate(tiles)
-        for x2, y2 in tiles[i + 1 :]
-    )
+    return max(calculate_area(p1, p2) for p1, p2 in combinations(tiles, 2))
 
 
 @timer
@@ -67,15 +64,16 @@ def part_2(data: str) -> int:
     prepared_polygon = prep(polygon)
 
     max_area = 0
-    for i, (x1, y1) in enumerate(tiles):
-        for x2, y2 in tiles[i + 1 :]:
-            area = calculate_area(x1, y1, x2, y2)
-            if area <= max_area:
-                continue
+    for p1, p2 in combinations(tiles, 2):
+        area = calculate_area(p1, p2)
+        if area <= max_area:
+            continue
 
-            rectangle = box(min(x1, x2), min(y1, y2), max(x1, x2), max(y1, y2))
-            if prepared_polygon.contains(rectangle):
-                max_area = area
+        rectangle = box(
+            min(p1[0], p2[0]), min(p1[1], p2[1]), max(p1[0], p2[0]), max(p1[1], p2[1])
+        )
+        if prepared_polygon.contains(rectangle):
+            max_area = area
 
     return max_area
 
