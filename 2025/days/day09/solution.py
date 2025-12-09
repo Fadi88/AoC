@@ -43,6 +43,46 @@ def read_input() -> str:
         return f.read().strip()
 
 
+def parse_tiles(data: str) -> list[tuple[int, int]]:
+    """Parse input data into a list of coordinate tuples."""
+    tiles = []
+    for line in data.splitlines():
+        parts = line.split(",")
+        tiles.append((int(parts[0]), int(parts[1])))
+    return tiles
+
+
+def get_normalized_edges(
+    tiles: list[tuple[int, int]],
+) -> list[tuple[int, int, int, int]]:
+    """Convert tiles into a list of normalized edge tuples (min_x, min_y, max_x, max_y)."""
+    edges = []
+    n = len(tiles)
+    for i in range(n - 1):
+        p1 = tiles[i]
+        p2 = tiles[i + 1]
+        edges.append(
+            (
+                min(p1[0], p2[0]),
+                min(p1[1], p2[1]),
+                max(p1[0], p2[0]),
+                max(p1[1], p2[1]),
+            )
+        )
+
+    p_last = tiles[-1]
+    p_first = tiles[0]
+    edges.append(
+        (
+            min(p_last[0], p_first[0]),
+            min(p_last[1], p_first[1]),
+            max(p_last[0], p_first[0]),
+            max(p_last[1], p_first[1]),
+        )
+    )
+    return edges
+
+
 def calculate_area(p1: tuple[int, int], p2: tuple[int, int]) -> int:
     """Calculate rectangle area including both corners."""
     return (abs(p2[0] - p1[0]) + 1) * (abs(p2[1] - p1[1]) + 1)
@@ -93,31 +133,9 @@ def is_fully_contained(
 
 @timer
 def part2_opt(data: str) -> int:
-    """Find the largest rectangle fully contained within the polygon (Go Port)."""
-    tiles = []
-    for line in data.splitlines():
-        parts = line.split(",")
-        tiles.append((int(parts[0]), int(parts[1])))
-
-    edges = []
-    n = len(tiles)
-    for i in range(n - 1):
-        p1 = tiles[i]
-        p2 = tiles[i + 1]
-        edges.append(
-            (min(p1[0], p2[0]), min(p1[1], p2[1]), max(p1[0], p2[0]), max(p1[1], p2[1]))
-        )
-
-    p_last = tiles[-1]
-    p_first = tiles[0]
-    edges.append(
-        (
-            min(p_last[0], p_first[0]),
-            min(p_last[1], p_first[1]),
-            max(p_last[0], p_first[0]),
-            max(p_last[1], p_first[1]),
-        )
-    )
+    """Find the largest rectangle fully contained within the polygon."""
+    tiles = parse_tiles(data)
+    edges = get_normalized_edges(tiles)
 
     result = 0
 
