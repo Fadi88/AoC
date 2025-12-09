@@ -6,7 +6,6 @@ import functools
 import os
 import time
 from itertools import combinations
-
 from shapely.geometry import Polygon, box
 from shapely.prepared import prep
 
@@ -78,11 +77,70 @@ def part_2(data: str) -> int:
     return max_area
 
 
+def is_fully_contained(
+    edges: list[tuple[int, int, int, int]],
+    min_x: int,
+    min_y: int,
+    max_x: int,
+    max_y: int,
+) -> bool:
+    """Check if the rectangle is fully contained."""
+    for e_min_x, e_min_y, e_max_x, e_max_y in edges:
+        if min_x < e_max_x and max_x > e_min_x and min_y < e_max_y and max_y > e_min_y:
+            return False
+    return True
+
+
+@timer
+def part2_opt(data: str) -> int:
+    """Find the largest rectangle fully contained within the polygon (Go Port)."""
+    tiles = []
+    for line in data.splitlines():
+        parts = line.split(",")
+        tiles.append((int(parts[0]), int(parts[1])))
+
+    edges = []
+    n = len(tiles)
+    for i in range(n - 1):
+        p1 = tiles[i]
+        p2 = tiles[i + 1]
+        edges.append(
+            (min(p1[0], p2[0]), min(p1[1], p2[1]), max(p1[0], p2[0]), max(p1[1], p2[1]))
+        )
+
+    p_last = tiles[-1]
+    p_first = tiles[0]
+    edges.append(
+        (
+            min(p_last[0], p_first[0]),
+            min(p_last[1], p_first[1]),
+            max(p_last[0], p_first[0]),
+            max(p_last[1], p_first[1]),
+        )
+    )
+
+    result = 0
+
+    for p1, p2 in combinations(tiles, 2):
+        area = (abs(p1[0] - p2[0]) + 1) * (abs(p1[1] - p2[1]) + 1)
+        if area <= result:
+            continue
+
+        min_x, max_x = (p1[0], p2[0]) if p1[0] < p2[0] else (p2[0], p1[0])
+        min_y, max_y = (p1[1], p2[1]) if p1[1] < p2[1] else (p2[1], p1[1])
+
+        if is_fully_contained(edges, min_x, min_y, max_x, max_y):
+            result = area
+
+    return result
+
+
 def main():
     """Execute the solution for both parts."""
     input_data = read_input()
     part_1(input_data)
     part_2(input_data)
+    part2_opt(input_data)
 
 
 if __name__ == "__main__":
