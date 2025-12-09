@@ -43,6 +43,7 @@ python check.py
 | 06 | [Trash Compactor](https://adventofcode.com/2025/day/6) | [🐍 Solution](2025/days/day06/solution.py) <br> P1: 654µs<br> P2: 1.00ms | [🦀 Solution](2025/days/day06/src/lib.rs) <br> P1: 55µs<br> P2: 121µs |
 | 07 | [Laboratories](https://adventofcode.com/2025/day/7) | [🐍 Solution](2025/days/day07/solution.py) <br> P1: 943µs<br> P2: 1.47ms | [🦀 Solution](2025/days/day07/src/lib.rs) <br> P1: 36µs<br> P2: 36µs |
 | 08 | [Playground](https://adventofcode.com/2025/day/8) | [🐍 Solution](2025/days/day08/solution.py) <br> P1: 140.90ms<br> P2: 147.22ms | [🦀 Solution](2025/days/day08/src/lib.rs) <br> P1: 17.59ms<br> P2: 21.12ms |
+| 09 | [Movie Theater](https://adventofcode.com/2025/day/9) | [🐍 Solution](2025/days/day09/solution.py) <br> P1: ⚡ 13.08ms<br> P2: ⚡ 1.18s<br> P3: ⚡ 249.22ms | [🦀 Solution](2025/days/day09/src/lib.rs) <br> P1: ⚡ 91µs<br> P2: ⚡ 3.91ms |
 
 
 
