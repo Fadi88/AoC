@@ -1,6 +1,4 @@
-"""
-Advent of Code 2025 - Day 10
-"""
+"""Advent of Code Day 10 Solution"""
 
 import os
 import time
@@ -10,164 +8,123 @@ from collections import deque
 import numpy as np
 from scipy.optimize import linprog
 
+TOL = 1e-5
+
 
 def timer(func):
-    """Decorator to measure the execution time of a function."""
+    """Timing decorator."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        start = time.perf_counter()
-        result = func(*args, **kwargs)
-        end = time.perf_counter()
-        print(f"[{func.__name__}] Result: {result}")
-        duration = end - start
-        time_units = {
-            "ns": (1e-6, 1e9),
-            "us": (1e-3, 1e6),
-            "ms": (1, 1e3),
-            "s": (float("inf"), 1),
-        }
-        for unit, (threshold, multiplier) in time_units.items():
-            if duration < threshold:
-                print(f"[{func.__name__}] Time: {duration * multiplier:.4f} {unit}")
-                break
-        return result
+        t0 = time.perf_counter()
+        res = func(*args, **kwargs)
+        dt = time.perf_counter() - t0
+        print(f"[{func.__name__}] Time: {dt*1000:.4f} ms")
+        return res
 
     return wrapper
 
 
-def read_input() -> str:
-    """Read and parse the input file."""
-    input_path = os.path.join(os.path.dirname(__file__), "input.txt")
-    with open(input_path, "r", encoding="utf-8") as f:
+def read_input():
+    """Read input file."""
+    with open(
+        os.path.join(os.path.dirname(__file__), "input.txt"), "r", encoding="utf-8"
+    ) as f:
         return f.read().strip()
 
 
-def solve_machine(machine):
-    """Solve a single machine using bfs."""
-    goal, buttons = machine
-
-    queue = deque([(0, 0)])
-    visited = {0}
-
-    while queue:
-        curr, steps = queue.popleft()
-        if curr == goal:
-            return steps
-
-        for b_mask in buttons:
-            nxt = curr ^ b_mask
-            if nxt not in visited:
-                visited.add(nxt)
-                queue.append((nxt, steps + 1))
-    return 0
-
-
-@timer
-def part_1(data: str) -> int:
-    """Calculate the solution for Part 1."""
+def parse_input(data):
+    """Parse input data into machines."""
     machines = []
-    for l in data.splitlines():
-        ps = l.split(" ")
+    for line in data.splitlines():
+        ps = line.split(" ")
         goal_mask = 0
         for i, c in enumerate(ps[0][1:-1]):
             if c == "#":
                 goal_mask |= 1 << i
 
-        raw_buttons = ast.literal_eval("[" + ",".join(ps[1:-1]) + "]")
+        goal_counters = list(map(int, ps[-1][1:-1].split(",")))
 
+        raw = ast.literal_eval("[" + ",".join(ps[1:-1]) + "]")
         button_masks = []
-        for b in raw_buttons:
-            mask = 0
+        for b in raw:
+            m = 0
             if isinstance(b, int):
-                mask |= 1 << b
+                m |= 1 << b
             else:
                 for bit in b:
-                    mask |= 1 << bit
-            button_masks.append(mask)
-
-        machines.append((goal_mask, button_masks))
-
-    return sum(map(solve_machine, machines))
+                    m |= 1 << bit
+            button_masks.append(m)
+        machines.append((goal_mask, goal_counters, button_masks))
+    return machines
 
 
-def solve_machine_p2(machine):
-    """Solve a single machine using linear programming for Part 2."""
-    goal_counters, buttons_masks = machine
-    num_goals = len(goal_counters)
-    num_buttons = len(buttons_masks)
+def solve_bfs(goal, buttons):
+    """Solve using BFS (Part 1)."""
+    q = deque([(0, 0)])
+    vis = {0}
+    while q:
+        curr, steps = q.popleft()
+        if curr == goal:
+            return steps
+        for b in buttons:
+            nxt = curr ^ b
+            if nxt not in vis:
+                vis.add(nxt)
+                q.append((nxt, steps + 1))
+    return 0
 
-    c = [1] * num_buttons
 
-    shifts = np.arange(num_goals)
-    constraint_matrix = ((np.array(buttons_masks)[:, None] >> shifts) & 1).T.astype(
-        float
-    )
+def solve_p2(goal_vals, buttons):
+    """Solve using Hybrid Linear Solver (Part 2)."""
+    num_rows, num_cols = len(goal_vals), len(buttons)
+    shifts = np.arange(num_rows)
+    # A[i, j] = 1 if button j affects bit i
+    matrix = ((np.array(buttons)[:, None] >> shifts) & 1).T.astype(float)
+    target = np.array(goal_vals, dtype=float)
 
-    target_vector = np.array(goal_counters, dtype=float)
-
-    # Fast Path: Use Least Squares for Deterministic/Overdetermined systems
-    if num_buttons <= num_goals:
+    if num_cols <= num_rows:
         try:
-            x, _, rank, _ = np.linalg.lstsq(
-                constraint_matrix, target_vector, rcond=None
-            )
-            x_rounded = np.round(x).astype(int)
-
+            x, _, rank, _ = np.linalg.lstsq(matrix, target, rcond=None)
+            xr = np.round(x).astype(int)
             if (
-                rank == num_buttons
-                and np.all(x_rounded >= 0)
-                and np.allclose(x, x_rounded, atol=1e-5)
-                and np.allclose(constraint_matrix @ x_rounded, target_vector)
+                rank == num_cols
+                and np.all(xr >= 0)
+                and np.allclose(x, xr, atol=TOL)
+                and np.allclose(matrix @ xr, target)
             ):
-                return int(np.sum(x_rounded))
+                return int(np.sum(xr))
         except np.linalg.LinAlgError:
-            pass  # Fallback to linprog
+            pass
 
     res = linprog(
-        c,
-        A_eq=constraint_matrix,
-        b_eq=target_vector,
+        [1] * num_cols,
+        A_eq=matrix,
+        b_eq=target,
         bounds=(0, None),
         method="highs",
         integrality=True,
     )
-
     return round(res.fun)
 
 
 @timer
-def part_2(data: str) -> int:
-    """Calculate the solution for Part 2."""
-    machines = []
-    for l in data.splitlines():
-        ps = l.split(" ")
+def part_1(machines):
+    """Run Part 1."""
+    return sum(solve_bfs(m[0], m[2]) for m in machines)
 
-        counters_str = ps[-1][1:-1]
-        goal_counters = list(map(int, counters_str.split(",")))
 
-        raw_buttons = ast.literal_eval("[" + ",".join(ps[1:-1]) + "]")
-
-        button_masks = []
-        for b in raw_buttons:
-            mask = 0
-            if isinstance(b, int):
-                mask |= 1 << b
-            else:
-                for bit in b:
-                    mask |= 1 << bit
-            button_masks.append(mask)
-
-        machines.append((goal_counters, button_masks))
-
-    return sum(map(solve_machine_p2, machines))
+@timer
+def part_2(machines):
+    """Run Part 2."""
+    return sum(solve_p2(m[1], m[2]) for m in machines)
 
 
 def main():
-    """Execute the solution for both parts."""
-    input_data = read_input()
-    part_1(input_data)
-    part_2(input_data)
+    """Main execution."""
+    data = parse_input(read_input())
+    print(f"[part_1] Result: {part_1(data)}")
+    print(f"[part_2] Result: {part_2(data)}")
 
 
 if __name__ == "__main__":
