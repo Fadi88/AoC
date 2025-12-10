@@ -5,8 +5,10 @@ Advent of Code 2025 - Day 10
 import os
 import time
 import functools
-
-# pylint: disable=fixme
+import ast
+from collections import deque
+import numpy as np
+from scipy.optimize import linprog
 
 
 def timer(func):
@@ -14,7 +16,6 @@ def timer(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        """Wrapper function to execute the decorated function and print its runtime."""
         start = time.perf_counter()
         result = func(*args, **kwargs)
         end = time.perf_counter()
@@ -42,18 +43,106 @@ def read_input() -> str:
         return f.read().strip()
 
 
+def solve_machine(machine):
+    """Solve a single machine using bfs."""
+    goal, buttons = machine
+
+    queue = deque([(0, 0)])
+    visited = {0}
+
+    while queue:
+        curr, steps = queue.popleft()
+        if curr == goal:
+            return steps
+
+        for b_mask in buttons:
+            nxt = curr ^ b_mask
+            if nxt not in visited:
+                visited.add(nxt)
+                queue.append((nxt, steps + 1))
+    return 0
+
+
 @timer
 def part_1(data: str) -> int:
     """Calculate the solution for Part 1."""
-    # TODO: Solve Part 1
-    return len(data)
+    machines = []
+    for l in data.splitlines():
+        ps = l.split(" ")
+        goal_mask = 0
+        for i, c in enumerate(ps[0][1:-1]):
+            if c == "#":
+                goal_mask |= 1 << i
+
+        raw_buttons = ast.literal_eval("[" + ",".join(ps[1:-1]) + "]")
+
+        button_masks = []
+        for b in raw_buttons:
+            mask = 0
+            if isinstance(b, int):
+                mask |= 1 << b
+            else:
+                for bit in b:
+                    mask |= 1 << bit
+            button_masks.append(mask)
+
+        machines.append((goal_mask, button_masks))
+
+    return sum(map(solve_machine, machines))
+
+
+def solve_machine_p2(machine):
+    """Solve a single machine using linear programming for Part 2."""
+    goal_counters, buttons_masks = machine
+    num_goals = len(goal_counters)
+    num_buttons = len(buttons_masks)
+
+    c = [1] * num_buttons
+
+    shifts = np.arange(num_goals)
+    constraint_matrix = ((np.array(buttons_masks)[:, None] >> shifts) & 1).T.astype(
+        float
+    )
+
+    target_vector = np.array(goal_counters, dtype=float)
+
+    res = linprog(
+        c,
+        A_eq=constraint_matrix,
+        b_eq=target_vector,
+        bounds=(0, None),
+        method="highs",
+        integrality=True,
+    )
+
+    return round(res.fun)
 
 
 @timer
 def part_2(data: str) -> int:
     """Calculate the solution for Part 2."""
-    # TODO: Solve Part 2
-    return len(data)
+    machines = []
+    for l in data.splitlines():
+        ps = l.split(" ")
+
+        counters_str = ps[-1][1:-1]
+        goal_counters = list(map(int, counters_str.split(",")))
+
+        raw_buttons = ast.literal_eval("[" + ",".join(ps[1:-1]) + "]")
+
+        button_masks = []
+        for b in raw_buttons:
+            mask = 0
+            if isinstance(b, int):
+                mask |= 1 << b
+            else:
+                for bit in b:
+                    mask |= 1 << bit
+            button_masks.append(mask)
+
+        machines.append((goal_counters, button_masks))
+
+    return sum(map(solve_machine_p2, machines))
 
 
 def main():
