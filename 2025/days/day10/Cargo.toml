@@ -7,8 +7,6 @@ edition = "2021"
 utils = { workspace = true }
 anyhow = { workspace = true }
 itertools = { workspace = true }
-nalgebra = "0.33"
-minilp = "0.2.2"
 
 [dev-dependencies]
 criterion = { workspace = true }

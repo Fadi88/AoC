@@ -12,15 +12,27 @@ TOL = 1e-5
 
 
 def timer(func):
-    """Timing decorator."""
+    """Decorator to measure the execution time of a function."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        t0 = time.perf_counter()
-        res = func(*args, **kwargs)
-        dt = time.perf_counter() - t0
-        print(f"[{func.__name__}] Time: {dt*1000:.4f} ms")
-        return res
+        """Wrapper function to execute the decorated function and print its runtime."""
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        end = time.perf_counter()
+        print(f"[{func.__name__}] Result: {result}")
+        duration = end - start
+        time_units = {
+            "ns": (1e-6, 1e9),
+            "us": (1e-3, 1e6),
+            "ms": (1, 1e3),
+            "s": (float("inf"), 1),
+        }
+        for unit, (threshold, multiplier) in time_units.items():
+            if duration < threshold:
+                print(f"[{func.__name__}] Time: {duration * multiplier:.4f} {unit}")
+                break
+        return result
 
     return wrapper
 
@@ -79,7 +91,6 @@ def solve_p2(goal_vals, buttons):
     """Solve using Hybrid Linear Solver (Part 2)."""
     num_rows, num_cols = len(goal_vals), len(buttons)
     shifts = np.arange(num_rows)
-    # A[i, j] = 1 if button j affects bit i
     matrix = ((np.array(buttons)[:, None] >> shifts) & 1).T.astype(float)
     target = np.array(goal_vals, dtype=float)
 
