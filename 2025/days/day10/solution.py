@@ -106,6 +106,26 @@ def solve_machine_p2(machine):
 
     target_vector = np.array(goal_counters, dtype=float)
 
+    # Fast Path: Use Least Squares for Deterministic/Overdetermined systems
+    if num_buttons <= num_goals:
+        try:
+            x, _, rank, _ = np.linalg.lstsq(
+                constraint_matrix, target_vector, rcond=None
+            )
+            x_rounded = np.round(x).astype(int)
+
+            # Verify validity: Non-negative, Integer-close, Exact match
+            # CRITICAL: Must be Full Rank (rank == num_buttons) to ensure uniqueness.
+            if (
+                rank == num_buttons
+                and np.all(x_rounded >= 0)
+                and np.allclose(x, x_rounded, atol=1e-5)
+                and np.allclose(constraint_matrix @ x_rounded, target_vector)
+            ):
+                return int(np.sum(x_rounded))
+        except np.linalg.LinAlgError:
+            pass  # Fallback to linprog
+
     res = linprog(
         c,
         A_eq=constraint_matrix,
