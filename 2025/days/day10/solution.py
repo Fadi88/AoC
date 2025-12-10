@@ -114,8 +114,6 @@ def solve_machine_p2(machine):
             )
             x_rounded = np.round(x).astype(int)
 
-            # Verify validity: Non-negative, Integer-close, Exact match
-            # CRITICAL: Must be Full Rank (rank == num_buttons) to ensure uniqueness.
             if (
                 rank == num_buttons
                 and np.all(x_rounded >= 0)
