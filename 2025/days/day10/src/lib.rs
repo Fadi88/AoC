@@ -1,6 +1,5 @@
 use anyhow::Result;
 use std::collections::{HashSet, VecDeque};
-use std::fs;
 
 // based on soltuion by u/RussellDash332
 // https://www.reddit.com/r/adventofcode/comments/1pity70/comment/nt988z4/?context=3
@@ -8,13 +7,6 @@ pub struct Machine {
     pub goal_mask: u32,
     pub goal_counters: Vec<i64>,
     pub button_masks: Vec<u32>,
-}
-
-pub fn part_2() -> Result<String> {
-    let input = fs::read_to_string("input.txt")?;
-    let machines = parse(&input);
-    let total = solve_all(&machines);
-    Ok(total.to_string())
 }
 
 pub fn solve_all(machines: &[Machine]) -> i64 {
@@ -103,13 +95,13 @@ fn simplex(lhs: &[Vec<f64>], c: &[f64]) -> (f64, Option<Vec<f64>>) {
 
     let mut d = vec![vec![0.0; n + 2]; m + 2];
 
-    for i in 0..m {
-        d[i][..=n].copy_from_slice(&lhs[i]);
-        d[i][n + 1] = -1.0;
+    for (d_row, lhs_row) in d.iter_mut().zip(lhs.iter()) {
+        d_row[..=n].copy_from_slice(lhs_row);
+        d_row[n + 1] = -1.0;
     }
 
-    for i in 0..m {
-        d[i].swap(n, n + 1);
+    for row in d.iter_mut().take(m) {
+        row.swap(n, n + 1);
     }
 
     d[m][..n].copy_from_slice(&c[..n]);
@@ -130,11 +122,11 @@ fn simplex(lhs: &[Vec<f64>], c: &[f64]) -> (f64, Option<Vec<f64>>) {
                 }
             }
 
-            for i in 0..n + 2 {
-                d[r][i] *= k;
+            for val in d[r].iter_mut() {
+                *val *= k;
             }
-            for i in 0..m + 2 {
-                d[i][s] *= -k;
+            for row in d.iter_mut() {
+                row[s] *= -k;
             }
             d[r][s] = k;
 
@@ -194,9 +186,9 @@ fn simplex(lhs: &[Vec<f64>], c: &[f64]) -> (f64, Option<Vec<f64>>) {
 
     let mut split_r = 0;
     let mut min_val = d[0][n + 1];
-    for i in 1..m {
-        if d[i][n + 1] < min_val {
-            min_val = d[i][n + 1];
+    for (i, row) in d.iter().enumerate().take(m).skip(1) {
+        if row[n + 1] < min_val {
+            min_val = row[n + 1];
             split_r = i;
         }
     }
@@ -305,9 +297,8 @@ fn solve_lp(machine: &Machine) -> i64 {
 
     let mut matrix = vec![vec![0.0; cols]; rows];
 
-    for j in 0..num_buttons {
-        let row_idx = rows - 1 - j;
-        matrix[row_idx][j] = -1.0;
+    for (j, row) in matrix.iter_mut().rev().take(num_buttons).enumerate() {
+        row[j] = -1.0;
     }
 
     for (j, &mask) in machine.button_masks.iter().enumerate() {
@@ -329,9 +320,14 @@ fn solve_lp(machine: &Machine) -> i64 {
     solve_ilp_bnb(matrix, &obj_coeffs)
 }
 
-pub fn part_1() -> Result<String> {
-    let input = fs::read_to_string("input.txt")?;
-    let machines = parse(&input);
+pub fn part_2(input: &str) -> Result<String> {
+    let machines = parse(input);
+    let total = solve_all(&machines);
+    Ok(total.to_string())
+}
+
+pub fn part_1(input: &str) -> Result<String> {
+    let machines = parse(input);
     let total: i64 = machines.iter().map(solve_bfs).sum();
     Ok(total.to_string())
 }
@@ -339,14 +335,17 @@ pub fn part_1() -> Result<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs;
 
     #[test]
     fn test_part_1() {
-        println!("Part 1 result: {}", part_1().unwrap());
+        let input = fs::read_to_string("input.txt").unwrap();
+        println!("Part 1 result: {}", part_1(&input).unwrap());
     }
 
     #[test]
     fn test_part_2() {
-        println!("Part 2 result: {}", part_2().unwrap());
+        let input = fs::read_to_string("input.txt").unwrap();
+        println!("Part 2 result: {}", part_2(&input).unwrap());
     }
 }
