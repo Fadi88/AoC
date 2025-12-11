@@ -2,7 +2,6 @@ use anyhow::Result;
 use std::collections::HashMap;
 use std::fs;
 
-// Adjacency list: node -> list of neighbors
 type Graph<'a> = HashMap<&'a str, Vec<&'a str>>;
 
 pub fn parse(input: &str) -> Graph<'_> {
