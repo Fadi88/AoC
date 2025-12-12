@@ -1,0 +1,20 @@
+[package]
+name = "day12"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+utils = { workspace = true }
+anyhow = { workspace = true }
+itertools = { workspace = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bin]]
+name = "day12"
+path = "src/bin/day12.rs"
+
+[[bench]]
+name = "bench"
+harness = false
