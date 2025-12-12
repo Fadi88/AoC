@@ -43,28 +43,42 @@ def read_input() -> str:
 
 
 def is_region_valid(region: str, shapes: list[tuple[int, int]]) -> bool:
-    """Check if a region is valid."""
-    ds, req = region.split(": ")
-    w, h = ds.split("x")
-    available_size = int(w) * int(h)
-    required_gifts = list(map(int, req.split(" ")))
-    required_size = sum(q * shapes[i][1] for i, q in enumerate(required_gifts))
-    return available_size >= required_size
+    """Check if a region is valid based on area heuristic."""
+    dimensions_str, requirements_str = region.split(": ")
+    width, height = dimensions_str.split("x")
+
+    available_area = int(width) * int(height)
+    required_counts = list(map(int, requirements_str.split(" ")))
+
+    required_area = sum(
+        count * shapes[shape_id][1] for shape_id, count in enumerate(required_counts)
+    )
+
+    return available_area >= required_area
 
 
 @timer
 def part_1(data: str) -> int:
     """Calculate the solution for Part 1."""
-    ps = data.split("\n\n")
+    chunks = data.split("\n\n")
+    shape_chunks = chunks[:-1]
+    region_chunk = chunks[-1]
 
     shapes = []
-    for p in ps[:-1]:
-        lines = "".join(p.split("\n")[1:]).replace("\n", "")
-        shapes.append(
-            (int(lines.replace("#", "1").replace(".", "0"), 2), lines.count("#"))
-        )
+    for chunk in shape_chunks:
+        shape_lines = "".join(chunk.split("\n")[1:])
+        flattened_shape = shape_lines.replace("\n", "")
 
-    return sum(is_region_valid(region, shapes) for region in ps[-1].split("\n"))
+        bitmask = int(flattened_shape.replace("#", "1").replace(".", "0"), 2)
+        area = flattened_shape.count("#")
+        # shape (bitmask for the shape, total occupied area by the shape(number of #))
+        shapes.append((bitmask, area))
+
+    valid_region_count = sum(
+        is_region_valid(region_line, shapes) for region_line in region_chunk.split("\n")
+    )
+
+    return valid_region_count
 
 
 def main():
