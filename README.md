@@ -45,6 +45,7 @@ python check.py
 | 08 | [Playground](https://adventofcode.com/2025/day/8) | [🐍 Solution](2025/days/day08/solution.py) <br> P1: 140.90ms<br> P2: 147.22ms | [🦀 Solution](2025/days/day08/src/lib.rs) <br> P1: 17.59ms<br> P2: 21.12ms |
 | 09 | [Movie Theater](https://adventofcode.com/2025/day/9) | [🐍 Solution](2025/days/day09/solution.py) <br> P1: ⚡ 13.08ms<br> P2: ⚡ 1.18s<br> P3: ⚡ 249.22ms | [🦀 Solution](2025/days/day09/src/lib.rs) <br> P1: ⚡ 91µs<br> P2: ⚡ 3.91ms |
 | 10 | [Factory](https://adventofcode.com/2025/day/10) | [🐍 Solution](2025/days/day10/solution.py) <br> P1: ⚡ 11.64ms<br> P2: ⚡ 103.18ms | [🦀 Solution](2025/days/day10/src/lib.rs) <br> P1: ⚡ 19µs<br> P2: ⚡ 19µs |
+| 11 | [Reactor](https://adventofcode.com/2025/day/11) | [🐍 Solution](2025/days/day11/solution.py) <br> P1: ⚡ 32µs<br> P2: ⚡ 538µs | [🦀 Solution](2025/days/day11/src/lib.rs) <br> P1: ⚡ 138µs<br> P2: ⚡ 311µs |
 
 
 
