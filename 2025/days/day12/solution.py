@@ -51,7 +51,7 @@ def is_region_valid(region: str, shapes: list[tuple[int, int]]) -> bool:
     required_counts = list(map(int, requirements_str.split(" ")))
 
     required_area = sum(
-        count * shapes[shape_id][1] for shape_id, count in enumerate(required_counts)
+        count * shape[1] for count, shape in zip(required_counts, shapes)
     )
 
     return available_area >= required_area
@@ -69,7 +69,7 @@ def part_1(data: str) -> int:
         shape_lines = "".join(chunk.split("\n")[1:])
         flattened_shape = shape_lines.replace("\n", "")
 
-        bitmask = int(flattened_shape.replace("#", "1").replace(".", "0"), 2)
+        bitmask = int(flattened_shape.translate(str.maketrans("#.", "10")), 2)
         area = flattened_shape.count("#")
         # shape (bitmask for the shape, total occupied area by the shape(number of #))
         shapes.append((bitmask, area))
