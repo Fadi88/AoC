@@ -42,25 +42,35 @@ def read_input() -> str:
         return f.read().strip()
 
 
+def is_region_valid(region: str, shapes: list[tuple[int, int]]) -> bool:
+    """Check if a region is valid."""
+    ds, req = region.split(": ")
+    w, h = ds.split("x")
+    available_size = int(w) * int(h)
+    required_gifts = list(map(int, req.split(" ")))
+    required_size = sum(q * shapes[i][1] for i, q in enumerate(required_gifts))
+    return available_size >= required_size
+
+
 @timer
 def part_1(data: str) -> int:
     """Calculate the solution for Part 1."""
-    # TODO: Solve Part 1
-    return len(data)
+    ps = data.split("\n\n")
 
+    shapes = []
+    for p in ps[:-1]:
+        lines = "".join(p.split("\n")[1:]).replace("\n", "")
+        shapes.append(
+            (int(lines.replace("#", "1").replace(".", "0"), 2), lines.count("#"))
+        )
 
-@timer
-def part_2(data: str) -> int:
-    """Calculate the solution for Part 2."""
-    # TODO: Solve Part 2
-    return len(data)
+    return sum(is_region_valid(region, shapes) for region in ps[-1].split("\n"))
 
 
 def main():
     """Execute the solution for both parts."""
     input_data = read_input()
     part_1(input_data)
-    part_2(input_data)
 
 
 if __name__ == "__main__":
