@@ -1,10 +1,11 @@
 use anyhow::Result;
-use day12::{part_1, part_2};
-use utils::run_part;
+use day12::part_1;
+use std::time::Instant;
 
 fn main() -> Result<()> {
-    run_part("Part 1", || part_1().unwrap());
-    run_part("Part 2", || part_2().unwrap());
-
+    let start = Instant::now();
+    let result = part_1()?;
+    println!("Part 1 Result: {}", result);
+    println!("Time: {:?}", start.elapsed());
     Ok(())
 }
