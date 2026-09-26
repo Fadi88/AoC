@@ -17,8 +17,8 @@ def profiler(method):
         time_len = min(9, ((len(str(duration))-1)//3)*3)
         time_conversion = {9: 'seconds', 6: 'milliseconds',
                            3: 'microseconds', 0: 'nanoseconds'}
-        print(f"Method {method.__name__} took : {
-              duration / (10**time_len)} {time_conversion[time_len]}")
+        print(f"Method {method.__name__} took : "
+              f"{duration / (10**time_len)} {time_conversion[time_len]}")
         return ret
 
     return wrapper_method

@@ -26,8 +26,8 @@ def create_day_folder(day_number):
                 found_day = True
             f.write(line)
         if not found_day:
-            f.write(f"\n[[bin]]\nname=\"day{
-                    day_str}\"\npath=\"day{day_str}/main.rs\"\n")
+            f.write(f"\n[[bin]]\nname=\"day{day_str}\"\n"
+                    f"path=\"day{day_str}/main.rs\"\n")
 
     subprocess.run(["git", "add", day_folder])
     subprocess.run(["git", "add", "Cargo.toml"])
