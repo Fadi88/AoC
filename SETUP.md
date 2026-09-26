@@ -68,12 +68,15 @@ cargo bench -p day01
 ```
 
 ### Updating the Benchmark Table
-`update_benchmarks.py` runs the Python solution and `cargo bench` for each day and writes the timings into the README table. By default it only adds days that have no row yet; pass day numbers to re-benchmark existing ones:
+Every number in the README table comes from `update_benchmarks.py`; don't edit them by hand. For each day it runs the Python solution 5 times and takes the median of each part, and runs `cargo bench --bench bench` for the Rust version (Criterion's estimate). Missing inputs are downloaded first.
 
 ```bash
+python update_benchmarks.py --all  # re-run every day (what the README shows)
 python update_benchmarks.py        # new days only
 python update_benchmarks.py 1 2 3  # re-run days 1-3
 ```
+
+Below the table the script writes the date, CPU, OS, Python and rustc versions it measured with, plus the command it was run with. Timings depend on the machine, so compare numbers from the same setup.
 
 ### Legacy Rust (2021-2024)
 Each of these years is a single Cargo package with one binary per day. The inputs are embedded at compile time, so `dayXX/input.txt` must exist before building. Navigate to the year folder and run:
@@ -117,7 +120,15 @@ cmake --build . --target day01
 
 ## 📥 Fetching Inputs automatically
 
-The 2025 tooling uses `advent-of-code-data` to automatically fetch your puzzle inputs. Inputs are git-ignored and should not be committed.
+The 2025 tooling uses `advent-of-code-data` to automatically fetch your puzzle inputs.
+
+Advent of Code asks that puzzle inputs aren't shared, so they must never be committed. `.gitignore` covers `input.txt`, `.env` and output generated from inputs, and a pre-commit hook refuses them even if they're force-added. Enable it once per clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+CI runs the same check against every tracked file.
 
 1.  **Install the tool** (also included in `requirements.txt`):
     ```bash

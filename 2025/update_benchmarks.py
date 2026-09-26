@@ -2,11 +2,19 @@
 Script to run benchmarks for AoC solutions and update the README.md with the results.
 """
 
+import argparse
 import os
+import platform
 import re
+import statistics
 import subprocess
 import sys
 import urllib.request
+from datetime import date
+
+# Python timings are the median of this many runs; Rust uses Criterion's estimate.
+PYTHON_RUNS = 5
+ENV_MARKER = "<!-- benchmark-env -->"
 
 
 def strip_ansi(text):
@@ -35,47 +43,46 @@ def get_day_title(day_num, year=2025):
     return None
 
 
-def run_python(day_dir):
-    """Runs the Python solution and parses execution time."""
-    # pylint: disable=too-many-nested-blocks
-    try:
-        result = subprocess.run(
-            [sys.executable, "solution.py"],
-            cwd=day_dir,
-            capture_output=True,
-            text=True,
-            timeout=10,
-            check=False,
-        )
+def parse_python_times(output):
+    """Parses the "Time: <value> <unit>" lines printed by a solution, in ms."""
+    scale = {"ns": 1e-6, "us": 1e-3, "µs": 1e-3, "ms": 1.0, "s": 1000.0}
+    times = []
+    for line in output.splitlines():
+        if "Time:" not in line:
+            continue
+        parts = line.split("Time:")[1].split()
+        if len(parts) >= 2 and parts[1] in scale:
+            try:
+                times.append(float(parts[0]) * scale[parts[1]])
+            except ValueError:
+                pass
+    return times
+
+
+def run_python(day_dir, runs=PYTHON_RUNS):
+    """Runs the Python solution several times and returns the median time per part."""
+    all_runs = []
+    for _ in range(runs):
+        try:
+            result = subprocess.run(
+                [sys.executable, "solution.py"],
+                cwd=day_dir,
+                capture_output=True,
+                text=True,
+                timeout=60,
+                check=False,
+            )
+        except (subprocess.SubprocessError, OSError) as e:
+            print(f"Error running Python for {day_dir}: {e}")
+            return []
         if result.returncode != 0:
             return []
+        all_runs.append(parse_python_times(result.stdout))
 
-        output = result.stdout
-        times = []
-        for line in output.splitlines():
-            if "Time:" in line:
-                try:
-                    parts = line.split("Time:")[1].strip().split()
-                    if len(parts) >= 2:
-                        val = float(parts[0])
-                        unit = parts[1]
-                        if unit in ("us", "µs"):
-                            val /= 1000.0
-                        elif unit == "s":
-                            val *= 1000.0
-                        # ns -> / 1000000.0 if needed, but handled in rust block usually
-                        # If python script outputs ns, add logic here:
-                        elif unit == "ns":
-                            val /= 1000000.0
-
-                        times.append(val)
-                except ValueError:
-                    pass
-
-        return times
-    except (subprocess.SubprocessError, OSError, ValueError, IndexError) as e:
-        print(f"Error running Python for {day_dir}: {e}")
+    # Every run should report the same number of parts
+    if not all_runs or len({len(r) for r in all_runs}) != 1:
         return []
+    return [statistics.median(part) for part in zip(*all_runs)]
 
 
 def run_rust(year_dir, day_name):
@@ -202,7 +209,56 @@ def ensure_input(day_num, day_dir):
         print(f"Failed to download input: {e}")
 
 
-def update_readme(rerun_days=None):
+def cpu_name():
+    """Returns a readable CPU model name, falling back to platform.processor()."""
+    try:
+        if sys.platform == "win32":
+            import winreg  # pylint: disable=import-outside-toplevel
+
+            key = winreg.OpenKey(
+                winreg.HKEY_LOCAL_MACHINE,
+                r"HARDWARE\DESCRIPTION\System\CentralProcessor\0",
+            )
+            return winreg.QueryValueEx(key, "ProcessorNameString")[0].strip()
+        if sys.platform == "darwin":
+            return subprocess.run(
+                ["sysctl", "-n", "machdep.cpu.brand_string"],
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout.strip()
+        with open("/proc/cpuinfo", encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("model name"):
+                    return line.split(":", 1)[1].strip()
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return platform.processor() or "unknown CPU"
+
+
+def rustc_version():
+    """Returns the rustc version string, e.g. "rustc 1.91.1"."""
+    try:
+        out = subprocess.run(
+            ["rustc", "--version"], capture_output=True, text=True, check=True
+        ).stdout
+        return " ".join(out.split()[:2])
+    except (OSError, subprocess.SubprocessError):
+        return "rustc (unknown version)"
+
+
+def environment_line(command):
+    """Describes where and how the benchmarks were measured."""
+    return (
+        f"{ENV_MARKER} _Measured {date.today().isoformat()} on {cpu_name()}, "
+        f"{platform.system()} {platform.version()}. "
+        f"Python {platform.python_version()}: median of {PYTHON_RUNS} runs. "
+        f"{rustc_version()}: Criterion estimate (`cargo bench --bench bench`). "
+        f"Reproduce with `cd 2025 && {command}`._"
+    )
+
+
+def update_readme(rerun_days=None, command="python update_benchmarks.py --all"):
     """Updates the README.md file with benchmark results.
 
     New days are always benchmarked; days listed in `rerun_days` are
@@ -325,19 +381,51 @@ def update_readme(rerun_days=None):
             lines.insert(insert_base_index + offset, new_row)
             offset += 1
 
-    content = "\n".join(lines)
+    # Record the environment the numbers came from, right below the table
+    if days_to_process:
+        env_line = environment_line(command)
+        env_index = next(
+            (i for i, line in enumerate(lines) if line.startswith(ENV_MARKER)), -1
+        )
+        if env_index != -1:
+            lines[env_index] = env_line
+        else:
+            last_row = max(
+                i for i, line in enumerate(lines) if re.match(r"\|\s*\d+\s*\|", line)
+            )
+            lines[last_row + 1 : last_row + 1] = ["", env_line]
+
+    content = "\n".join(lines) + "\n"
     with open(readme_path, "w", encoding="utf-8") as f:
         f.write(content)
 
     print("README updated successfully!")
 
 
-if __name__ == "__main__":
-    # Usage: python update_benchmarks.py [day ...]
-    # With no arguments only new days are benchmarked; pass day numbers to
-    # re-benchmark days that already have a row.
+def main():
+    """Parses arguments and updates the README."""
+    parser = argparse.ArgumentParser(
+        description="Benchmark the 2025 solutions and update the README table."
+    )
+    parser.add_argument(
+        "days", nargs="*", type=int, help="days to re-benchmark (new days always run)"
+    )
+    parser.add_argument(
+        "--all", action="store_true", help="re-benchmark every day"
+    )
+    args = parser.parse_args()
+
     try:
         sys.stdout.reconfigure(encoding="utf-8")
     except AttributeError:
         pass
-    update_readme(int(arg) for arg in sys.argv[1:])
+
+    rerun = range(1, 26) if args.all else args.days
+    command = "python update_benchmarks.py " + (
+        "--all" if args.all else " ".join(map(str, args.days))
+    )
+    update_readme(rerun, command.strip())
+
+
+if __name__ == "__main__":
+    main()
