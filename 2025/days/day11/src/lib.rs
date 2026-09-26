@@ -1,6 +1,5 @@
 use anyhow::Result;
 use std::collections::HashMap;
-use std::fs;
 
 type Graph<'a> = HashMap<&'a str, Vec<&'a str>>;
 
@@ -40,17 +39,15 @@ fn count_paths<'a>(
     total
 }
 
-pub fn part_1() -> Result<String> {
-    let input = fs::read_to_string("input.txt")?;
-    let grid = parse(&input);
+pub fn part_1(input: &str) -> Result<String> {
+    let grid = parse(input);
     let mut memo = HashMap::new();
     let result = count_paths("you", "out", &grid, &mut memo);
     Ok(result.to_string())
 }
 
-pub fn part_2() -> Result<String> {
-    let input = fs::read_to_string("input.txt")?;
-    let grid = parse(&input);
+pub fn part_2(input: &str) -> Result<String> {
+    let grid = parse(input);
     let mut memo = HashMap::new();
 
     let p1 = count_paths("svr", "dac", &grid, &mut memo)
@@ -68,16 +65,20 @@ pub fn part_2() -> Result<String> {
 mod tests {
     use super::*;
 
+    fn input() -> String {
+        std::fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/input.txt")).unwrap()
+    }
+
     #[test]
     fn test_part_1() {
-        let result = part_1().unwrap();
+        let result = part_1(&input()).unwrap();
         println!("Part 1 result: {}", result);
         assert!(!result.is_empty());
     }
 
     #[test]
     fn test_part_2() {
-        let result = part_2().unwrap();
+        let result = part_2(&input()).unwrap();
         println!("Part 2 result: {}", result);
         assert!(!result.is_empty());
     }

@@ -101,18 +101,20 @@ pub fn part_2(input: &str) -> Result<String> {
 mod tests {
     use super::*;
 
-    const INPUT: &str = include_str!("../input.txt");
+    fn input() -> String {
+        std::fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/input.txt")).unwrap()
+    }
 
     #[test]
     fn test_part_1() {
-        let result = part_1(INPUT).unwrap();
+        let result = part_1(&input()).unwrap();
         println!("Part 1 result: {}", result);
         assert!(!result.is_empty());
     }
 
     #[test]
     fn test_part_2() {
-        let result = part_2(INPUT).unwrap();
+        let result = part_2(&input()).unwrap();
         println!("Part 2 result: {}", result);
         assert!(!result.is_empty());
     }

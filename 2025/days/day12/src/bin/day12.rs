@@ -1,11 +1,13 @@
 use anyhow::Result;
 use day12::part_1;
-use std::time::Instant;
+use utils::run_part;
 
 fn main() -> Result<()> {
-    let start = Instant::now();
-    let result = part_1()?;
-    println!("Part 1 Result: {}", result);
-    println!("Time: {:?}", start.elapsed());
+    // Read input for the current day (automatically found relative to the crate)
+    let input_path = concat!(env!("CARGO_MANIFEST_DIR"), "/input.txt");
+    let input = utils::read_input_from_file(input_path)?;
+
+    run_part("Part 1", || part_1(&input).unwrap());
+
     Ok(())
 }

@@ -1,5 +1,4 @@
 use anyhow::Result;
-use std::fs;
 
 type Shape = (u128, usize);
 
@@ -64,9 +63,8 @@ fn is_region_valid(region: &str, shapes: &[Shape]) -> bool {
     false
 }
 
-pub fn part_1() -> Result<String> {
-    let input = fs::read_to_string("input.txt")?;
-    let (shapes, region_lines) = parse(&input);
+pub fn part_1(input: &str) -> Result<String> {
+    let (shapes, region_lines) = parse(input);
 
     let count = region_lines
         .iter()
@@ -80,9 +78,13 @@ pub fn part_1() -> Result<String> {
 mod tests {
     use super::*;
 
+    fn input() -> String {
+        std::fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/input.txt")).unwrap()
+    }
+
     #[test]
     fn test_part_1() {
-        let result = part_1().unwrap();
+        let result = part_1(&input()).unwrap();
         assert_eq!(result, "448");
     }
 }

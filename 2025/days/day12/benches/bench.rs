@@ -1,8 +1,11 @@
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use day12::part_1;
 
 fn criterion_benchmark(c: &mut Criterion) {
-    c.bench_function("part_1", |b| b.iter(|| part_1()));
+    let input_path = concat!(env!("CARGO_MANIFEST_DIR"), "/input.txt");
+    let input = utils::read_input_from_file(input_path).expect("Failed to read input");
+
+    c.bench_function("part_1", |b| b.iter(|| part_1(black_box(&input))));
 }
 
 criterion_group!(benches, criterion_benchmark);
