@@ -16,3 +16,8 @@ __pycache__/
 # Puzzle inputs and secrets (AoC asks that inputs are not redistributed)
 input.txt
 .env
+
+# Output generated from inputs
+output.txt
+log.txt
+*.log

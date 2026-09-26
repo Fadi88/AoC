@@ -12,6 +12,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Make sure no puzzle inputs are tracked
+        run: sh .githooks/pre-commit --all
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:

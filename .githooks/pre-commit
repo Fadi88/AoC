@@ -1,0 +1,22 @@
+#!/bin/sh
+# Refuse to commit puzzle inputs, generated output or secrets.
+# Advent of Code asks that puzzle inputs are not shared publicly.
+#
+# Enable once per clone:  git config core.hooksPath .githooks
+# CI runs it with --all to check every tracked file.
+
+pattern='(^|/)(input\.txt|\.env|output\.txt|log\.txt|log|[^/]*\.log)$'
+
+if [ "$1" = "--all" ]; then
+    files=$(git ls-files)
+else
+    files=$(git diff --cached --name-only --diff-filter=ACMR)
+fi
+
+bad=$(printf '%s\n' "$files" | grep -E "$pattern")
+if [ -n "$bad" ]; then
+    echo "Refusing to commit puzzle inputs or generated files:" >&2
+    printf '%s\n' "$bad" | sed 's/^/  /' >&2
+    echo "Remove them with: git rm --cached <file>" >&2
+    exit 1
+fi
