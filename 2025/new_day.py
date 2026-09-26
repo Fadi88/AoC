@@ -118,9 +118,6 @@ def main():
     fetch_input(day_num, os.path.join(new_day_dir, "input.txt"))
 
     print(f"Successfully created {day_str}!")
-    print(
-        "Don't forget to add it to the workspace members in Cargo.toml if not using a glob!"
-    )
 
 
 if __name__ == "__main__":

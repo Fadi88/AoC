@@ -1,13 +1,15 @@
 """Plot the input polygon and save as JPG"""
 
-import matplotlib.pyplot as plt
 import os
+
+import matplotlib.pyplot as plt
 from shapely.geometry import Polygon, box
 from shapely.prepared import prep
 
 
-def calculate_area(p1, p2):
-    return (abs(p2[0] - p1[0]) + 1) * (abs(p2[1] - p1[1]) + 1)
+def calculate_area(a, b):
+    """Area of the inclusive tile rectangle spanned by corners a and b."""
+    return (abs(b[0] - a[0]) + 1) * (abs(b[1] - a[1]) + 1)
 
 
 # Read input

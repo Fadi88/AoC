@@ -5,6 +5,7 @@ Script to run benchmarks for AoC solutions and update the README.md with the res
 import os
 import re
 import subprocess
+import sys
 import urllib.request
 
 
@@ -39,7 +40,7 @@ def run_python(day_dir):
     # pylint: disable=too-many-nested-blocks
     try:
         result = subprocess.run(
-            ["python", "solution.py"],
+            [sys.executable, "solution.py"],
             cwd=day_dir,
             capture_output=True,
             text=True,
@@ -80,13 +81,10 @@ def run_python(day_dir):
 def run_rust(year_dir, day_name):
     """Runs the Rust solution benchmarks and parses execution time."""
     try:
-        # Run cargo bench
-        # We need to run it for the specific day's library,
-        # but cargo bench usually runs all benches in workspace
-        # unless filtered. The user's bench.rs is inside the package.
-        # Command: cargo bench -p dayXX
+        # Only run the Criterion target: plain `cargo bench -p dayXX` also
+        # builds and runs the (empty) libtest harnesses of the lib and bin.
         result = subprocess.run(
-            ["cargo", "bench", "-p", day_name],
+            ["cargo", "bench", "-p", day_name, "--bench", "bench"],
             cwd=year_dir,
             capture_output=True,
             encoding="utf-8",
@@ -159,11 +157,13 @@ def format_time(ms):
     """Formats a millisecond value into a specific unit string."""
     if ms is None:
         return "N/A"
-    if ms < 0.001:
+    # Thresholds sit just below each unit boundary so rounding never
+    # produces values like "1000µs" instead of "1.00ms".
+    if ms < 0.0005:
         return f"{ms*1000000:.0f}ns"
-    if ms < 1:
+    if ms < 0.9995:
         return f"{ms*1000:.0f}µs"
-    if ms >= 1000:
+    if ms >= 999.995:
         return f"{ms/1000:.2f}s"
     return f"{ms:.2f}ms"
 
@@ -202,8 +202,12 @@ def ensure_input(day_num, day_dir):
         print(f"Failed to download input: {e}")
 
 
-def update_readme():
-    """Updates the README.md file with benchmark results."""
+def update_readme(rerun_days=None):
+    """Updates the README.md file with benchmark results.
+
+    New days are always benchmarked; days listed in `rerun_days` are
+    re-benchmarked even if they already have a row in the table.
+    """
     # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     base_dir = os.path.dirname(os.path.abspath(__file__))
     readme_path = os.path.join(os.path.dirname(base_dir), "README.md")
@@ -257,9 +261,12 @@ def update_readme():
     )
     offset = 0
 
-    # Filter to run only new days
+    # Run new days, plus any existing days explicitly requested
+    rerun_days = set(rerun_days or ())
     days_to_process = [
-        (item, num) for item, num in days_found if num not in existing_days
+        (item, num)
+        for item, num in days_found
+        if num not in existing_days or num in rerun_days
     ]
 
     for item, day_num in days_to_process:
@@ -293,14 +300,23 @@ def update_readme():
         py_col = f"{py_link} <br> {py_cell_text}"
         rs_col = f"{rs_link} <br> {rs_cell_text}"
 
-        new_row = f"| {day_id} | {display_title} | {py_col} | {rs_col} |"
-
         # Check if row exists
         row_index = -1
         for i, line in enumerate(lines):
             if line.strip().startswith(f"| {day_id} |"):
                 row_index = i
                 break
+
+        # Keep the previous timings for a language whose run failed
+        if row_index != -1:
+            old_cells = lines[row_index].strip().strip("|").split(" | ")
+            if len(old_cells) == 4:
+                if not py_times:
+                    py_col = old_cells[2].strip()
+                if not rs_times:
+                    rs_col = old_cells[3].strip()
+
+        new_row = f"| {day_id} | {display_title} | {py_col} | {rs_col} |"
 
         if row_index != -1:
             lines[row_index] = new_row
@@ -317,10 +333,11 @@ def update_readme():
 
 
 if __name__ == "__main__":
-    import sys
-
+    # Usage: python update_benchmarks.py [day ...]
+    # With no arguments only new days are benchmarked; pass day numbers to
+    # re-benchmark days that already have a row.
     try:
         sys.stdout.reconfigure(encoding="utf-8")
     except AttributeError:
         pass
-    update_readme()
+    update_readme(int(arg) for arg in sys.argv[1:])
