@@ -1,109 +1,145 @@
-import os
+"""
+Checks that every Advent of Code year in the repository has a solution for
+each day, and that Python solutions define the expected part functions.
+
+Supported layouts:
+
+    2015/day01/code.py            Python (2015-2024)
+    2019/day01/day.cpp            C++ (2018, 2019)
+    2021/day01/main.rs            Rust (2021-2024)
+    2025/days/day01/solution.py   Python + Rust workspace (2025+)
+    2025/days/day01/src/lib.rs
+
+Days may be named day01 or day1. The final day of each year only has one
+part, so only part 1 is required there. A single function solving both
+parts (e.g. both_part or part_1_2) is also accepted.
+
+Usage: python check.py
+"""
+
 import ast
+import os
+import re
 
-def check_project_completeness(project_path):
-    """
-    Checks the completeness of a project with the following structure:
-
-    project_path/
-        2015/
-            day01/ or day1/
-                code.py  or any .cpp file
-            day02/ or day2/
-                code.py  or any .cpp file
-            ...
-            day25/
-                code.py  or any .cpp file
-        2016/
-            day01/ or day1/
-                code.py  or any .cpp file
-            ...
-        ...
-        2023/
-            day01/ or day1/
-                code.py  or any .cpp file
-            ...
-            day25/
-                code.py  or any .cpp file
-
-    Each code.py should contain two functions: part1 or part_1 and part2 or part_2,
-    except for day25, which should only contain part1 or part_1.
-    If any .cpp file is present, code.py is not required and will not be checked.
-
-    Args:
-      project_path: The path to the project directory.
-    """
-
-    errors = {"missing_folders": [], "missing_files": [], "missing_functions": []}
-
-    for year in range(2015, 2024):
-        check_year(year, project_path, errors)
-
-    # Print grouped errors
-    if errors["missing_folders"]:
-        print("Missing folders:")
-        for folder in errors["missing_folders"]:
-            print(f"  - {folder}")
-
-    if errors["missing_files"]:
-        print("\nMissing files:")
-        for file in errors["missing_files"]:
-            print(f"  - {file}")
-
-    if errors["missing_functions"]:
-        print("\nMissing functions:")
-        for function in errors["missing_functions"]:
-            print(f"  - {function}")
+PYTHON_FILES = ("code.py", "solution.py")
+SOLUTION_EXTENSIONS = (".py", ".cpp", ".rs", ".go")
+# Some days solve both parts in a single function.
+COMBINED_PART_FUNCTIONS = {"both_part", "both_parts", "part_1_2", "part12"}
+# Starting in 2025, Advent of Code runs for 12 days instead of 25.
+SHORT_EVENT_FROM = 2025
 
 
-def check_year(year, project_path, errors):
-    """Checks a single year for completeness."""
-    year_path = os.path.join(project_path, str(year))
-    if not os.path.exists(year_path):
-        errors["missing_folders"].append(f"Missing year folder: {year}")
+def days_in_year(year):
+    """Returns the number of puzzle days for the given year."""
+    return 12 if year >= SHORT_EVENT_FROM else 25
+
+
+def find_years(project_path):
+    """Returns the sorted list of year folders in the project."""
+    return sorted(
+        int(name)
+        for name in os.listdir(project_path)
+        if re.fullmatch(r"\d{4}", name)
+        and os.path.isdir(os.path.join(project_path, name))
+    )
+
+
+def find_day_dir(year_path, day):
+    """Returns the folder for a day, or None if it does not exist."""
+    for parent in (os.path.join(year_path, "days"), year_path):
+        for name in (f"day{day:02d}", f"day{day}"):
+            path = os.path.join(parent, name)
+            if os.path.isdir(path):
+                return path
+    return None
+
+
+def has_solution(day_path):
+    """Checks whether a day folder contains any solution source file."""
+    for _, _, files in os.walk(day_path):
+        if any(f.endswith(SOLUTION_EXTENSIONS) for f in files):
+            return True
+    return False
+
+
+def check_python_parts(py_path, last_day, errors):
+    """Checks that a Python solution defines the required part functions."""
+    try:
+        with open(py_path, "r", encoding="utf-8") as f:
+            tree = ast.parse(f.read())
+    except SyntaxError as e:
+        errors["syntax_errors"].append(f"{py_path}: {e}")
         return
 
-    for day in range(1, 26):
-        check_day(year, day, year_path, errors)
+    names = {
+        node.name
+        for node in ast.walk(tree)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+
+    if names & COMBINED_PART_FUNCTIONS:
+        return
+
+    required = [1] if last_day else [1, 2]
+    for part in required:
+        if f"part{part}" not in names and f"part_{part}" not in names:
+            errors["missing_functions"].append(
+                f"Missing 'part{part}' or 'part_{part}' in {py_path}"
+            )
 
 
 def check_day(year, day, year_path, errors):
     """Checks a single day for completeness."""
-    day_folder_1 = f"day{day:02d}"
-    day_folder_2 = f"day{day}"
-    day_path_1 = os.path.join(year_path, day_folder_1)
-    day_path_2 = os.path.join(year_path, day_folder_2)
-
-    if not os.path.exists(day_path_1) and not os.path.exists(day_path_2):
-        errors["missing_folders"].append(f"Missing day folder: {year}/{day_folder_1} or {year}/{day_folder_2}")
+    day_path = find_day_dir(year_path, day)
+    if day_path is None:
+        errors["missing_folders"].append(f"{year}/day{day:02d}")
         return
 
-    day_path = day_path_1 if os.path.exists(day_path_1) else day_path_2
-    code_path = os.path.join(day_path, "code.py")
-
-    cpp_files = [f for f in os.listdir(day_path) if f.endswith(".cpp")]
-
-    if not os.path.exists(code_path) and not cpp_files:
-        errors["missing_files"].append(f"Missing code.py or any .cpp file in: {day_path}")
+    if not has_solution(day_path):
+        errors["missing_files"].append(f"No solution file in {day_path}")
         return
 
-    if os.path.exists(code_path):
-        try:
-            with open(code_path, "r") as f:
-                tree = ast.parse(f.read())
-                function_names = {node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)}
+    for name in PYTHON_FILES:
+        py_path = os.path.join(day_path, name)
+        if os.path.exists(py_path):
+            check_python_parts(py_path, day == days_in_year(year), errors)
 
-            # Check if either "part1" or "part_1" exists
-            if not ("part1" in function_names or "part_1" in function_names):
-                errors["missing_functions"].append(f"Missing function 'part1' or 'part_1' in {day_path}/code.py")
 
-            # For days other than 25, also check for "part2" or "part_2"
-            if day != 25 and not ("part2" in function_names or "part_2" in function_names):
-                errors["missing_functions"].append(f"Missing function 'part2' or 'part_2' in {day_path}/code.py")
+def check_project_completeness(project_path):
+    """Checks every year in the project and prints any problems found."""
+    errors = {
+        "missing_folders": [],
+        "missing_files": [],
+        "missing_functions": [],
+        "syntax_errors": [],
+    }
 
-        except SyntaxError as e:
-            print(f"AST error in {day_path}/code.py: {e}")
+    years = find_years(project_path)
+    for year in years:
+        year_path = os.path.join(project_path, str(year))
+        for day in range(1, days_in_year(year) + 1):
+            check_day(year, day, year_path, errors)
+
+    titles = {
+        "missing_folders": "Missing day folders",
+        "missing_files": "Missing solution files",
+        "missing_functions": "Missing functions",
+        "syntax_errors": "Syntax errors",
+    }
+    for key, title in titles.items():
+        if errors[key]:
+            print(f"{title}:")
+            for item in errors[key]:
+                print(f"  - {item}")
+            print()
+
+    if not any(errors.values()):
+        print(f"All good: checked {len(years)} years ({years[0]}-{years[-1]}).")
+        return True
+    return False
+
 
 if __name__ == "__main__":
-    PROJECT_PATH = "."
-    check_project_completeness(PROJECT_PATH)
+    import sys
+
+    sys.exit(0 if check_project_completeness(".") else 1)

@@ -1,9 +1,9 @@
-
-FROM ubuntu:24.04
-FROM rust:1.72
+FROM rust:1-bookworm
 
 ENV TZ="Europe/Berlin"
 
-RUN apt update && \
-    apt install -y git python3 cmake curl python3-pip && \
-    pip install advent-of-code-data
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git python3 python3-pip python3-venv cmake g++ && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN rustup component add clippy rustfmt

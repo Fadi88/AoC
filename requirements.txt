@@ -1,4 +1,8 @@
 advent-of-code-data
-shapely>=2.0.0
+matplotlib
+modint
+networkx
 numpy
 scipy
+shapely>=2.0.0
+sympy

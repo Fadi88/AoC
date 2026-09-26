@@ -1,12 +1,18 @@
-.vs/*
-**build/
+# Editors / IDEs
+.vs/
+.vscode/
 CMakeSettings.json
+.DS_Store
+
+# Build output
+build/
 out/
-**/target/*
-*Cargo.lock
-**input.txt
-**.vscode/*
-*DS_STORE
 target/
-.env
+Cargo.lock
+
+# Python
 __pycache__/
+
+# Puzzle inputs and secrets (AoC asks that inputs are not redistributed)
+input.txt
+.env
