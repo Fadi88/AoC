@@ -21,3 +21,5 @@ input.txt
 output.txt
 log.txt
 *.log
+2025/days/*/*.jpg
+2025/days/*/*.png

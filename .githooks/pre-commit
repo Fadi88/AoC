@@ -6,6 +6,8 @@
 # CI runs it with --all to check every tracked file.
 
 pattern='(^|/)(input\.txt|\.env|output\.txt|log\.txt|log|[^/]*\.log)$'
+# Plots of the input, e.g. 2025/days/day09/polygon.jpg
+plots='^20[0-9]{2}/days/[^/]+/[^/]+\.(jpg|png)$'
 
 if [ "$1" = "--all" ]; then
     files=$(git ls-files)
@@ -13,7 +15,7 @@ else
     files=$(git diff --cached --name-only --diff-filter=ACMR)
 fi
 
-bad=$(printf '%s\n' "$files" | grep -E "$pattern")
+bad=$(printf '%s\n' "$files" | grep -E -e "$pattern" -e "$plots")
 if [ -n "$bad" ]; then
     echo "Refusing to commit puzzle inputs or generated files:" >&2
     printf '%s\n' "$bad" | sed 's/^/  /' >&2
