@@ -213,7 +213,7 @@ def cpu_name():
     """Returns a readable CPU model name, falling back to platform.processor()."""
     try:
         if sys.platform == "win32":
-            import winreg  # pylint: disable=import-outside-toplevel
+            import winreg  # pylint: disable=import-outside-toplevel,import-error
 
             key = winreg.OpenKey(
                 winreg.HKEY_LOCAL_MACHINE,
