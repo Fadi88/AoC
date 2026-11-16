@@ -183,7 +183,7 @@ def format_cell_times(times):
     parts = []
     for i, t in enumerate(times):
         label = f"P{i+1}"
-        parts.append(f"{label}: ⚡ {format_time(t)}")
+        parts.append(f"{label}: {format_time(t)}")
 
     return "<br> ".join(parts)
 
@@ -350,8 +350,8 @@ def update_readme(rerun_days=None, command="python update_benchmarks.py --all"):
         print(f"  Rust:   {rs_cell_text}")
 
         # Construct new row content
-        py_link = f"[🐍 Solution](2025/days/day{day_id}/solution.py)"
-        rs_link = f"[🦀 Solution](2025/days/day{day_id}/src/lib.rs)"
+        py_link = f"[Solution](2025/days/day{day_id}/solution.py)"
+        rs_link = f"[Solution](2025/days/day{day_id}/src/lib.rs)"
 
         py_col = f"{py_link} <br> {py_cell_text}"
         rs_col = f"{rs_link} <br> {rs_cell_text}"
