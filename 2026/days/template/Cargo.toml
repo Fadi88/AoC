@@ -1,0 +1,20 @@
+[package]
+name = "day_template"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+utils = { workspace = true }
+anyhow = { workspace = true }
+itertools = { workspace = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bin]]
+name = "day_template"
+path = "src/bin/day_template.rs"
+
+[[bench]]
+name = "bench"
+harness = false

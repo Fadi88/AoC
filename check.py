@@ -18,6 +18,7 @@ Usage: python check.py
 """
 
 import ast
+import datetime
 import os
 import re
 
@@ -32,6 +33,17 @@ SHORT_EVENT_FROM = 2025
 def days_in_year(year):
     """Returns the number of puzzle days for the given year."""
     return 12 if year >= SHORT_EVENT_FROM else 25
+
+
+def released_days(year):
+    """Returns how many days of the given year have been unlocked so far.
+
+    Puzzles unlock at midnight US Eastern time (UTC-5) from December 1st, so
+    a year set up ahead of the event is only checked for days already out.
+    """
+    now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=-5)))
+    unlocked = (now.date() - datetime.date(year, 12, 1)).days + 1
+    return max(0, min(days_in_year(year), unlocked))
 
 
 def find_years(project_path):
@@ -117,7 +129,7 @@ def check_project_completeness(project_path):
     years = find_years(project_path)
     for year in years:
         year_path = os.path.join(project_path, str(year))
-        for day in range(1, days_in_year(year) + 1):
+        for day in range(1, released_days(year) + 1):
             check_day(year, day, year_path, errors)
 
     titles = {

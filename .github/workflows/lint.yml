@@ -111,6 +111,7 @@ jobs:
             2023
             2024
             2025
+            2026
 
       # Inputs are not committed, but older years embed them with include_str!,
       # so create empty placeholders next to every Rust source to let them compile.

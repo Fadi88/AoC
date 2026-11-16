@@ -1,0 +1,13 @@
+[workspace]
+resolver = "2"
+members = [
+    "utils",
+    "days/*",
+]
+
+[workspace.dependencies]
+utils = { path = "utils" }
+itertools = "0.13.0"
+anyhow = "1.0"
+thiserror = "1.0"
+criterion = "0.5"
